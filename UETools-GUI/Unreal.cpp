@@ -765,6 +765,7 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 }
 
 
+#ifdef SOFT_PATH
 SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform)
 {
 	SDK::UWorld* world = Unreal::World::Get();
@@ -801,6 +802,7 @@ SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString actorPath, const Unrea
 			return Unreal::Actor::Summon(actorClass, transform);
 	}
 }
+#endif
 
 
 Unreal::Transform Unreal::Actor::GetTransform(SDK::AActor* actorReference)
@@ -949,6 +951,7 @@ SDK::UUserWidget* Unreal::UserWidget::Construct(const SDK::TSubclassOf<SDK::UUse
 }
 
 
+#ifdef SOFT_PATH
 SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString widgetPath)
 {
 	SDK::UWorld* world = Unreal::World::Get();
@@ -985,6 +988,7 @@ SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString widgetPat
 			return Unreal::UserWidget::Construct(widgetClass);
 	}
 }
+#endif
 
 
 

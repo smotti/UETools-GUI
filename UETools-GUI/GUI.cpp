@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.4)");
+			ImGui::Text("UETools GUI (v1.4b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1492,6 +1492,8 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 #endif
+
+#ifdef SOFT_PATH
 						ImGui::SetFontTitle();
 						ImGui::Text("Actor Spawn");
 						ImGui::SetFontSmall();
@@ -1574,6 +1576,7 @@ void GUI::Draw()
 							}
 							ImGui::TreePop();
 						}
+#endif
 
 						ImGui::NewLine();
 
@@ -1972,6 +1975,7 @@ void GUI::Draw()
 						ImGui::Text("Feature supports combined input using the '|' separator between paths.");
 						ImGui::SetFontRegular();
 
+#ifdef SOFT_PATH
 						if (ImGui::TreeNode("Details##WidgetConstruct"))
 						{
 							ImGui::Text("Widget Path:");
@@ -2006,6 +2010,7 @@ void GUI::Draw()
 
 							ImGui::TreePop();
 						}
+#endif
 
 						ImGui::NewLine();
 

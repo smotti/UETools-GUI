@@ -640,7 +640,9 @@ namespace Unreal
 		static SDK::AActor* Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform);
 
 
+#ifdef SOFT_PATH
 		static SDK::AActor* SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform);
+#endif
 
 
 		static Unreal::Transform GetTransform(SDK::AActor* actorReference);
@@ -679,7 +681,9 @@ namespace Unreal
 		static SDK::UUserWidget* Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
 
 
+#ifdef SOFT_PATH
 		static SDK::UUserWidget* SoftConstruct(const SDK::FString widgetPath);
+#endif
 	};
 	
 
