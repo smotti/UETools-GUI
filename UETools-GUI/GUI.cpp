@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.4c)");
+			ImGui::Text("UETools GUI (v1.4d)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1972,7 +1972,7 @@ void GUI::Draw()
 						ImGui::SetFontTitle();
 						ImGui::Text("Widget Construct");
 						ImGui::SetFontSmall();
-						ImGui::Text("Dynamic Widget construction by soft path, for example \"/Game/Widgets/MainMenu.MainMenu_C\".");
+						ImGui::Text("Dynamic Widget construction by soft path, for example \"/Game/Widgets/WBP_MainMenu.WBP_MainMenu_C\".");
 						ImGui::Text("Feature supports combined input using the '|' separator between paths.");
 						ImGui::SetFontRegular();
 
