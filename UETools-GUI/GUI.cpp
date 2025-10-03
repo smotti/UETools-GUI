@@ -304,6 +304,20 @@ void ImGui::TextRotatorColored(const char* label, const SDK::FRotator& value)
 
 
 
+void ImGui::TextHint(const char* hint)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::TextUnformatted(hint);
+		ImGui::EndTooltip();
+	}
+}
+
+
+
+
 void ImGui::ReadOnlyInputText(const char* label, const char* text, const bool& showCopyButton)
 {
 	if (label)
@@ -336,6 +350,36 @@ void ImGui::ReadOnlyInputText(const char* label, const char* text, const bool& s
 			Clipboard::SetClipboard(buffer.data());
 			GUI::PlayActionSound(true);
 		}
+	}
+
+	ImGui::PopID();
+}
+
+
+
+
+void ImGui::ObjectFilterModeComboBox(const char* label, ObjectFilterMode* current)
+{
+	ImGui::PushID(label);
+
+	if (label)
+	{
+		const char* idPosition = std::strstr(label, "##");
+		if (idPosition)
+			ImGui::TextUnformatted(label, idPosition);
+		else
+			ImGui::TextUnformatted(label);
+
+		ImGui::SameLine();
+	}
+
+	static const char* items[] = { "Class Name", "Object Name", "All" };
+	int index = static_cast<int>(*current);
+
+	ImGui::SetNextItemWidth(200);
+	if (ImGui::Combo("##object_filter_combo", &index, items, IM_ARRAYSIZE(items))) 
+	{
+		*current = static_cast<ObjectFilterMode>(index);
 	}
 
 	ImGui::PopID();
@@ -694,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.3c)");
+			ImGui::Text("UETools GUI (v1.4)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1277,17 +1321,37 @@ void GUI::Draw()
 									{
 										if (ImGui::TreeNode("Streaming Levels"))
 										{
-											for (Unreal::LevelStreaming::DataStructure& streamingLevel : Features::Debug::world.streamingLevels) // <-- Reference!
+											ImGui::InputText("Search Filter", Features::Debug::streamingLevelsFilterBuffer, Features::Debug::streamingLevelsFilterBufferSize);
+											ImGui::SameLine();
+											ImGui::Spacing();
+											ImGui::SameLine();
+											ImGui::Checkbox("Case Sensitive", &Features::Debug::streamingLevelsFilterCaseSensitive);
+											ImGui::SameLine();
+											ImGui::Spacing();
+											ImGui::SameLine();
+											ImGui::Checkbox("Editor Colors", &Features::Debug::streamingLevelsEditorColors);
+
+											std::vector<Unreal::LevelStreaming::DataStructure> filteredStreamingLevels = Unreal::LevelStreaming::FilterByLevelPath(Features::Debug::world.streamingLevels, Features::Debug::streamingLevelsFilterBuffer, Features::Debug::streamingLevelsFilterCaseSensitive);
+											for (Unreal::LevelStreaming::DataStructure& streamingLevel : filteredStreamingLevels) // <-- Reference!
 											{
 												ImGui::PushID(streamingLevel.objectName.c_str());
 
-												ImVec4 levelColor
+												ImVec4 levelColor;
+												if (Features::Debug::streamingLevelsEditorColors)
 												{
-													streamingLevel.levelColor.R,
-													streamingLevel.levelColor.G,
-													streamingLevel.levelColor.B,
-													streamingLevel.levelColor.A
-												};
+													levelColor = { streamingLevel.levelColor.R, streamingLevel.levelColor.G, streamingLevel.levelColor.B, streamingLevel.levelColor.A };
+												}
+												else
+												{
+													static const ImVec4 color_visible = ImGui::ColorConvertU32ToFloat4(IM_COL32(51, 204, 77, 255));
+													static const ImVec4 color_loaded = ImGui::ColorConvertU32ToFloat4(IM_COL32(51, 102, 204, 255));
+													static const ImVec4 color_null = ImGui::ColorConvertU32ToFloat4(IM_COL32(204, 77, 51, 255));
+
+													if (streamingLevel.level.reference)
+														levelColor = streamingLevel.level.isVisible ? color_visible : color_loaded;
+													else
+														levelColor = color_null;
+												}
 
 												ImGui::PushStyleColor(ImGuiCol_Text, levelColor);
 												bool isTreeNodeOpen = ImGui::TreeNode(streamingLevel.levelPath.c_str());
@@ -1496,41 +1560,8 @@ void GUI::Draw()
 	
 										for (SDK::FString& actorPath : actorPathCollection) // <-- Reference!
 										{
-											SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(actorPath);
-											SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
-											SDK::UClass* actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-
-											if (actorClass)
-											{
-												if (SDK::AActor* actorReference = Unreal::Actor::Summon(actorClass, spawnTransform))
-													anyActorSpawned = true;
-											}
-											else
-											{
-												int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
-												Unreal::LevelStreaming::LoadLevelInstance(actorPath);
-
-												/*
-													LoadLevelInstance() take some time to load asset in to a memory;
-													Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
-												*/
-												int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
-												for (int8_t waitInterval = 0; (actorClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
-												{
-													Sleep(10);
-													actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-												}
-
-												if (actorClass)
-												{
-													if (SDK::AActor* actorReference = Unreal::Actor::Summon(actorClass, spawnTransform))
-														anyActorSpawned = true;
-												}
-
-												int32_t streamingLevelsNum = world->StreamingLevels.Num();
-												if (streamingLevelsNum > initialStreamingLevelsNum)
-													world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
-											}
+											if (SDK::AActor* actorReference = Unreal::Actor::SoftSummon(actorPath, spawnTransform))
+												anyActorSpawned = true;
 										}
 
 										PlayActionSound(anyActorSpawned);
@@ -1541,7 +1572,6 @@ void GUI::Draw()
 								else
 									PlayActionSound(false);
 							}
-
 							ImGui::TreePop();
 						}
 
@@ -1555,24 +1585,59 @@ void GUI::Draw()
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						ImGui::InputText("Search Filter", Features::ActorsList::filterBuffer, Features::ActorsList::filterBufferSize);
-						size_t filterLength = strlen(Features::ActorsList::filterBuffer);
+						ImGui::InputText("Search Filter##Actors", Features::ActorsList::filterBuffer, Features::ActorsList::filterBufferSize);
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						ImGui::Checkbox("Case Sensitive", &Features::ActorsList::filterCaseSensitive);
+						ImGui::Checkbox("Case Sensitive##Actors", &Features::ActorsList::filterCaseSensitive);
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						ImGui::Checkbox("Check Validness", &Features::ActorsList::filterCheckValidness);
+						ImGui::ObjectFilterModeComboBox("##Actors", &Features::ActorsList::filterMode);
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						ImGui::Checkbox("Enable Tracking", &Features::ActorsTracker::enabled);
+						ImGui::Checkbox("Check Validness##Actors", &Features::ActorsList::filterCheckValidness);
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						if (ImGui::Button("Destroy All"))
+						ImGui::Checkbox("Enable Tracking##Actors", &Features::ActorsTracker::enabled);
+
+						if (ImGui::Button("Show All##Actors"))
+						{
+							bool anyActorShown = false;
+							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+							{
+								if (actor.reference)
+								{
+									Unreal::Actor::SetVisibility(actor.reference, true);
+									anyActorShown = true;
+								}
+							}
+
+							PlayActionSound(anyActorShown);
+						}
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						if (ImGui::Button("Hide All##Actors"))
+						{
+							bool anyActorHidden = false;
+							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+							{
+								if (actor.reference)
+								{
+									Unreal::Actor::SetVisibility(actor.reference, false);
+									anyActorHidden = true;
+								}
+							}
+
+							PlayActionSound(anyActorHidden);
+						}
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						if (ImGui::Button("Destroy All##Actors"))
 						{
 							bool anyActorDestroyed = false;
 							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
@@ -1590,34 +1655,21 @@ void GUI::Draw()
 						ImGui::NewLine();
 
 						/* Filter Actors by "Search Filter" */
-						Features::ActorsList::filteredActors.clear(); // Make sure filtered Actors array is empty.
-						for (Unreal::Actor::DataStructure& actor : Features::ActorsList::actors) // <-- Reference!
+						switch (Features::ActorsList::filterMode)
 						{
-							/* "Search Filter" is empty - Actor considered a match automatically. */
-							bool matchFilters = filterLength == 0;
+							case ImGui::ObjectFilterMode::ClassName:
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								break;
 
-							if (matchFilters == false)
-							{
-								if (Features::ActorsList::filterCaseSensitive)
-									matchFilters = actor.objectName.find(Features::ActorsList::filterBuffer) != std::string::npos;
-								else
-								{
-									std::string actorObjectLower = actor.objectName;
-									std::string filterLower = Features::ActorsList::filterBuffer;
+							case ImGui::ObjectFilterMode::ObjectName:
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								break;
 
-									std::transform(actorObjectLower.begin(), actorObjectLower.end(), actorObjectLower.begin(),
-										[](unsigned char c) { return std::tolower(c); });
-									std::transform(filterLower.begin(), filterLower.end(), filterLower.begin(),
-										[](unsigned char c) { return std::tolower(c); });
-
-									matchFilters = actorObjectLower.find(filterLower) != std::string::npos;
-								}
-							}
-
-							if (matchFilters)
-								Features::ActorsList::filteredActors.push_back(actor); // Actor is good to go, can be considered "filtered".
+							case ImGui::ObjectFilterMode::All:
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								break;
 						}
-
+						
 						/* Output to user interface Actors that are matching "Search Filter" */
 						for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
 						{
@@ -1639,48 +1691,70 @@ void GUI::Draw()
 							{
 								ImGui::PushID(actor.objectName.c_str());
 
+								ImGui::Text("Actor Super Class: %s", actor.superClassName.c_str());
 								ImGui::Text("Actor Class: %s", actor.className.c_str());
 								ImGui::Text("Actor Object: %s", actor.objectName.c_str());
 
-								float actorLocation[3] = { actor.location.X, actor.location.Y, actor.location.Z };
-								ImGui::Text("Location:");
+								ImGui::NewLine();
+
+								ImGui::TextVectorColored("Location:", actor.location);
+								static float customLocation[3];
+								if (ImGui::Button("Copy##Location"))
+								{
+									customLocation[0] = actor.location.X;
+									customLocation[1] = actor.location.Y;
+									customLocation[2] = actor.location.Z;
+								}
 								ImGui::SameLine();
-								if (ImGui::InputFloat3("##Location", actorLocation))
-									actor.location = SDK::FVector(actorLocation[0], actorLocation[1], actorLocation[2]);
+								ImGui::InputFloat3("##Location", customLocation);
 								ImGui::SameLine();
 								if (ImGui::Button("Set##Location"))
 								{
 									if (actor.reference)
 									{
-										actor.reference->K2_TeleportTo(actor.location, actor.reference->K2_GetActorRotation());
+										actor.reference->K2_TeleportTo({ customLocation[0], customLocation[1], customLocation[2] }, actor.reference->K2_GetActorRotation());
 										PlayActionSound(true);
+
+										Features::ActorsList::Update();
 									}
 									else
 										PlayActionSound(false);
 								}
 
-								float actorRotation[3] = { actor.rotation.Pitch, actor.rotation.Yaw, actor.rotation.Roll };
-								ImGui::Text("Rotation:");
+								ImGui::TextRotatorColored("Rotation:", actor.rotation);
+								static float customRotation[3];
+								if (ImGui::Button("Copy##Rotation"))
+								{
+									customRotation[0] = actor.rotation.Pitch;
+									customRotation[1] = actor.rotation.Yaw;
+									customRotation[2] = actor.rotation.Roll;
+								}
 								ImGui::SameLine();
-								if (ImGui::InputFloat3("##Rotation", actorRotation))
-									actor.rotation = SDK::FRotator(actorRotation[0], actorRotation[1], actorRotation[2]);
+								ImGui::InputFloat3("##Rotation", customRotation);
 								ImGui::SameLine();
 								if (ImGui::Button("Set##Rotation"))
 								{
 									if (actor.reference)
 									{
-										actor.reference->K2_TeleportTo(actor.reference->K2_GetActorLocation(), actor.rotation);
+										actor.reference->K2_TeleportTo(actor.reference->K2_GetActorLocation(), SDK::FRotator(customRotation[0], customRotation[1], customRotation[2]));
 										PlayActionSound(true);
+
+										Features::ActorsList::Update();
 									}
 									else
 										PlayActionSound(false);
 								}
 
-								float actorScale[3] = { actor.scale.X, actor.scale.Y, actor.scale.Z };
-								ImGui::Text("Scale:   ");
+								ImGui::TextVectorColored("Scale:", actor.scale);
+								static float customScale[3];
+								if (ImGui::Button("Copy##Scale"))
+								{
+									customScale[0] = actor.scale.X;
+									customScale[1] = actor.scale.Y;
+									customScale[2] = actor.scale.Z;
+								}
 								ImGui::SameLine();
-								if (ImGui::InputFloat3("##Scale", actorScale))
-									actor.scale = SDK::FVector(actorScale[0], actorScale[1], actorScale[2]);
+								ImGui::InputFloat3("##Scale", customScale);
 								ImGui::SameLine();
 								if (ImGui::Button("Set##Scale"))
 								{
@@ -1688,13 +1762,15 @@ void GUI::Draw()
 									{
 										actor.reference->SetActorScale3D(actor.scale);
 										PlayActionSound(true);
+
+										Features::ActorsList::Update();
 									}
 									else
 										PlayActionSound(false);
 								}
 
-								ImGui::Text("         ");
-								ImGui::SameLine();
+								ImGui::NewLine();
+
 								if (ImGui::Button("Static"))
 								{
 									if (actor.reference && actor.reference->RootComponent)
@@ -1728,13 +1804,12 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
-								ImGui::Text("         ");
-								ImGui::SameLine();
+								static bool visibilityPropagateToComponents = false;
 								if (ImGui::Button("Set Visible"))
 								{
 									if (actor.reference)
 									{
-										actor.reference->SetActorHiddenInGame(false);
+										Unreal::Actor::SetVisibility(actor.reference, true, visibilityPropagateToComponents);
 										PlayActionSound(true);
 									}
 									else
@@ -1745,15 +1820,15 @@ void GUI::Draw()
 								{
 									if (actor.reference)
 									{
-										actor.reference->SetActorHiddenInGame(true);
+										Unreal::Actor::SetVisibility(actor.reference, false, visibilityPropagateToComponents);
 										PlayActionSound(true);
 									}
 									else
 										PlayActionSound(false);
 								}
-
-								ImGui::Text("         ");
 								ImGui::SameLine();
+								ImGui::Checkbox("Propagate To Components", &visibilityPropagateToComponents);
+
 								if (ImGui::Button("Teleport To Actor"))
 								{
 									SDK::ACharacter* character = Unreal::Character::Get();
@@ -1761,6 +1836,25 @@ void GUI::Draw()
 									{
 										SDK::FHitResult hitResult;
 										PlayActionSound(character->K2_SetActorLocation(actor.location, false, &hitResult, true));
+									}
+									else
+										PlayActionSound(false);
+								}
+								ImGui::SameLine();
+								if (ImGui::Button("Teleport Actor To Me"))
+								{
+									if (actor.reference)
+									{
+										SDK::ACharacter* character = Unreal::Character::Get();
+										if (character)
+										{
+											SDK::FVector location = character->K2_GetActorLocation();
+
+											SDK::FHitResult hitResult;
+											PlayActionSound(actor.reference->K2_SetActorLocation(location, false, &hitResult, true));
+										}
+										else
+											PlayActionSound(false);
 									}
 									else
 										PlayActionSound(false);
@@ -1785,100 +1879,266 @@ void GUI::Draw()
 								if (ImGui::TreeNode("Details##Components"))
 								{
 
-									ImGui::InputText("Search Filter", Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterBufferSize);
-									size_t componentsFilterLength = strlen(Features::ActorsList::componentsFilterBuffer);
+									ImGui::InputText("Search Filter##Components", Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterBufferSize);
 									ImGui::SameLine();
 									ImGui::Spacing();
 									ImGui::SameLine();
-									ImGui::Checkbox("Case Sensitive", &Features::ActorsList::componentsFilterCaseSensitive);
+									ImGui::Checkbox("Case Sensitive##Components", &Features::ActorsList::componentsFilterCaseSensitive);
 
 									ImGui::NewLine();
 
-									for (Unreal::ActorComponent::DataStructure& component : actor.components) // <-- Reference!
+									std::vector<Unreal::ActorComponent::DataStructure> filteredComponents = Unreal::ActorComponent::FilterByObjectName(actor.components, Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterCaseSensitive);
+									for (Unreal::ActorComponent::DataStructure& component : filteredComponents) // <-- Reference!
 									{
-										bool componentOutputToUserInterface = componentsFilterLength == 0;
-
-										if (componentOutputToUserInterface == false)
+										if (ImGui::TreeNode(component.objectName.c_str()))
 										{
-											if (Features::ActorsList::componentsFilterCaseSensitive)
-												componentOutputToUserInterface = component.objectName.find(Features::ActorsList::componentsFilterBuffer) != std::string::npos;
-											else
+											ImGui::Text("Component Class: %s", component.className.c_str());
+											ImGui::Text("Component Object: %s", component.objectName.c_str());
+
+											ImGui::NewLine();
+
+											ImGui::TextBoolColored("Is Active:", component.isActive);
+											ImGui::TextBoolColored("Auto Activate:", component.autoActivate);
+											ImGui::TextBoolColored("Editor Only:", component.editorOnly);
+											if (ImGui::Button("Activate"))
 											{
-												std::string componentObjectLower = component.objectName;
-												std::string componentFilterLower = Features::ActorsList::componentsFilterBuffer;
-
-												std::transform(componentObjectLower.begin(), componentObjectLower.end(), componentObjectLower.begin(),
-													[](unsigned char c) { return std::tolower(c); });
-												std::transform(componentFilterLower.begin(), componentFilterLower.end(), componentFilterLower.begin(),
-													[](unsigned char c) { return std::tolower(c); });
-
-												componentOutputToUserInterface = componentObjectLower.find(componentFilterLower) != std::string::npos;
+												if (component.reference)
+												{
+													component.reference->Activate(false);
+													component.isActive = true;
+													PlayActionSound(true);
+												}
+												else
+													PlayActionSound(false);
 											}
-										}
-
-										if (componentOutputToUserInterface)
-										{
-											if (ImGui::TreeNode(component.objectName.c_str()))
+											ImGui::SameLine();
+											if (ImGui::Button("Reset"))
 											{
-												ImGui::Text("Component Class: %s", component.className.c_str());
-												ImGui::Text("Component Object: %s", component.objectName.c_str());
-
-												ImGui::NewLine();
-
-												ImGui::TextBoolColored("Is Active:", component.isActive);
-												ImGui::TextBoolColored("Auto Activate:", component.autoActivate);
-												ImGui::TextBoolColored("Editor Only:", component.editorOnly);
-												if (ImGui::Button("Activate"))
+												if (component.reference)
 												{
-													if (component.reference)
-													{
-														component.reference->Activate(false);
-														component.isActive = true;
-														PlayActionSound(true);
-													}
-													else
-														PlayActionSound(false);
+													component.reference->Activate(true);
+													component.isActive = true;
+													PlayActionSound(true);
 												}
-												ImGui::SameLine();
-												if (ImGui::Button("Reset"))
-												{
-													if (component.reference)
-													{
-														component.reference->Activate(true);
-														component.isActive = true;
-														PlayActionSound(true);
-													}
-													else
-														PlayActionSound(false);
-												}
-												ImGui::SameLine();
-												if (ImGui::Button("Deactivate"))
-												{
-													if (component.reference)
-													{
-														component.reference->Deactivate();
-														component.isActive = false;
-														PlayActionSound(true);
-													}
-													else
-														PlayActionSound(false);
-												}
-
-												ImGui::NewLine();
-
-												ImGui::TextBoolColored("Net Addressible:", component.netAddressible);
-												ImGui::TextBoolColored("Replicates:", component.replicates);
-
-												ImGui::NewLine();
-
-												ImGui::Text("Creation Method: %d", component.creationMethod);
-
-												ImGui::TreePop();
+												else
+													PlayActionSound(false);
 											}
+											ImGui::SameLine();
+											if (ImGui::Button("Deactivate"))
+											{
+												if (component.reference)
+												{
+													component.reference->Deactivate();
+													component.isActive = false;
+													PlayActionSound(true);
+												}
+												else
+													PlayActionSound(false);
+											}
+
+											ImGui::NewLine();
+
+											ImGui::TextBoolColored("Net Addressible:", component.netAddressible);
+											ImGui::TextBoolColored("Replicates:", component.replicates);
+
+											ImGui::NewLine();
+
+											ImGui::Text("Creation Method: %d", component.creationMethod);
+
+											ImGui::TreePop();
 										}
 									}
 
 									ImGui::TreePop();
+								}
+
+								ImGui::PopID();
+								ImGui::TreePop();
+							}
+						}
+					}
+
+					ImGui::CategorySeparator();
+
+					ImGui::SetFontTitle();
+					ImGui::Text("Widgets");
+					ImGui::SetFontRegular();
+					if (ImGui::CollapsingHeader("Details##Widgets"))
+					{
+						ImGui::SetFontTitle();
+						ImGui::Text("Widget Construct");
+						ImGui::SetFontSmall();
+						ImGui::Text("Dynamic Widget construction by soft path, for example \"/Game/Widgets/MainMenu.MainMenu_C\".");
+						ImGui::Text("Feature supports combined input using the '|' separator between paths.");
+						ImGui::SetFontRegular();
+
+						if (ImGui::TreeNode("Details##WidgetConstruct"))
+						{
+							ImGui::Text("Widget Path:");
+							ImGui::SameLine();
+							ImGui::InputText("##WidgetConstruct", Features::WidgetConstruct::widgetPathBuffer, Features::WidgetConstruct::widgetPathBufferSize);
+
+							ImGui::Text("Z Order:    ");
+							ImGui::SameLine();
+							ImGui::InputInt("##WidgetZOrder", &Features::WidgetConstruct::zOrder, 1, 10);
+
+							if (ImGui::Button("Construct Widget##WidgetConstruct"))
+							{
+								std::vector<SDK::FString> widgetPathCollection = Unreal::String::Split(Features::WidgetConstruct::widgetPathBuffer, '|');
+								if (widgetPathCollection.size() > 0)
+								{
+									bool anyWidgetConstructed = false;
+
+									for (SDK::FString& widgetPath : widgetPathCollection) // <-- Reference!
+									{
+										if (SDK::UUserWidget* widgetReference = Unreal::UserWidget::SoftConstruct(widgetPath))
+										{
+											widgetReference->AddToViewport(Features::WidgetConstruct::zOrder);
+											anyWidgetConstructed = true;
+										}
+									}
+
+									PlayActionSound(anyWidgetConstructed);
+								}
+								else
+									PlayActionSound(false);
+							}
+
+							ImGui::TreePop();
+						}
+
+						ImGui::NewLine();
+
+						if (ImGui::Button("Update##Widgets"))
+						{
+							Features::WidgetsList::Update();
+							PlayActionSound(true);
+						}
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::InputText("Search Filter##Widgets", Features::WidgetsList::filterBuffer, Features::WidgetsList::filterBufferSize);
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::Checkbox("Case Sensitive##Widgets", &Features::WidgetsList::filterCaseSensitive);
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::Checkbox("Top Level Only##Widgets", &Features::WidgetsList::filterTopLevelOnly);
+
+						if (ImGui::Button("Show All##Widgets"))
+						{
+							Features::WidgetsList::storedWidgetsVisibility.clear();
+							bool anyWidgetAffected = false;
+
+							for (Unreal::UserWidget::DataStructure widget : Features::WidgetsList::filteredWidgets)
+							{
+								if (widget.reference == nullptr)
+									continue;
+
+								Features::WidgetsList::storedWidgetsVisibility.push_back({ widget.reference, widget.visibility });
+								widget.reference->SetVisibility(SDK::ESlateVisibility::Visible);
+
+								anyWidgetAffected = true;
+							}
+
+							PlayActionSound(anyWidgetAffected);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Hide All##Widgets"))
+						{
+							Features::WidgetsList::storedWidgetsVisibility.clear();
+							bool anyWidgetAffected = false;
+
+							for (Unreal::UserWidget::DataStructure widget : Features::WidgetsList::filteredWidgets)
+							{
+								if (widget.reference == nullptr)
+									continue;
+
+								Features::WidgetsList::storedWidgetsVisibility.push_back({ widget.reference, widget.visibility });
+								widget.reference->SetVisibility(SDK::ESlateVisibility::Hidden);
+
+								anyWidgetAffected = true;
+							}
+
+							PlayActionSound(anyWidgetAffected);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Restore Last State##Widgets"))
+						{
+							bool anyWidgetAffected = false;
+
+							for (std::pair<SDK::UUserWidget*, SDK::ESlateVisibility> widgetVisibility : Features::WidgetsList::storedWidgetsVisibility)
+							{
+								if (widgetVisibility.first == nullptr)
+									continue;
+
+								widgetVisibility.first->SetVisibility(widgetVisibility.second);
+								anyWidgetAffected = true;
+							}
+
+							PlayActionSound(anyWidgetAffected);
+						}
+
+						ImGui::NewLine();
+
+						Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterBufferSize, Features::WidgetsList::filterTopLevelOnly);
+						for (Unreal::UserWidget::DataStructure& widget : Features::WidgetsList::filteredWidgets) // <-- Reference!
+						{
+							if (ImGui::TreeNode(widget.objectName.c_str()))
+							{
+								ImGui::PushID(widget.objectName.c_str());
+
+								ImGui::Text("Widget Class: %s", widget.className.c_str());
+								ImGui::Text("Widget Object: %s", widget.objectName.c_str());
+
+								ImGui::NewLine();
+
+								ImGui::Text("Parent: %s", widget.parent ? widget.parent->GetFullName().c_str() : "None");
+
+								ImGui::NewLine();
+
+								ImGui::TextBoolColored("Is Top Level:", widget.isInViewport);
+								ImGui::Text("Visibility: %d", widget.visibility);
+								ImGui::SameLine();
+								ImGui::TextHint("ESlateVisibility\n\n0 - Visible\n1 - Collapsed\n2 - Hidden\n3 - HitTestInvisible\n4 - SelfHitTestInvisible");
+								static int32_t customVisibility = 0;
+								ImGui::SliderInt("##CustomVisibility", &customVisibility, 0, 4);
+								ImGui::SameLine();
+								if (ImGui::Button("Set##Visibility"))
+								{
+									if (widget.reference)
+									{
+										widget.reference->SetVisibility(static_cast<SDK::ESlateVisibility>(customVisibility));
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+
+								ImGui::NewLine();
+
+								if (ImGui::Button("Remove From Parent"))
+								{
+									if (widget.reference)
+									{
+										widget.reference->RemoveFromParent();
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+								ImGui::SameLine();
+								if (ImGui::Button("Remove From Viewport"))
+								{
+									if (widget.reference)
+									{
+										widget.reference->RemoveFromViewport();
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
 								}
 
 								ImGui::PopID();
@@ -2870,6 +3130,7 @@ void Features::ActorsList::Update()
 
 			SDK::AActor* actor = static_cast<SDK::AActor*>(objectReference);
 			actorData.reference = actor;
+			actorData.superClassName = actor->Class->Super->GetFullName();
 			actorData.className = actor->Class->GetFullName();
 			actorData.objectName = actor->GetFullName();
 
@@ -2900,6 +3161,40 @@ void Features::ActorsList::Update()
 			}
 
 			Features::ActorsList::actors.push_back(actorData);
+		}
+	}
+}
+
+
+
+
+void Features::WidgetsList::Update()
+{
+	Features::WidgetsList::widgets.clear();
+
+	int32_t objectsNum = SDK::UObject::GObjects->Num();
+	for (int i = 0; i < objectsNum; i++)
+	{
+		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+
+		if (objectReference == nullptr || objectReference->IsDefaultObject())
+			continue;
+
+		if (objectReference->IsA(SDK::UUserWidget::StaticClass()))
+		{
+			Unreal::UserWidget::DataStructure widgetData = {};
+
+			SDK::UUserWidget* widget = static_cast<SDK::UUserWidget*>(objectReference);
+			widgetData.reference = widget;
+			widgetData.className = widget->Class->GetFullName();
+			widgetData.objectName = widget->GetFullName();
+
+			widgetData.parent = widget->GetParent();
+
+			widgetData.isInViewport = widget->IsInViewport();
+			widgetData.visibility = widget->Visibility;
+
+			Features::WidgetsList::widgets.push_back(widgetData);
 		}
 	}
 }

@@ -207,6 +207,43 @@ SDK::AGameStateBase* Unreal::GameState::Get()
 
 
 
+std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<LevelStreaming::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Level Streamings by "Search Filter" */
+	for (Unreal::LevelStreaming::DataStructure levelStreaming : levelStreamingsArray)
+	{
+		/* "Search Filter" is empty - Actor considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = levelStreaming.levelPath.find(filter) != std::string::npos;
+			else
+			{
+				std::string levelPathLowerCase = levelStreaming.levelPath;
+				std::string filterLowerCase = filter;
+
+				std::transform(levelPathLowerCase.begin(), levelPathLowerCase.end(), levelPathLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = levelPathLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(levelStreaming); // Actor is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+
 bool Unreal::LevelStreaming::LoadLevelInstance(const SDK::FString& levelPath, const SDK::FVector& locationOffset, const SDK::FRotator& rotationOffset)
 {
 	SDK::UWorld* world = Unreal::World::Get();
@@ -492,6 +529,47 @@ bool Unreal::Character::Ghost(const int32_t& playerIndex)
 
 
 
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<ActorComponent::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Components by "Search Filter" */
+	for (ActorComponent::DataStructure component : componentsArray)
+	{
+		/* "Search Filter" is empty - Component considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = component.objectName.find(filter) != std::string::npos;
+			else
+			{
+				std::string classNameLowerCase = component.objectName;
+				std::string filterLowerCase = filter;
+
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(component); // Component is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+
+
+
+
+
 std::vector<SDK::AActor*> Unreal::Actor::GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass)
 {
 	std::vector<SDK::AActor*> outCollection;
@@ -530,6 +608,136 @@ std::vector<SDK::AActor*> Unreal::Actor::GetAllOfClass(const SDK::TSubclassOf<SD
 }
 
 
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Actor::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Actors by "Search Filter" */
+	for (Unreal::Actor::DataStructure actor : actorsArray)
+	{
+		/* "Search Filter" is empty - Actor considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = (actor.superClassName.find(filter) != std::string::npos) || (actor.className.find(filter) != std::string::npos);
+			else
+			{
+				std::string superClassNameLowerCase = actor.superClassName;
+				std::string classNameLowerCase = actor.className;
+				std::string filterLowerCase = filter;
+
+				std::transform(superClassNameLowerCase.begin(), superClassNameLowerCase.end(), superClassNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = (superClassNameLowerCase.find(filterLowerCase) != std::string::npos) || (classNameLowerCase.find(filterLowerCase) != std::string::npos);
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(actor); // Actor is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Actor::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Actors by "Search Filter" */
+	for (Unreal::Actor::DataStructure actor : actorsArray)
+	{
+		/* "Search Filter" is empty - Actor considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = actor.objectName.find(filter) != std::string::npos;
+			else
+			{
+				std::string classNameLowerCase = actor.objectName;
+				std::string filterLowerCase = filter;
+
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(actor); // Actor is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Actor::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Actors by "Search Filter" */
+	for (Unreal::Actor::DataStructure actor : actorsArray)
+	{
+		/* "Search Filter" is empty - Actor considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = (actor.superClassName.find(filter) != std::string::npos) || (actor.className.find(filter) != std::string::npos) || (actor.objectName.find(filter) != std::string::npos);
+			else
+			{
+				std::string superClassNameLowerCase = actor.superClassName;
+				std::string classNameLowerCase = actor.className;
+				std::string objectNameLowerCase = actor.objectName;
+				std::string filterLowerCase = filter;
+
+				std::transform(superClassNameLowerCase.begin(), superClassNameLowerCase.end(), superClassNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = (superClassNameLowerCase.find(filterLowerCase) != std::string::npos) || (classNameLowerCase.find(filterLowerCase) != std::string::npos) || (objectNameLowerCase.find(filterLowerCase) != std::string::npos);
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(actor); // Actor is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+
+void Unreal::Actor::SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents)
+{
+	if (actorReference == nullptr)
+		return;
+
+	actorReference->SetActorHiddenInGame(!newVisibility);
+	
+	if (propagateToComponents && actorReference->RootComponent)
+		actorReference->RootComponent->SetVisibility(newVisibility, true);
+}
+
+
 SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform)
 {
 	SDK::UWorld* world = Unreal::World::Get();
@@ -554,6 +762,44 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 	actorReference->SetActorScale3D(transform.scale);
 
 	return actorReference;
+}
+
+
+SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform)
+{
+	SDK::UWorld* world = Unreal::World::Get();
+	if (world == nullptr)
+		return nullptr;
+
+	SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(actorPath);
+	SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
+	SDK::UClass* actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+
+	if (actorClass)
+		return Unreal::Actor::Summon(actorClass, transform);
+	else
+	{
+		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
+		Unreal::LevelStreaming::LoadLevelInstance(actorPath);
+
+		/*
+			LoadLevelInstance() take some time to load asset in to a memory;
+			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
+		*/
+		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
+		for (int8_t waitInterval = 0; (actorClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
+		{
+			Sleep(10);
+			actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+		}
+
+		int32_t streamingLevelsNum = world->StreamingLevels.Num();
+		if (streamingLevelsNum > initialStreamingLevelsNum)
+			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
+
+		if (actorClass)
+			return Unreal::Actor::Summon(actorClass, transform);
+	}
 }
 
 
@@ -626,6 +872,118 @@ bool Unreal::Actor::IsValid(SDK::AActor* actorReference)
 	}
 
 	return false;
+}
+
+
+
+
+
+
+std::vector<SDK::UUserWidget*> Unreal::UserWidget::GetAllOfClass(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass)
+{
+	std::vector<SDK::UUserWidget*> outCollection;
+
+	int32_t objectsNum = SDK::UObject::GObjects->Num();
+	for (int i = 0; i < objectsNum; i++)
+	{
+		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+
+		if (objectReference == nullptr || objectReference->IsDefaultObject())
+			continue;
+
+		if (objectReference->IsA(widgetClass))
+			outCollection.push_back(static_cast<SDK::UUserWidget*>(objectReference)); // Clarify that found Object is of class User Widget.
+	}
+
+	return outCollection;
+}
+
+
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+{
+	std::vector<UserWidget::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Actors by "Search Filter" */
+	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	{
+		if (topLevelOnly && widget.isInViewport == false)
+			continue;
+
+		/* "Search Filter" is empty - Widget considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = widget.objectName.find(filter) != std::string::npos;
+			else
+			{
+				std::string classNameLowerCase = widget.objectName;
+				std::string filterLowerCase = filter;
+
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(widget); // Widget is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+
+SDK::UUserWidget* Unreal::UserWidget::Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass)
+{
+	SDK::UWorld* world = Unreal::World::Get();
+	if (world == nullptr)
+		return nullptr;
+
+	return SDK::UWidgetBlueprintLibrary::Create(world, widgetClass, nullptr);
+}
+
+
+SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString widgetPath)
+{
+	SDK::UWorld* world = Unreal::World::Get();
+	if (world == nullptr)
+		return nullptr;
+
+	SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(widgetPath);
+	SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
+	SDK::UClass* widgetClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+
+	if (widgetClass)
+		return Unreal::UserWidget::Construct(widgetClass);
+	else
+	{
+		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
+		Unreal::LevelStreaming::LoadLevelInstance(widgetPath);
+
+		/*
+			LoadLevelInstance() take some time to load asset in to a memory;
+			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
+		*/
+		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
+		for (int8_t waitInterval = 0; (widgetClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
+		{
+			Sleep(10);
+			widgetClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+		}
+
+		int32_t streamingLevelsNum = world->StreamingLevels.Num();
+		if (streamingLevelsNum > initialStreamingLevelsNum)
+			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
+
+		if (widgetClass)
+			return Unreal::UserWidget::Construct(widgetClass);
+	}
 }
 
 

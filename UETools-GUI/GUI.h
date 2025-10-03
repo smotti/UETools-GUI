@@ -56,7 +56,19 @@ namespace ImGui
 	void TextRotatorColored(const char* label, const SDK::FRotator& value);
 
 
+	void TextHint(const char* hint);
+
+
 	void ReadOnlyInputText(const char* label, const char* text, const bool& showCopyButton);
+
+
+	enum ObjectFilterMode
+	{
+		ClassName,
+		ObjectName,
+		All
+	};
+	void ObjectFilterModeComboBox(const char* label, ObjectFilterMode* current);
 
 
 	/*
@@ -296,6 +308,10 @@ namespace Features
 		static inline Unreal::PlayerController::DataStructure playerController;
 
 		static inline Unreal::World::DataStructure world;
+		static inline const size_t streamingLevelsFilterBufferSize = 255;
+		static inline char streamingLevelsFilterBuffer[streamingLevelsFilterBufferSize] = {};
+		static inline bool streamingLevelsFilterCaseSensitive = true;
+		static inline bool streamingLevelsEditorColors = false;
 
 		static inline bool wasProjectNameObtained;
 		static inline std::string projectName;
@@ -341,19 +357,18 @@ namespace Features
 	class ActorsList
 	{
 	public:
-		static inline bool enabled;
-
 		static inline const size_t filterBufferSize = 255;
 		static inline char filterBuffer[filterBufferSize] = {};
 		static inline bool filterCaseSensitive = true;
+		static inline ImGui::ObjectFilterMode filterMode = ImGui::ObjectFilterMode::All;
 		static inline bool filterCheckValidness = false;
+
+		static inline std::vector<Unreal::Actor::DataStructure> actors;
+		static inline std::vector<Unreal::Actor::DataStructure> filteredActors;
 
 		static inline const size_t componentsFilterBufferSize = 255;
 		static inline char componentsFilterBuffer[componentsFilterBufferSize] = {};
 		static inline bool componentsFilterCaseSensitive = true;
-
-		static inline std::vector<Unreal::Actor::DataStructure> actors;
-		static inline std::vector<Unreal::Actor::DataStructure> filteredActors;
 
 
 		static void Update();
@@ -366,6 +381,39 @@ namespace Features
 	{
 	public:
 		static inline bool enabled = false;
+	};
+
+
+
+
+	class WidgetConstruct
+	{
+	public:
+		/* Allocate large buffer to account for combined paths (e.g: "/Game/Blueprints/Watermelon.Watermelon_C | /Game/Blueprints/Cookie.Cookie_C") */
+		static inline const size_t widgetPathBufferSize = 2048;
+		static inline char widgetPathBuffer[widgetPathBufferSize] = {};
+
+		static inline int32_t zOrder = 0;
+	};
+
+
+
+
+	class WidgetsList
+	{
+	public:
+		static inline const size_t filterBufferSize = 255;
+		static inline char filterBuffer[filterBufferSize] = {};
+		static inline bool filterCaseSensitive = true;
+		static inline bool filterTopLevelOnly = true;
+
+		static inline std::vector<Unreal::UserWidget::DataStructure> widgets;
+		static inline std::vector<Unreal::UserWidget::DataStructure> filteredWidgets;
+
+		static inline std::vector<std::pair<SDK::UUserWidget*, SDK::ESlateVisibility>> storedWidgetsVisibility;
+
+
+		static void Update();
 	};
 
 

@@ -1,8 +1,12 @@
 #pragma once
 #include "SDK\Engine_classes.hpp"
+#include "SDK\UMG_classes.hpp"
 
 #include "definitions.h"
+#include "Windows.h"
 
+#include <vector>
+#include <algorithm>
 #include <cwctype>
 
 
@@ -361,6 +365,9 @@ namespace Unreal
 		};
 
 
+		static std::vector<LevelStreaming::DataStructure> FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive);
+
+
 		static bool LoadLevelInstance(const SDK::FString& levelPath, const SDK::FVector& locationOffset = { 0.0f, 0.0f, 0.0f }, const SDK::FRotator& rotationOffset = { 0.0f, 0.0f, 0.0f });
 	};
 
@@ -582,6 +589,9 @@ namespace Unreal
 
 			SDK::EComponentCreationMethod creationMethod;
 		};
+
+
+		static std::vector<ActorComponent::DataStructure> FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
 	};
 
 
@@ -591,6 +601,7 @@ namespace Unreal
 		struct DataStructure
 		{
 			SDK::AActor* reference;
+			std::string superClassName;
 			std::string className;
 			std::string objectName;
 
@@ -618,13 +629,57 @@ namespace Unreal
 		static std::vector<SDK::AActor*> GetAllOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass);
 
 
+		static std::vector<Actor::DataStructure> FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<Actor::DataStructure> FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
+
+
+		static void SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents = false);
+
+
 		static SDK::AActor* Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform);
+
+
+		static SDK::AActor* SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform);
 
 
 		static Unreal::Transform GetTransform(SDK::AActor* actorReference);
 
 
 		static bool IsValid(SDK::AActor* actorReference);
+	};
+
+
+
+
+
+
+	class UserWidget
+	{
+	public:
+		struct DataStructure
+		{
+			SDK::UUserWidget* reference;
+			std::string className;
+			std::string objectName;
+
+			SDK::UPanelWidget* parent;
+
+			bool isInViewport;
+			SDK::ESlateVisibility visibility;
+		};
+
+
+		static std::vector<SDK::UUserWidget*> GetAllOfClass(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
+
+
+		static std::vector<UserWidget::DataStructure> FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
+
+
+		static SDK::UUserWidget* Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
+
+
+		static SDK::UUserWidget* SoftConstruct(const SDK::FString widgetPath);
 	};
 	
 

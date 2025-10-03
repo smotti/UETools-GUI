@@ -69,6 +69,9 @@
     <ClCompile Include="Unreal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\SDKs\Dumper7\SDK\UMG_functions.cpp">
+      <Filter>Dumper7</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectWindow.h">
