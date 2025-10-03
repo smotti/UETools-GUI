@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.4b)");
+			ImGui::Text("UETools GUI (v1.4c)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1968,6 +1968,7 @@ void GUI::Draw()
 					ImGui::SetFontRegular();
 					if (ImGui::CollapsingHeader("Details##Widgets"))
 					{
+#ifdef SOFT_PATH
 						ImGui::SetFontTitle();
 						ImGui::Text("Widget Construct");
 						ImGui::SetFontSmall();
@@ -1975,7 +1976,6 @@ void GUI::Draw()
 						ImGui::Text("Feature supports combined input using the '|' separator between paths.");
 						ImGui::SetFontRegular();
 
-#ifdef SOFT_PATH
 						if (ImGui::TreeNode("Details##WidgetConstruct"))
 						{
 							ImGui::Text("Widget Path:");
