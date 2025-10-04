@@ -716,6 +716,14 @@ namespace Unreal
 		*		  otherwise returns an empty vector if no Objects are found.
 		*/
 		static std::vector<SDK::UObject*> GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass);
+
+
+#ifdef SOFT_PATH
+		/*
+		* @brief Loads Object Class in to the game memory.
+		*/
+		static SDK::UClass* SoftLoad(const SDK::FString objectPath);
+#endif
 	};
 
 

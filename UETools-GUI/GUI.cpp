@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.4d)");
+			ImGui::Text("UETools GUI (v1.5)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -2088,7 +2088,7 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
-						Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterBufferSize, Features::WidgetsList::filterTopLevelOnly);
+						Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
 						for (Unreal::UserWidget::DataStructure& widget : Features::WidgetsList::filteredWidgets) // <-- Reference!
 						{
 							if (ImGui::TreeNode(widget.objectName.c_str()))
@@ -2265,6 +2265,18 @@ void GUI::Draw()
 					ImGui::SetFontRegular();
 					if (ImGui::TreeNode("Details##WorldTime"))
 					{
+						if (ImGui::Button("Game Pause"))
+						{
+							PlayActionSound(SDK::UGameplayStatics::SetGamePaused(world, true));
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Game Unpause"))
+						{
+							PlayActionSound(SDK::UGameplayStatics::SetGamePaused(world, false));
+						}
+
+						ImGui::NewLine();
+
 						ImGui::InputFloat("Minimum Time Dilation", &worldSettings->MinGlobalTimeDilation, 0.1, 1.0);
 						ImGui::InputFloat("Maximum Time Dilation", &worldSettings->MaxGlobalTimeDilation, 0.1, 1.0);
 						double timeDilation = worldSettings->TimeDilation;
@@ -2398,6 +2410,85 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
+						if (ImGui::Button("Enable Input"))
+						{
+							if (character)
+							{
+								character->EnableInput(playerController);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Disable Input"))
+						{
+							if (character)
+							{
+								character->DisableInput(playerController);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+
+						if (ImGui::Button("Ignore Move Input"))
+						{
+							if (playerController)
+							{
+								playerController->SetIgnoreMoveInput(true);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Do Not Ignore Move Input"))
+						{
+							if (playerController)
+							{
+								playerController->SetIgnoreMoveInput(false);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+
+						if (ImGui::Button("Ignore Look Input"))
+						{
+							if (playerController)
+							{
+								playerController->SetIgnoreLookInput(true);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Do Not Ignore Look Input"))
+						{
+							if (playerController)
+							{
+								playerController->SetIgnoreLookInput(false);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+
+						if (ImGui::Button("Input Mode: Game Only"))
+						{
+							if (playerController)
+							{
+								SDK::UWidgetBlueprintLibrary::SetInputMode_GameOnly(playerController);
+								PlayActionSound(true);
+							}
+							else
+								PlayActionSound(false);
+						}
+
+						ImGui::NewLine();
+
 						ImGui::SetFontTitle();
 						ImGui::Text("Directional Movement");
 						ImGui::SetFontSmall();
@@ -2427,7 +2518,7 @@ void GUI::Draw()
 
 						ImGui::CategorySeparator();
 
-						ImGui::InputFloat("Gravity Scale:", &movementComponent->GravityScale, 0.1f, 1.0f);
+						ImGui::InputFloat("Gravity Scale", &movementComponent->GravityScale, 0.1f, 1.0f);
 
 						ImGui::NewLine();
 

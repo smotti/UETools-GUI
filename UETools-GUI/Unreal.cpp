@@ -768,39 +768,11 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 #ifdef SOFT_PATH
 SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform)
 {
-	SDK::UWorld* world = Unreal::World::Get();
-	if (world == nullptr)
+	SDK::UClass* actorClass = Object::SoftLoad(actorPath);
+	if (actorClass == nullptr)
 		return nullptr;
 
-	SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(actorPath);
-	SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
-	SDK::UClass* actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-
-	if (actorClass)
-		return Unreal::Actor::Summon(actorClass, transform);
-	else
-	{
-		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
-		Unreal::LevelStreaming::LoadLevelInstance(actorPath);
-
-		/*
-			LoadLevelInstance() take some time to load asset in to a memory;
-			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
-		*/
-		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
-		for (int8_t waitInterval = 0; (actorClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
-		{
-			Sleep(10);
-			actorClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-		}
-
-		int32_t streamingLevelsNum = world->StreamingLevels.Num();
-		if (streamingLevelsNum > initialStreamingLevelsNum)
-			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
-
-		if (actorClass)
-			return Unreal::Actor::Summon(actorClass, transform);
-	}
+	return Unreal::Actor::Summon(actorClass, transform);
 }
 #endif
 
@@ -954,39 +926,11 @@ SDK::UUserWidget* Unreal::UserWidget::Construct(const SDK::TSubclassOf<SDK::UUse
 #ifdef SOFT_PATH
 SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString widgetPath)
 {
-	SDK::UWorld* world = Unreal::World::Get();
-	if (world == nullptr)
+	SDK::UClass* widgetClass = Object::SoftLoad(widgetPath);
+	if (widgetClass == nullptr)
 		return nullptr;
 
-	SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(widgetPath);
-	SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
-	SDK::UClass* widgetClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-
-	if (widgetClass)
-		return Unreal::UserWidget::Construct(widgetClass);
-	else
-	{
-		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
-		Unreal::LevelStreaming::LoadLevelInstance(widgetPath);
-
-		/*
-			LoadLevelInstance() take some time to load asset in to a memory;
-			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
-		*/
-		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
-		for (int8_t waitInterval = 0; (widgetClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
-		{
-			Sleep(10);
-			widgetClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
-		}
-
-		int32_t streamingLevelsNum = world->StreamingLevels.Num();
-		if (streamingLevelsNum > initialStreamingLevelsNum)
-			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
-
-		if (widgetClass)
-			return Unreal::UserWidget::Construct(widgetClass);
-	}
+	return Unreal::UserWidget::Construct(widgetClass);
 }
 #endif
 
@@ -1031,6 +975,46 @@ std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<
 
 	return outCollection;
 }
+
+
+#ifdef SOFT_PATH
+SDK::UClass* Unreal::Object::SoftLoad(const SDK::FString objectPath)
+{
+	SDK::UWorld* world = Unreal::World::Get();
+	if (world == nullptr)
+		return nullptr;
+
+	SDK::FSoftClassPath softClassPath = SDK::UKismetSystemLibrary::MakeSoftClassPath(objectPath);
+	SDK::TSoftClassPtr<SDK::UClass> softClassPtr = SDK::UKismetSystemLibrary::Conv_SoftClassPathToSoftClassRef(softClassPath);
+	SDK::UClass* objectClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+	
+	if (objectClass)
+		return objectClass;
+	else
+	{
+		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
+		Unreal::LevelStreaming::LoadLevelInstance(objectPath);
+
+		/*
+			LoadLevelInstance() take some time to load asset in to a memory;
+			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
+		*/
+		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
+		for (int8_t waitInterval = 0; (objectClass == nullptr && waitInterval < maximumIntervals); ++waitInterval)
+		{
+			Sleep(10);
+			objectClass = SDK::UKismetSystemLibrary::Conv_SoftClassReferenceToClass(softClassPtr);
+		}
+
+		int32_t streamingLevelsNum = world->StreamingLevels.Num();
+		if (streamingLevelsNum > initialStreamingLevelsNum)
+			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
+
+		if (objectClass)
+			return objectClass;
+	}
+}
+#endif
 
 
 
