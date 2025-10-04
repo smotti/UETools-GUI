@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.5)");
+			ImGui::Text("UETools GUI (v1.5b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -2480,7 +2480,11 @@ void GUI::Draw()
 						{
 							if (playerController)
 							{
+#ifdef UE5
+								SDK::UWidgetBlueprintLibrary::SetInputMode_GameOnly(playerController, true);
+#else
 								SDK::UWidgetBlueprintLibrary::SetInputMode_GameOnly(playerController);
+#endif
 								PlayActionSound(true);
 							}
 							else
