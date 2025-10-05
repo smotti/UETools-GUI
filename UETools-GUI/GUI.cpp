@@ -358,7 +358,7 @@ void ImGui::ReadOnlyInputText(const char* label, const char* text, const bool& s
 
 
 
-void ImGui::ObjectFilterModeComboBox(const char* label, ObjectFilterMode* current)
+void ImGui::ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v)
 {
 	ImGui::PushID(label);
 
@@ -374,12 +374,12 @@ void ImGui::ObjectFilterModeComboBox(const char* label, ObjectFilterMode* curren
 	}
 
 	static const char* items[] = { "Class Name", "Object Name", "All" };
-	int index = static_cast<int>(*current);
+	int index = static_cast<int>(*v);
 
 	ImGui::SetNextItemWidth(200);
 	if (ImGui::Combo("##object_filter_combo", &index, items, IM_ARRAYSIZE(items))) 
 	{
-		*current = static_cast<ObjectFilterMode>(index);
+		*v = static_cast<E_ObjectFilterMode>(index);
 	}
 
 	ImGui::PopID();
@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.5b)");
+			ImGui::Text("UETools GUI (v1.6)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1576,9 +1576,9 @@ void GUI::Draw()
 							}
 							ImGui::TreePop();
 						}
-#endif
 
 						ImGui::NewLine();
+#endif
 
 						if (ImGui::Button("Update##Actors"))
 						{
@@ -1660,15 +1660,15 @@ void GUI::Draw()
 						/* Filter Actors by "Search Filter" */
 						switch (Features::ActorsList::filterMode)
 						{
-							case ImGui::ObjectFilterMode::ClassName:
+							case ImGui::E_ObjectFilterMode::ClassName:
 								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
 								break;
 
-							case ImGui::ObjectFilterMode::ObjectName:
+							case ImGui::E_ObjectFilterMode::ObjectName:
 								Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
 								break;
 
-							case ImGui::ObjectFilterMode::All:
+							case ImGui::E_ObjectFilterMode::All:
 								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
 								break;
 						}
@@ -1707,6 +1707,7 @@ void GUI::Draw()
 									customLocation[0] = actor.location.X;
 									customLocation[1] = actor.location.Y;
 									customLocation[2] = actor.location.Z;
+									PlayActionSound(true);
 								}
 								ImGui::SameLine();
 								ImGui::InputFloat3("##Location", customLocation);
@@ -1731,6 +1732,7 @@ void GUI::Draw()
 									customRotation[0] = actor.rotation.Pitch;
 									customRotation[1] = actor.rotation.Yaw;
 									customRotation[2] = actor.rotation.Roll;
+									PlayActionSound(true);
 								}
 								ImGui::SameLine();
 								ImGui::InputFloat3("##Rotation", customRotation);
@@ -1755,6 +1757,7 @@ void GUI::Draw()
 									customScale[0] = actor.scale.X;
 									customScale[1] = actor.scale.Y;
 									customScale[2] = actor.scale.Z;
+									PlayActionSound(true);
 								}
 								ImGui::SameLine();
 								ImGui::InputFloat3("##Scale", customScale);
@@ -1874,7 +1877,592 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
+#ifdef ACTOR_KIND
+								if (actor.kind != Unreal::Actor::E_ActorKind::General)
+								{
+									ImGui::NewLine();
+
+									switch (actor.kind)
+									{
+										case Unreal::Actor::E_ActorKind::PointLight:
+											if (SDK::APointLight* pointLight = static_cast<SDK::APointLight*>(actor.reference))
+											{
+												ImGui::SetFontTitle();
+												ImGui::Text("Point Light Settings");
+												ImGui::SetFontRegular();
+
+												ImGui::BeginDisabled(pointLight->PointLightComponent == nullptr);
+												if (ImGui::TreeNode("Details##PointLightSettings"))
+												{
+													if (SDK::UPointLightComponent* pointLightComponent = pointLight->PointLightComponent)
+													{
+														if (ImGui::Button("Enable Cast Shadows##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastShadows(true);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Shadows##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastShadows(false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														if (ImGui::Button("Enable Cast Volumetric Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastVolumetricShadow(true);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Volumetric Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastVolumetricShadow(false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+
+														if (ImGui::Button("Enable Cast Deep Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastDeepShadow(true);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Deep Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastDeepShadow(false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														if (ImGui::Button("Enable Cast Raytaced Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastRaytracedShadow(true);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Raytaced Shadow##PointLight"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetCastRaytracedShadow(false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Intensity");
+														static float pointLightIntensity = 0.0f;
+														if (ImGui::Button("Get##PointLightIntensity"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightIntensity = pointLightComponent->Intensity;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##PointLightIntensity", &pointLightIntensity, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##PointLightIntensity"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetIntensity(pointLightIntensity);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Source Radius");
+														static float pointLightSourceRadius = 0.0f;
+														if (ImGui::Button("Get##PointLightSourceRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightSourceRadius = pointLightComponent->SourceRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##PointLightSourceRadius", &pointLightSourceRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##PointLightSourceRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetSourceRadius(pointLightSourceRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Attenuation Radius");
+														static float pointLightAttenuationRadius = 0.0f;
+														if (ImGui::Button("Get##PointLightAttenuationRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightAttenuationRadius = pointLightComponent->AttenuationRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##PointLightAttenuationRadius", &pointLightAttenuationRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##PointLightAttenuationRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetAttenuationRadius(pointLightAttenuationRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Color");
+														static float pointLightColor[4];
+														if (ImGui::Button("Get##PointLightColor"))
+														{
+															if (pointLightComponent)
+															{
+																/* ColorPicker4 can only understand normalized values (in range of 0.0f to 1.0f) */
+																pointLightColor[0] = pointLightComponent->LightColor.R / 255.0f;
+																pointLightColor[1] = pointLightComponent->LightColor.G / 255.0f;
+																pointLightColor[2] = pointLightComponent->LightColor.B / 255.0f;
+																pointLightColor[3] = pointLightComponent->LightColor.A / 255.0f;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Set##PointLightColor"))
+														{
+															if (pointLightComponent)
+															{
+																SDK::FLinearColor linearColor;
+																linearColor.R = pointLightColor[0];
+																linearColor.G = pointLightColor[1];
+																linearColor.B = pointLightColor[2];
+																linearColor.A = pointLightColor[3];
+
+																pointLightComponent->SetLightColor(linearColor, false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::ColorPicker4("##PointLightColor", pointLightColor);
+													}
+													else
+														ImGui::Text("Point Light Component Doesn't Exist!");
+
+													ImGui::TreePop();
+												}
+												ImGui::EndDisabled();
+											}
+											break;
+
+										case Unreal::Actor::E_ActorKind::SpotLight:
+											if (SDK::ASpotLight* spotLight = static_cast<SDK::ASpotLight*>(actor.reference))
+											{
+												ImGui::SetFontTitle();
+												ImGui::Text("Spot Light Settings");
+												ImGui::SetFontRegular();
+
+												ImGui::BeginDisabled(spotLight->SpotLightComponent == nullptr);
+												if (ImGui::TreeNode("Details##SpotLightSettings"))
+												{
+													if (SDK::USpotLightComponent* spotLightComponent = spotLight->SpotLightComponent)
+													{
+														if (ImGui::Button("Enable Cast Shadows##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastShadows(true);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Shadows##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastShadows(false);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														if (ImGui::Button("Enable Cast Volumetric Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastVolumetricShadow(true);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Volumetric Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastVolumetricShadow(false);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+
+														if (ImGui::Button("Enable Cast Deep Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastDeepShadow(true);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Deep Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastDeepShadow(false);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														if (ImGui::Button("Enable Cast Raytaced Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastRaytracedShadow(true);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Disable Cast Raytaced Shadow##SpotLight"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetCastRaytracedShadow(false);
+																PlayActionSound(false);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Intensity");
+														static float spotLightIntensity = 0.0f;
+														if (ImGui::Button("Get##SpotLightIntensity"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightIntensity = spotLightComponent->Intensity;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightIntensity", &spotLightIntensity, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightIntensity"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetIntensity(spotLightIntensity);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Source Radius");
+														static float spotLightSourceRadius = 0.0f;
+														if (ImGui::Button("Get##SpotLightSourceRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightSourceRadius = spotLightComponent->SourceRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightSourceRadius", &spotLightSourceRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightSourceRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetSourceRadius(spotLightSourceRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Attenuation Radius");
+														static float spotLightAttenuationRadius = 0.0f;
+														if (ImGui::Button("Get##SpotLightAttenuationRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightAttenuationRadius = spotLightComponent->AttenuationRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightAttenuationRadius", &spotLightAttenuationRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightAttenuationRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetAttenuationRadius(spotLightAttenuationRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Inner Cone Angle");
+														static float spotLightInnerConeAngle = 0.0f;
+														if (ImGui::Button("Get##SpotLightInnerConeAngle"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightInnerConeAngle = spotLightComponent->InnerConeAngle;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightInnerConeAngle", &spotLightInnerConeAngle, 1.0f, 10.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightInnerConeAngle"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetInnerConeAngle(spotLightInnerConeAngle);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Outer Cone Angle");
+														static float spotLightOuterConeAngle = 0.0f;
+														if (ImGui::Button("Get##SpotLightOuterConeAngle"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightOuterConeAngle = spotLightComponent->OuterConeAngle;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightOuterConeAngle", &spotLightOuterConeAngle, 1.0f, 10.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightOuterConeAngle"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetOuterConeAngle(spotLightOuterConeAngle);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
+														ImGui::Text("Color");
+														static float spotLightColor[4];
+														if (ImGui::Button("Get##SpotLightColor"))
+														{
+															if (spotLightComponent)
+															{
+																/* ColorPicker4 can only understand normalized values (in range of 0.0f to 1.0f) */
+																spotLightColor[0] = spotLightComponent->LightColor.R / 255.0f;
+																spotLightColor[1] = spotLightComponent->LightColor.G / 255.0f;
+																spotLightColor[2] = spotLightComponent->LightColor.B / 255.0f;
+																spotLightColor[3] = spotLightComponent->LightColor.A / 255.0f;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightColor"))
+														{
+															if (spotLightComponent)
+															{
+																SDK::FLinearColor linearColor;
+																linearColor.R = spotLightColor[0];
+																linearColor.G = spotLightColor[1];
+																linearColor.B = spotLightColor[2];
+																linearColor.A = spotLightColor[3];
+
+																spotLightComponent->SetLightColor(linearColor, false);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::ColorPicker4("##SpotLightColor", spotLightColor);
+													}
+													else
+														ImGui::Text("Spot Light Component Doesn't Exist!");
+
+													ImGui::TreePop();
+												}
+												ImGui::EndDisabled();
+											}
+											break;
+
+										case Unreal::Actor::E_ActorKind::Pawn:
+											if (SDK::APawn* pawn = static_cast<SDK::APawn*>(actor.reference))
+											{
+#ifdef SOFT_PATH
+												ImGui::SetFontTitle();
+												ImGui::Text("Pawn Animation");
+												ImGui::SetFontSmall();
+												ImGui::Text("Dynamic Animation playing by soft path, for example \"/Game/Character/AnimAsset_Jump.AnimAsset_Jump\".");
+												ImGui::SetFontRegular();
+
+												if (ImGui::TreeNode("Details##PawnAnimation"))
+												{
+													ImGui::Text("Animation Path:");
+													ImGui::SameLine();
+													ImGui::InputText("##PawnAnimation", Features::PawnAnimation::animationPathBuffer, Features::PawnAnimation::animationPathBufferSize);
+
+													ImGui::Checkbox("Animation Looping", &Features::PawnAnimation::looping);
+
+													if (ImGui::Button("Play"))
+													{
+														PlayActionSound(Unreal::Pawn::PlayAnimation(pawn, Unreal::String::CString_ToFString(Features::PawnAnimation::animationPathBuffer), Features::PawnAnimation::looping));
+													}
+
+													ImGui::TreePop();
+												}
+
+												ImGui::NewLine();
+#endif
+
+												ImGui::SetFontTitle();
+												ImGui::Text("Pawn Actions");
+												ImGui::SetFontSmall();
+
+												if (ImGui::TreeNode("Details##PawnActions"))
+												{
+													if (ImGui::Button("Possess"))
+													{
+														if (pawn)
+														{
+															SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+															if (playerController)
+															{
+																playerController->Possess(pawn);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														else
+															PlayActionSound(false);
+													}
+
+													ImGui::TreePop();
+												}
+											}
+											break;
+									}
+								}
+
 								ImGui::NewLine();
+#endif
 
 								ImGui::SetFontTitle();
 								ImGui::Text("Components");
@@ -2010,9 +2598,9 @@ void GUI::Draw()
 
 							ImGui::TreePop();
 						}
-#endif
 
 						ImGui::NewLine();
+#endif
 
 						if (ImGui::Button("Update##Widgets"))
 						{
@@ -2027,6 +2615,10 @@ void GUI::Draw()
 						ImGui::Spacing();
 						ImGui::SameLine();
 						ImGui::Checkbox("Case Sensitive##Widgets", &Features::WidgetsList::filterCaseSensitive);
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::ObjectFilterModeComboBox("##Widgets", &Features::WidgetsList::filterMode);
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
@@ -2088,7 +2680,21 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
-						Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+						switch (Features::WidgetsList::filterMode)
+						{
+							case ImGui::E_ObjectFilterMode::ClassName:
+								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+								break;
+
+							case ImGui::E_ObjectFilterMode::ObjectName:
+								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+								break;
+
+							case ImGui::E_ObjectFilterMode::All:
+								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassAndObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+								break;
+						}
+
 						for (Unreal::UserWidget::DataStructure& widget : Features::WidgetsList::filteredWidgets) // <-- Reference!
 						{
 							if (ImGui::TreeNode(widget.objectName.c_str()))
@@ -3233,6 +3839,10 @@ void Features::ActorsList::Update()
 			actorData.superClassName = actor->Class->Super->GetFullName();
 			actorData.className = actor->Class->GetFullName();
 			actorData.objectName = actor->GetFullName();
+
+#ifdef ACTOR_KIND
+			actorData.kind = Unreal::Actor::GetActorKind(actor);
+#endif
 
 			Unreal::Transform actorTransform = Unreal::Actor::GetTransform(actor);
 			actorData.location = actorTransform.location;

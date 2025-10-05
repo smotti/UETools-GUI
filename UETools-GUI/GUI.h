@@ -62,13 +62,13 @@ namespace ImGui
 	void ReadOnlyInputText(const char* label, const char* text, const bool& showCopyButton);
 
 
-	enum ObjectFilterMode
+	enum E_ObjectFilterMode
 	{
 		ClassName,
 		ObjectName,
 		All
 	};
-	void ObjectFilterModeComboBox(const char* label, ObjectFilterMode* current);
+	void ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v);
 
 
 	/*
@@ -360,7 +360,7 @@ namespace Features
 		static inline const size_t filterBufferSize = 255;
 		static inline char filterBuffer[filterBufferSize] = {};
 		static inline bool filterCaseSensitive = true;
-		static inline ImGui::ObjectFilterMode filterMode = ImGui::ObjectFilterMode::All;
+		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
 		static inline bool filterCheckValidness = false;
 
 		static inline std::vector<Unreal::Actor::DataStructure> actors;
@@ -386,6 +386,18 @@ namespace Features
 
 
 
+	class PawnAnimation
+	{
+	public:
+		static inline const size_t animationPathBufferSize = 255;
+		static inline char animationPathBuffer[animationPathBufferSize] = {};
+
+		static inline bool looping = false;
+	};
+
+
+
+
 	class WidgetConstruct
 	{
 	public:
@@ -405,6 +417,7 @@ namespace Features
 		static inline const size_t filterBufferSize = 255;
 		static inline char filterBuffer[filterBufferSize] = {};
 		static inline bool filterCaseSensitive = true;
+		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
 		static inline bool filterTopLevelOnly = true;
 
 		static inline std::vector<Unreal::UserWidget::DataStructure> widgets;

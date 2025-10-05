@@ -445,7 +445,6 @@ namespace Unreal
 		};
 
 
-	public:
 		/*
 		* @brief Retrieves the current instance of the Pawn, if one is available.
 		* @param playerIndex - index of the local player to query.
@@ -453,6 +452,12 @@ namespace Unreal
 		*		  otherwise returns 'nullptr' to indicate that no instance is currently accessible.
 		*/
 		static SDK::APawn* Get(const int32_t& playerIndex = 0);
+
+
+		static bool PlayAnimation(SDK::APawn* pawnReference, SDK::UAnimationAsset* animationAsset, const bool& looping);
+#ifdef SOFT_PATH
+		static bool PlayAnimation(SDK::APawn* pawnReference, const SDK::FString& animationPath, const bool& looping);
+#endif
 	};
 
 
@@ -534,20 +539,6 @@ namespace Unreal
 		static SDK::ACharacter* Get(const int32_t& playerIndex = 0);
 
 
-		static int32_t GetJumpMaxCount(SDK::ACharacter* characterReference);
-		static int32_t GetJumpMaxCount(const int32_t& playerIndex);
-
-		static bool SetJumpMaxCount(SDK::ACharacter* characterReference, const int32_t& value);
-		static bool SetJumpMaxCount(const int32_t& playerIndex, const int32_t& value);
-
-
-		static float GetJumpVelocity(SDK::ACharacter* characterReference);
-		static float GetJumpVelocity(const int32_t& playerIndex);
-
-		static bool SetJumpVelocity(SDK::ACharacter* characterReference, const float& value);
-		static bool SetJumpVelocity(const int32_t& playerIndex, const float& value);
-
-
 		static bool Jump(SDK::ACharacter* characterReference);
 		static bool Jump(const int32_t& playerIndex);
 
@@ -598,12 +589,28 @@ namespace Unreal
 	class Actor
 	{
 	public:
+#ifdef ACTOR_KIND
+		enum E_ActorKind
+		{
+			General,
+			PointLight,
+			SpotLight,
+			Pawn
+		};
+		static E_ActorKind GetActorKind(SDK::AActor* actorReference);
+#endif
+
+
 		struct DataStructure
 		{
 			SDK::AActor* reference;
 			std::string superClassName;
 			std::string className;
 			std::string objectName;
+
+#ifdef ACTOR_KIND
+			E_ActorKind kind;
+#endif
 
 			SDK::FVector location;
 			SDK::FRotator rotation;
@@ -641,7 +648,7 @@ namespace Unreal
 
 
 #ifdef SOFT_PATH
-		static SDK::AActor* SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform);
+		static SDK::AActor* SoftSummon(const SDK::FString& actorPath, const Unreal::Transform& transform);
 #endif
 
 
@@ -675,14 +682,16 @@ namespace Unreal
 		static std::vector<SDK::UUserWidget*> GetAllOfClass(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
 
 
+		static std::vector<UserWidget::DataStructure> FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
 		static std::vector<UserWidget::DataStructure> FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
+		static std::vector<UserWidget::DataStructure> FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
 
 
 		static SDK::UUserWidget* Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
 
 
 #ifdef SOFT_PATH
-		static SDK::UUserWidget* SoftConstruct(const SDK::FString widgetPath);
+		static SDK::UUserWidget* SoftConstruct(const SDK::FString& widgetPath);
 #endif
 	};
 	
@@ -722,7 +731,8 @@ namespace Unreal
 		/*
 		* @brief Loads Object Class in to the game memory.
 		*/
-		static SDK::UClass* SoftLoad(const SDK::FString objectPath);
+		static SDK::UClass* SoftLoadClass(const SDK::FString& objectPath);
+		static SDK::UObject* SoftLoadObject(const SDK::FString& objectPath);
 #endif
 	};
 

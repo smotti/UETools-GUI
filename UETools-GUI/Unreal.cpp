@@ -293,6 +293,33 @@ SDK::APawn* Unreal::Pawn::Get(const int32_t& playerIndex)
 }
 
 
+bool Unreal::Pawn::PlayAnimation(SDK::APawn* pawnReference, SDK::UAnimationAsset* animationAsset, const bool& looping)
+{
+	if (pawnReference == nullptr || animationAsset == nullptr)
+		return false;
+
+	SDK::UActorComponent* actorComponent = pawnReference->GetComponentByClass(SDK::USkeletalMeshComponent::StaticClass());
+	if (actorComponent == nullptr)
+		return false;
+
+	SDK::USkeletalMeshComponent* skeletalMeshComponent = static_cast<SDK::USkeletalMeshComponent*>(actorComponent);
+	skeletalMeshComponent->PlayAnimation(animationAsset, looping);
+	return skeletalMeshComponent->IsPlaying();
+}
+
+#ifdef SOFT_PATH
+bool Unreal::Pawn::PlayAnimation(SDK::APawn* pawnReference, const SDK::FString& animationPath, const bool& looping)
+{
+	SDK::UObject* objectReference = Object::SoftLoadObject(animationPath);
+	if (objectReference == nullptr || objectReference->IsA(SDK::UAnimationAsset::StaticClass()) == false)
+		return false;
+
+	SDK::UAnimationAsset* animationAsset = static_cast<SDK::UAnimationAsset*>(objectReference);
+	return PlayAnimation(pawnReference, animationAsset, looping);
+}
+#endif
+
+
 
 
 
@@ -353,57 +380,6 @@ SDK::ACharacter* Unreal::Character::Get(const int32_t& playerIndex)
 		return nullptr;
 
 	return Character;
-}
-
-
-int32_t Unreal::Character::GetJumpMaxCount(SDK::ACharacter* characterReference)
-{
-	return characterReference ? characterReference->JumpMaxCount : 0;
-}
-int32_t Unreal::Character::GetJumpMaxCount(const int32_t& playerIndex)
-{
-	return GetJumpMaxCount(Character::Get(playerIndex));
-}
-
-
-bool Unreal::Character::SetJumpMaxCount(SDK::ACharacter* characterReference, const int32_t& value)
-{
-	if (characterReference)
-	{
-		characterReference->JumpMaxCount = value;
-		return true;
-	}
-	else
-		return false;
-}
-bool Unreal::Character::SetJumpMaxCount(const int32_t& playerIndex, const int32_t& value)
-{
-	return SetJumpMaxCount(Character::Get(playerIndex), value);
-}
-
-
-float Unreal::Character::GetJumpVelocity(SDK::ACharacter* characterReference)
-{
-	if (characterReference == nullptr || characterReference->CharacterMovement == nullptr)
-		return 0.0f;
-
-	return characterReference->CharacterMovement->JumpZVelocity;
-}
-float Unreal::Character::GetJumpVelocity(const int32_t& playerIndex)
-{
-	return GetJumpVelocity(Character::Get(playerIndex));
-}
-
-bool Unreal::Character::SetJumpVelocity(SDK::ACharacter* characterReference, const float& value)
-{
-	if (characterReference == nullptr || characterReference->CharacterMovement == nullptr)
-		return false;
-
-	characterReference->CharacterMovement->JumpZVelocity = value;
-}
-bool Unreal::Character::SetJumpVelocity(const int32_t& playerIndex, const float& value)
-{
-	return SetJumpVelocity(Character::Get(playerIndex), value);
 }
 
 
@@ -570,6 +546,26 @@ std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::Filte
 
 
 
+#ifdef ACTOR_KIND
+Unreal::Actor::E_ActorKind Unreal::Actor::GetActorKind(SDK::AActor* actorReference)
+{
+	if (actorReference == nullptr)
+		return E_ActorKind::General;
+
+	if (actorReference->IsA(SDK::APointLight::StaticClass()))
+		return E_ActorKind::PointLight;
+
+	if (actorReference->IsA(SDK::ASpotLight::StaticClass()))
+		return E_ActorKind::SpotLight;
+
+	if (actorReference->IsA(SDK::APawn::StaticClass()))
+		return E_ActorKind::Pawn;
+
+	return E_ActorKind::General;
+}
+#endif
+
+
 std::vector<SDK::AActor*> Unreal::Actor::GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass)
 {
 	std::vector<SDK::AActor*> outCollection;
@@ -664,15 +660,15 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 				matchFilters = actor.objectName.find(filter) != std::string::npos;
 			else
 			{
-				std::string classNameLowerCase = actor.objectName;
+				std::string objectNameLowerCase = actor.objectName;
 				std::string filterLowerCase = filter;
 
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
 					[](unsigned char c) { return std::tolower(c); });
 				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
 					[](unsigned char c) { return std::tolower(c); });
 
-				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+				matchFilters = objectNameLowerCase.find(filterLowerCase) != std::string::npos;
 			}
 		}
 
@@ -766,9 +762,9 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 
 
 #ifdef SOFT_PATH
-SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString actorPath, const Unreal::Transform& transform)
+SDK::AActor* Unreal::Actor::SoftSummon(const SDK::FString& actorPath, const Unreal::Transform& transform)
 {
-	SDK::UClass* actorClass = Object::SoftLoad(actorPath);
+	SDK::UClass* actorClass = Object::SoftLoadClass(actorPath);
 	if (actorClass == nullptr)
 		return nullptr;
 
@@ -873,12 +869,51 @@ std::vector<SDK::UUserWidget*> Unreal::UserWidget::GetAllOfClass(const SDK::TSub
 }
 
 
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+{
+	std::vector<UserWidget::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Widgets by "Search Filter" */
+	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	{
+		if (topLevelOnly && widget.isInViewport == false)
+			continue;
+
+		/* "Search Filter" is empty - Widget considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = widget.className.find(filter) != std::string::npos;
+			else
+			{
+				std::string classNameLowerCase = widget.className;
+				std::string filterLowerCase = filter;
+
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(widget); // Widget is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
 std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
 {
 	std::vector<UserWidget::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
-	/* Filter Actors by "Search Filter" */
+	/* Filter Widgets by "Search Filter" */
 	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
 	{
 		if (topLevelOnly && widget.isInViewport == false)
@@ -893,15 +928,57 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjec
 				matchFilters = widget.objectName.find(filter) != std::string::npos;
 			else
 			{
-				std::string classNameLowerCase = widget.objectName;
+				std::string objectNameLowerCase = widget.objectName;
 				std::string filterLowerCase = filter;
 
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
 					[](unsigned char c) { return std::tolower(c); });
 				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
 					[](unsigned char c) { return std::tolower(c); });
 
-				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+				matchFilters = objectNameLowerCase.find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(widget); // Widget is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+{
+	std::vector<UserWidget::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Widgets by "Search Filter" */
+	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	{
+		if (topLevelOnly && widget.isInViewport == false)
+			continue;
+
+		/* "Search Filter" is empty - Widget considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = (widget.className.find(filter) != std::string::npos) || (widget.objectName.find(filter) != std::string::npos);
+			else
+			{
+				std::string classNameLowerCase = widget.className;
+				std::string objectNameLowerCase = widget.objectName;
+				std::string filterLowerCase = filter;
+
+				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
+					[](unsigned char c) { return std::tolower(c); });
+
+				matchFilters = (classNameLowerCase.find(filterLowerCase) != std::string::npos) || (objectNameLowerCase.find(filterLowerCase) != std::string::npos);
 			}
 		}
 
@@ -924,9 +1001,9 @@ SDK::UUserWidget* Unreal::UserWidget::Construct(const SDK::TSubclassOf<SDK::UUse
 
 
 #ifdef SOFT_PATH
-SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString widgetPath)
+SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString& widgetPath)
 {
-	SDK::UClass* widgetClass = Object::SoftLoad(widgetPath);
+	SDK::UClass* widgetClass = Object::SoftLoadClass(widgetPath);
 	if (widgetClass == nullptr)
 		return nullptr;
 
@@ -978,7 +1055,7 @@ std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<
 
 
 #ifdef SOFT_PATH
-SDK::UClass* Unreal::Object::SoftLoad(const SDK::FString objectPath)
+SDK::UClass* Unreal::Object::SoftLoadClass(const SDK::FString& objectPath)
 {
 	SDK::UWorld* world = Unreal::World::Get();
 	if (world == nullptr)
@@ -1012,6 +1089,43 @@ SDK::UClass* Unreal::Object::SoftLoad(const SDK::FString objectPath)
 
 		if (objectClass)
 			return objectClass;
+	}
+}
+
+SDK::UObject* Unreal::Object::SoftLoadObject(const SDK::FString& objectPath)
+{
+	SDK::UWorld* world = Unreal::World::Get();
+	if (world == nullptr)
+		return nullptr;
+
+	SDK::FSoftObjectPath softObjectPath = SDK::UKismetSystemLibrary::MakeSoftObjectPath(objectPath);
+	SDK::TSoftObjectPtr<SDK::UObject> softObjectPtr = SDK::UKismetSystemLibrary::Conv_SoftObjPathToSoftObjRef(softObjectPath);
+	SDK::UObject* objectReference = SDK::UKismetSystemLibrary::Conv_SoftObjectReferenceToObject(softObjectPtr);
+
+	if (objectReference)
+		return objectReference;
+	else
+	{
+		int32_t initialStreamingLevelsNum = world->StreamingLevels.Num();
+		Unreal::LevelStreaming::LoadLevelInstance(objectPath);
+
+		/*
+			LoadLevelInstance() take some time to load asset in to a memory;
+			Since we can't know when asset will be loaded, we use hardcoded Sleep() assuming it will be enough.
+		*/
+		int8_t maximumIntervals = 10; // Sleep(10) * 10 = 100ms.
+		for (int8_t waitInterval = 0; (objectReference == nullptr && waitInterval < maximumIntervals); ++waitInterval)
+		{
+			Sleep(10);
+			objectReference = SDK::UKismetSystemLibrary::Conv_SoftObjectReferenceToObject(softObjectPtr);
+		}
+
+		int32_t streamingLevelsNum = world->StreamingLevels.Num();
+		if (streamingLevelsNum > initialStreamingLevelsNum)
+			world->StreamingLevels.Remove(streamingLevelsNum - 1); // Remove remnants of our dirty trick from streaming levels array.
+
+		if (objectReference)
+			return objectReference;
 	}
 }
 #endif
