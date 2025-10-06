@@ -207,6 +207,43 @@ SDK::AGameStateBase* Unreal::GameState::Get()
 
 
 
+#ifdef LEVEL_SEQUENCE
+bool Unreal::Level::CreateLevelSequence(SDK::ULevelSequence* levelSequenceAsset, const float& startTime, const float& playRate, const int32_t& loopCount)
+{
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr || levelSequenceAsset == nullptr)
+		return false;
+
+	SDK::FMovieSceneSequencePlaybackSettings sequencePlaybackSettings;
+	sequencePlaybackSettings.bAutoPlay = true;
+	sequencePlaybackSettings.StartTime = startTime;
+	sequencePlaybackSettings.PlayRate = playRate;
+	SDK::FMovieSceneSequenceLoopCount sequenceLoopCount{ loopCount };
+	sequencePlaybackSettings.LoopCount = sequenceLoopCount;
+	SDK::ALevelSequenceActor* levelSequenceActor;
+	SDK::ULevelSequencePlayer::CreateLevelSequencePlayer(world, levelSequenceAsset, sequencePlaybackSettings, &levelSequenceActor);
+
+	return levelSequenceActor;
+}
+
+#ifdef SOFT_PATH
+bool Unreal::Level::CreateLevelSequence(const SDK::FString& levelSequencePath, const float& startTime, const float& playRate, const int32_t& loopCount)
+{
+	SDK::UObject* objectReference = Object::SoftLoadObject(levelSequencePath);
+	if (objectReference == nullptr || objectReference->IsA(SDK::ULevelSequence::StaticClass()) == false)
+		return false;
+
+	SDK::ULevelSequence* levelSequenceAsset = static_cast<SDK::ULevelSequence*>(objectReference);
+	return CreateLevelSequence(levelSequenceAsset, startTime, playRate, loopCount);
+}
+#endif
+#endif
+
+
+
+
+
+
 std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<LevelStreaming::DataStructure> outCollection;
@@ -244,6 +281,7 @@ std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::Filte
 }
 
 
+#ifdef SOFT_PATH
 bool Unreal::LevelStreaming::LoadLevelInstance(const SDK::FString& levelPath, const SDK::FVector& locationOffset, const SDK::FRotator& rotationOffset)
 {
 	SDK::UWorld* world = Unreal::World::Get();
@@ -262,6 +300,7 @@ bool Unreal::LevelStreaming::LoadLevelInstance(const SDK::FString& levelPath, co
 
 	return outSuccess;
 }
+#endif
 
 
 
@@ -291,6 +330,36 @@ SDK::APawn* Unreal::Pawn::Get(const int32_t& playerIndex)
 
 	return Pawn;
 }
+
+
+bool Unreal::Pawn::PlayAnimationMontage(SDK::APawn* pawnReference, SDK::UAnimMontage* animationMontageAsset, const float& startAt, const float& playRate, const bool& stopAllMontages)
+{
+	if (pawnReference == nullptr || animationMontageAsset == nullptr)
+		return false;
+
+	SDK::UActorComponent* actorComponent = pawnReference->GetComponentByClass(SDK::USkeletalMeshComponent::StaticClass());
+	if (actorComponent == nullptr)
+		return false;
+
+	SDK::USkeletalMeshComponent* skeletalMeshComponent = static_cast<SDK::USkeletalMeshComponent*>(actorComponent);
+	SDK::UAnimInstance* animationInstance = skeletalMeshComponent->GetAnimInstance();
+	if (animationInstance == nullptr)
+		return false;
+
+	animationInstance->Montage_Play(animationMontageAsset, playRate, SDK::EMontagePlayReturnType::MontageLength, startAt, stopAllMontages);
+}
+
+#ifdef SOFT_PATH
+bool Unreal::Pawn::PlayAnimationMontage(SDK::APawn* pawnReference, const SDK::FString& animationMontagePath, const float& startAt, const float& playRate, const bool& stopAllMontages)
+{
+	SDK::UObject* objectReference = Object::SoftLoadObject(animationMontagePath);
+	if (objectReference == nullptr || objectReference->IsA(SDK::UAnimMontage::StaticClass()) == false)
+		return false;
+
+	SDK::UAnimMontage* animationMontageAsset = static_cast<SDK::UAnimMontage*>(objectReference);
+	return PlayAnimationMontage(pawnReference, animationMontageAsset, startAt, playRate, stopAllMontages);
+}
+#endif
 
 
 bool Unreal::Pawn::PlayAnimation(SDK::APawn* pawnReference, SDK::UAnimationAsset* animationAsset, const bool& looping)
@@ -740,24 +809,53 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 	if (world == nullptr)
 		return nullptr;
 
-	static const SDK::FTransform dummyTransform = SDK::FTransform();
+	static SDK::FTransform spawnTransform;
+	spawnTransform.Translation = transform.location;
+	spawnTransform.Rotation = Math::Rotator_ToQuat(transform.rotation);
+	spawnTransform.Scale3D = transform.scale;
 #ifdef UE5
-	SDK::AActor* actorReference = SDK::UGameplayStatics::BeginDeferredActorSpawnFromClass(world, actorClass, dummyTransform, SDK::ESpawnActorCollisionHandlingMethod::AlwaysSpawn, nullptr, SDK::ESpawnActorScaleMethod::SelectDefaultAtRuntime);
+	SDK::AActor* actorReference = SDK::UGameplayStatics::BeginDeferredActorSpawnFromClass(world, actorClass, spawnTransform, SDK::ESpawnActorCollisionHandlingMethod::AlwaysSpawn, nullptr, SDK::ESpawnActorScaleMethod::SelectDefaultAtRuntime);
 #else
-	SDK::AActor* actorReference = SDK::UGameplayStatics::BeginDeferredActorSpawnFromClass(world, actorClass, dummyTransform, SDK::ESpawnActorCollisionHandlingMethod::AlwaysSpawn, nullptr);
+	SDK::AActor* actorReference = SDK::UGameplayStatics::BeginDeferredActorSpawnFromClass(world, actorClass, spawnTransform, SDK::ESpawnActorCollisionHandlingMethod::AlwaysSpawn, nullptr);
 #endif
 	if (actorReference == nullptr)
 		return nullptr;
 
 #ifdef UE5
-	SDK::UGameplayStatics::FinishSpawningActor(actorReference, dummyTransform, SDK::ESpawnActorScaleMethod::SelectDefaultAtRuntime);
+	SDK::UGameplayStatics::FinishSpawningActor(actorReference, spawnTransform, SDK::ESpawnActorScaleMethod::SelectDefaultAtRuntime);
 #else
-	SDK::UGameplayStatics::FinishSpawningActor(actorReference, dummyTransform);
+	SDK::UGameplayStatics::FinishSpawningActor(actorReference, spawnTransform);
 #endif
-	actorReference->K2_TeleportTo(transform.location, transform.rotation);
-	actorReference->SetActorScale3D(transform.scale);
 
 	return actorReference;
+}
+
+SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass)
+{
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return Unreal::Actor::Summon(actorClass, Unreal::Transform());
+
+	if (playerController->AcknowledgedPawn)
+	{
+		Unreal::Transform transform;
+		transform.location = playerController->AcknowledgedPawn->K2_GetActorLocation();
+		transform.rotation = playerController->AcknowledgedPawn->K2_GetActorRotation();
+		transform.scale = SDK::FVector();
+
+		return Unreal::Actor::Summon(actorClass, transform);
+	}
+	else if (playerController->PlayerCameraManager)
+	{
+		Unreal::Transform transform;
+		transform.location = playerController->PlayerCameraManager->K2_GetActorLocation();
+		transform.rotation = playerController->PlayerCameraManager->K2_GetActorRotation();
+		transform.scale = SDK::FVector();
+
+		return Unreal::Actor::Summon(actorClass, transform);
+	}
+	else
+		return Unreal::Actor::Summon(actorClass, Unreal::Transform());
 }
 
 

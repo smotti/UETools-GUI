@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.6)");
+			ImGui::Text("UETools GUI (v1.7)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1694,6 +1694,18 @@ void GUI::Draw()
 							{
 								ImGui::PushID(actor.objectName.c_str());
 
+								ImGui::BeginDisabled(std::strcmp(Features::ActorsList::filterBuffer, actor.objectName.c_str()) == 0);
+								if (ImGui::Button("Focus On"))
+								{
+									std::snprintf(Features::ActorsList::filterBuffer, sizeof(Features::ActorsList::filterBuffer), actor.objectName.c_str());
+									Features::ActorsList::filterMode = ImGui::E_ObjectFilterMode::ObjectName;
+
+									PlayActionSound(true);
+								}
+								ImGui::EndDisabled();
+
+								ImGui::NewLine();
+
 								ImGui::Text("Actor Super Class: %s", actor.superClassName.c_str());
 								ImGui::Text("Actor Class: %s", actor.className.c_str());
 								ImGui::Text("Actor Object: %s", actor.objectName.c_str());
@@ -2414,15 +2426,42 @@ void GUI::Draw()
 
 												if (ImGui::TreeNode("Details##PawnAnimation"))
 												{
+													ImGui::SetFontTitle();
+													ImGui::Text("Animation Montage");
+													ImGui::SetFontRegular();
+													ImGui::Text("Animation Montage Path:");
+													ImGui::SameLine();
+													ImGui::InputText("##PawnAnimationMontage", Features::PawnAnimation::animationMontagePathBuffer, Features::PawnAnimation::animationMontagePathBufferSize);
+
+													ImGui::Text("Start At:              ");
+													ImGui::SameLine();
+													ImGui::InputFloat("##PawnAnimationMontageStartAt", &Features::PawnAnimation::animationMontageStartAt, 0.1f, 1.0f);
+
+													ImGui::Text("Play Rate:             ");
+													ImGui::SameLine();
+													ImGui::InputFloat("##PawnAnimationMontagePlayRate", &Features::PawnAnimation::animationMontagePlayRate, 0.1f, 1.0f);
+
+													ImGui::Checkbox("Stop All Montages", &Features::PawnAnimation::animationMontageStopAllMontages);
+
+													if (ImGui::Button("Play##PawnAnimationMontage"))
+													{
+														PlayActionSound(Unreal::Pawn::PlayAnimationMontage(pawn, Unreal::String::CString_ToFString(Features::PawnAnimation::animationMontagePathBuffer), Features::PawnAnimation::animationMontageStartAt, Features::PawnAnimation::animationMontagePlayRate, Features::PawnAnimation::animationMontageStopAllMontages));
+													}
+
+													ImGui::NewLine();
+
+													ImGui::SetFontTitle();
+													ImGui::Text("Animation Asset");
+													ImGui::SetFontRegular();
 													ImGui::Text("Animation Path:");
 													ImGui::SameLine();
 													ImGui::InputText("##PawnAnimation", Features::PawnAnimation::animationPathBuffer, Features::PawnAnimation::animationPathBufferSize);
 
-													ImGui::Checkbox("Animation Looping", &Features::PawnAnimation::looping);
+													ImGui::Checkbox("Animation Looping", &Features::PawnAnimation::animationLooping);
 
-													if (ImGui::Button("Play"))
+													if (ImGui::Button("Play##PawnAnimation"))
 													{
-														PlayActionSound(Unreal::Pawn::PlayAnimation(pawn, Unreal::String::CString_ToFString(Features::PawnAnimation::animationPathBuffer), Features::PawnAnimation::looping));
+														PlayActionSound(Unreal::Pawn::PlayAnimation(pawn, Unreal::String::CString_ToFString(Features::PawnAnimation::animationPathBuffer), Features::PawnAnimation::animationLooping));
 													}
 
 													ImGui::TreePop();
@@ -2701,6 +2740,18 @@ void GUI::Draw()
 							{
 								ImGui::PushID(widget.objectName.c_str());
 
+								ImGui::BeginDisabled(std::strcmp(Features::ActorsList::filterBuffer, widget.objectName.c_str()) == 0);
+								if (ImGui::Button("Focus On"))
+								{
+									std::snprintf(Features::WidgetsList::filterBuffer, sizeof(Features::WidgetsList::filterBuffer), widget.objectName.c_str());
+									Features::WidgetsList::filterMode = ImGui::E_ObjectFilterMode::ObjectName;
+
+									PlayActionSound(true);
+								}
+								ImGui::EndDisabled();
+
+								ImGui::NewLine();
+
 								ImGui::Text("Widget Class: %s", widget.className.c_str());
 								ImGui::Text("Widget Object: %s", widget.objectName.c_str());
 
@@ -2793,6 +2844,7 @@ void GUI::Draw()
 			{
 				if (worldObtained)
 				{
+#ifdef SOFT_PATH
 					ImGui::SetFontTitle();
 					ImGui::Text("Level Instance");
 					ImGui::SetFontSmall();
@@ -2833,6 +2885,82 @@ void GUI::Draw()
 							}
 							else
 								PlayActionSound(false);
+						}
+
+						ImGui::TreePop();
+					}
+
+#ifdef LEVEL_SEQUENCE
+					ImGui::NewLine();
+
+					ImGui::SetFontTitle();
+					ImGui::Text("Level Sequence");
+					ImGui::SetFontSmall();
+					ImGui::Text("Dynamic level sequence playing by soft path, for example \"/Game/OpenWorld/Sequences/LS_TowerExplosion.LS_TowerExplosion\".");
+					ImGui::Text("Feature supports combined input using the '|' separator between paths.");
+					ImGui::SetFontRegular();
+
+					if (ImGui::TreeNode("Details##PlayLevelSequence"))
+					{
+						ImGui::Text("Level Sequence Path:");
+						ImGui::SameLine();
+						ImGui::InputText("##PlayLevelSequence", Features::PlayLevelSequence::levelSequencePathBuffer, Features::PlayLevelSequence::levelSequencePathBufferSize);
+
+						ImGui::Text("Start Time:         ");
+						ImGui::SameLine();
+						ImGui::InputFloat("##LevelSequenceStartTime", &Features::PlayLevelSequence::startTime, 0.1f, 1.0f);
+
+						ImGui::Text("Play Rate:          ");
+						ImGui::SameLine();
+						ImGui::InputFloat("##LevelSequencePlayRate", &Features::PlayLevelSequence::playRate, 0.1f, 1.0f);
+
+						ImGui::Text("Loop Count:         ");
+						ImGui::SameLine();
+						ImGui::InputInt("##LevelSequenceLoopCount", &Features::PlayLevelSequence::loopCount, 1, 10);
+
+						if (ImGui::Button("Create Level Sequence##PlayLevelSequence"))
+						{
+							std::vector<SDK::FString> levelSequencePathCollection = Unreal::String::Split(Features::PlayLevelSequence::levelSequencePathBuffer, '|');
+							if (levelSequencePathCollection.size() > 0)
+							{
+								bool anySequenceCreated = false;
+
+								for (SDK::FString levelSequencePath : levelSequencePathCollection)
+								{
+									if (Unreal::Level::CreateLevelSequence(levelSequencePath, Features::PlayLevelSequence::startTime, Features::PlayLevelSequence::playRate, Features::PlayLevelSequence::loopCount))
+										anySequenceCreated = true;
+								}
+
+								PlayActionSound(anySequenceCreated);
+							}
+							else
+								PlayActionSound(false);
+						}
+
+						ImGui::TreePop();
+					}
+#endif
+					ImGui::NewLine();
+#endif
+
+					ImGui::SetFontTitle();
+					ImGui::Text("Quick Summon");
+					ImGui::SetFontSmall();
+					ImGui::Text("Set of handy Unreal Engine Classes to spawn.");
+					ImGui::SetFontRegular();
+
+					if (ImGui::TreeNode("Details##QuickSummon"))
+					{
+						if (ImGui::Button("Point Light"))
+						{
+							SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::APointLight::StaticClass());
+							PlayActionSound(actorReference);
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("Spot Light"))
+						{
+							SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::ASpotLight::StaticClass());
+							PlayActionSound(actorReference);
 						}
 
 						ImGui::TreePop();

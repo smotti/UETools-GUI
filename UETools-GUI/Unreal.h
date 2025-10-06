@@ -1,8 +1,11 @@
 #pragma once
 #include "SDK\Engine_classes.hpp"
 #include "SDK\UMG_classes.hpp"
+#include "SDK\LevelSequence_classes.hpp"
 
 #include "definitions.h"
+#include "Math.h"
+
 #include "Windows.h"
 
 #include <vector>
@@ -346,6 +349,14 @@ namespace Unreal
 
 			WorldSettings::DataStructure worldSettings;
 		};
+
+
+#ifdef LEVEL_SEQUENCE
+		static bool CreateLevelSequence(SDK::ULevelSequence* levelSequenceAsset, const float& startTime, const float& playRate, const int32_t& loopCount);
+#ifdef SOFT_PATH
+		static bool CreateLevelSequence(const SDK::FString& levelSequencePath, const float& startTime, const float& playRate, const int32_t& loopCount);
+#endif
+#endif
 	};
 
 
@@ -368,7 +379,9 @@ namespace Unreal
 		static std::vector<LevelStreaming::DataStructure> FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive);
 
 
+#ifdef SOFT_PATH
 		static bool LoadLevelInstance(const SDK::FString& levelPath, const SDK::FVector& locationOffset = { 0.0f, 0.0f, 0.0f }, const SDK::FRotator& rotationOffset = { 0.0f, 0.0f, 0.0f });
+#endif
 	};
 
 
@@ -452,6 +465,12 @@ namespace Unreal
 		*		  otherwise returns 'nullptr' to indicate that no instance is currently accessible.
 		*/
 		static SDK::APawn* Get(const int32_t& playerIndex = 0);
+
+
+		static bool PlayAnimationMontage(SDK::APawn* pawnReference, SDK::UAnimMontage* animationMontageAsset, const float& startAt, const float& playRate, const bool& stopAllMontages);
+#ifdef SOFT_PATH
+		static bool PlayAnimationMontage(SDK::APawn* pawnReference, const SDK::FString& animationMontagePath, const float& startAt, const float& playRate, const bool& stopAllMontages);
+#endif
 
 
 		static bool PlayAnimation(SDK::APawn* pawnReference, SDK::UAnimationAsset* animationAsset, const bool& looping);
@@ -645,6 +664,7 @@ namespace Unreal
 
 
 		static SDK::AActor* Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform);
+		static SDK::AActor* Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass);
 
 
 #ifdef SOFT_PATH

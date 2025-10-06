@@ -28,3 +28,10 @@
 	Enables everything related to Actor Kind subsystem (e.g. Point Light Settings, Spot Light Settings, Pawn Actions...).
 	It's disabled by default in order to avoid massive occurencies of incompatibility on older Engine versions.
 */
+
+/*
+	#define LEVEL_SEQUENCE
+
+	Enables everything related to Level Sequences.
+	It's disabled by default in order to avoid massive occurencies of incompatibility on different from baseline Engine versions.
+*/

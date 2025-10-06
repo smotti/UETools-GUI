@@ -3,7 +3,6 @@
 #include "imgui.h"
 
 #include "definitions.h"
-
 #include "Unreal.h"
 #include "Clipboard.h"
 #include "Math.h"
@@ -335,6 +334,7 @@ namespace Features
 
 
 
+#ifdef SOFT_PATH
 	class ActorSpawn
 	{
 	public:
@@ -350,6 +350,7 @@ namespace Features
 
 		static inline std::vector<SDK::FString> loadedClasses;
 	};
+#endif
 
 
 
@@ -389,15 +390,21 @@ namespace Features
 	class PawnAnimation
 	{
 	public:
+		static inline const size_t animationMontagePathBufferSize = 255;
+		static inline char animationMontagePathBuffer[animationMontagePathBufferSize] = {};
+		static inline float animationMontageStartAt = 0.0f;
+		static inline float animationMontagePlayRate = 1.0f;
+		static inline bool animationMontageStopAllMontages = true;
+
 		static inline const size_t animationPathBufferSize = 255;
 		static inline char animationPathBuffer[animationPathBufferSize] = {};
-
-		static inline bool looping = false;
+		static inline bool animationLooping = false;
 	};
 
 
 
 
+#ifdef SOFT_PATH
 	class WidgetConstruct
 	{
 	public:
@@ -407,6 +414,7 @@ namespace Features
 
 		static inline int32_t zOrder = 0;
 	};
+#endif
 
 
 
@@ -432,6 +440,7 @@ namespace Features
 
 
 
+#ifdef SOFT_PATH
 	class LoadLevelInstance
 	{
 	public:
@@ -442,6 +451,22 @@ namespace Features
 		static inline float locationOffset[3];
 		static inline float rotationOffset[3];
 	};
+
+
+#ifdef LEVEL_SEQUENCE
+	class PlayLevelSequence
+	{
+	public:
+		/* Allocate large buffer to account for combined paths (e.g: "/Game/OpenWorld/Tile_X2Y8.Tile_X2Y8 | /Game/OpenWorld/Tile_X4Y6.Tile_X4Y6") */
+		static inline const size_t levelSequencePathBufferSize = 2048;
+		static inline char levelSequencePathBuffer[levelSequencePathBufferSize] = {};
+
+		static inline float startTime = 0.0f;
+		static inline float playRate = 1.0f;
+		static inline int32_t loopCount = 1;
+	};
+#endif
+#endif
 
 
 
@@ -489,7 +514,7 @@ namespace Features
 	class DirectionalMovement
 	{
 	public:
-		static inline bool enabled;
+		static inline bool enabled = true;
 
 		static inline double step = 45.0;
 		static inline double delay = 0.05;
