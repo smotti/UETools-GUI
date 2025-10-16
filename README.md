@@ -26,7 +26,7 @@ Build Configuration: Release
 
 # Getting Started
 1. Download and extract the repository, or clone it via Git.
-2. Generate a Dumper-7 SDK for the target title. Pre-compiled Dumper-7 Dynamic Link Library can be found in Releases, see ["How to use" section](https://github.com/Encryqed/Dumper-7/blob/main/README.md).
+2. Generate a Dumper-7 SDK for the target title. Pre-compiled Dumper-7 Dynamic Link Library can be found in Releases, consider reading through ["How to use"](https://github.com/Encryqed/Dumper-7/blob/main/README.md).
 3. Replace the contents of `..\SDKs\Dumper7` with the contents of newly generated, title-specific "CppSDK".
 4. Build `UETools-GUI.dll` and load it into the target title process using an appropriate instrumentation method that complies with the game’s EULA and applicable laws. For the purpose, [Cheat Engine](https://www.cheatengine.org/) and [System Informer](https://systeminformer.sourceforge.io/downloads) can be found applicable tools.
 
