@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.7)");
+			ImGui::Text("UETools GUI (v1.7b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1493,16 +1493,36 @@ void GUI::Draw()
 						ImGui::NewLine();
 #endif
 
-#ifdef SOFT_PATH
+
 						ImGui::SetFontTitle();
 						ImGui::Text("Actor Spawn");
 						ImGui::SetFontSmall();
-						ImGui::Text("Dynamic Actor spawning by soft path, for example \"/Game/Blueprints/Watermelon.Watermelon_C\".");
+#ifdef SOFT_PATH
+						ImGui::Text("Dynamic Actor spawning from ready to go presets");
+						ImGui::Text("and by soft path, for example \"/Game/Blueprints/Watermelon.Watermelon_C\".");
 						ImGui::Text("Feature supports combined input using the '|' separator between paths.");
+#else
+						ImGui::Text("Dynamic Actor spawning from ready to go presets.");
+#endif
 						ImGui::SetFontRegular();
 
 						if (ImGui::TreeNode("Details##ActorSpawn"))
 						{
+							if (ImGui::Button("Point Light"))
+							{
+								SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::APointLight::StaticClass());
+								PlayActionSound(actorReference);
+							}
+							ImGui::SameLine();
+							if (ImGui::Button("Spot Light"))
+							{
+								SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::ASpotLight::StaticClass());
+								PlayActionSound(actorReference);
+							}
+
+#ifdef SOFT_PATH
+							ImGui::CategorySeparator();
+
 							ImGui::Text("Actor Path:    ");
 							ImGui::SameLine();
 							ImGui::InputText("##ActorSpawn", Features::ActorSpawn::actorPathBuffer, Features::ActorSpawn::actorPathBufferSize);
@@ -1574,11 +1594,12 @@ void GUI::Draw()
 								else
 									PlayActionSound(false);
 							}
+#endif
+
 							ImGui::TreePop();
 						}
 
 						ImGui::NewLine();
-#endif
 
 						if (ImGui::Button("Update##Actors"))
 						{
@@ -2942,31 +2963,6 @@ void GUI::Draw()
 #endif
 					ImGui::NewLine();
 #endif
-
-					ImGui::SetFontTitle();
-					ImGui::Text("Quick Summon");
-					ImGui::SetFontSmall();
-					ImGui::Text("Set of handy Unreal Engine Classes to spawn.");
-					ImGui::SetFontRegular();
-
-					if (ImGui::TreeNode("Details##QuickSummon"))
-					{
-						if (ImGui::Button("Point Light"))
-						{
-							SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::APointLight::StaticClass());
-							PlayActionSound(actorReference);
-						}
-						ImGui::SameLine();
-						if (ImGui::Button("Spot Light"))
-						{
-							SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::ASpotLight::StaticClass());
-							PlayActionSound(actorReference);
-						}
-
-						ImGui::TreePop();
-					}
-
-					ImGui::CategorySeparator();
 
 					ImGui::SetFontTitle();
 					ImGui::Text("Gravity");

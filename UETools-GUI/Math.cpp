@@ -46,7 +46,7 @@ SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
     quat.Y = cr * sp * cy + sr * cp * sy; // Y corresponds to Pitch contribution
     quat.Z = cr * cp * sy - sr * sp * cy; // Z corresponds to Yaw contribution
 
-    /* Normalize to ensure a unit quaternion(important for downstream use like rotation / matrix). */
+    /* Normalize to ensure a unit quaternion (important for downstream use like rotation / matrix). */
     const float normSq = quat.X * quat.X + quat.Y * quat.Y + quat.Z * quat.Z + quat.W * quat.W;
     if (normSq > TINY) // Check for nonsense input.
     {

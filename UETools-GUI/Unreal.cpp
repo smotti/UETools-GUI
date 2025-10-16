@@ -154,11 +154,11 @@ SDK::UEngine* Unreal::Engine::Get()
 
 SDK::UGameInstance* Unreal::GameInstance::Get()
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::UGameInstance* GameInstance = SDK::UGameplayStatics::GetGameInstance(World);
+	SDK::UGameInstance* GameInstance = SDK::UGameplayStatics::GetGameInstance(world);
 	if (GameInstance == nullptr)
 		return nullptr;
 
@@ -172,11 +172,11 @@ SDK::UGameInstance* Unreal::GameInstance::Get()
 
 SDK::AGameModeBase* Unreal::GameMode::Get()
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::AGameModeBase* GameMode = SDK::UGameplayStatics::GetGameMode(World);
+	SDK::AGameModeBase* GameMode = SDK::UGameplayStatics::GetGameMode(world);
 	if (GameMode == nullptr)
 		return nullptr;
 
@@ -191,11 +191,11 @@ SDK::AGameModeBase* Unreal::GameMode::Get()
 
 SDK::AGameStateBase* Unreal::GameState::Get()
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::AGameStateBase* GameState = SDK::UGameplayStatics::GetGameState(World);
+	SDK::AGameStateBase* GameState = SDK::UGameplayStatics::GetGameState(world);
 	if (GameState == nullptr)
 		return nullptr;
 
@@ -284,7 +284,7 @@ std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::Filte
 #ifdef SOFT_PATH
 bool Unreal::LevelStreaming::LoadLevelInstance(const SDK::FString& levelPath, const SDK::FVector& locationOffset, const SDK::FRotator& rotationOffset)
 {
-	SDK::UWorld* world = Unreal::World::Get();
+	SDK::UWorld* world = World::Get();
 	if (world == nullptr)
 		return false;
 
@@ -309,8 +309,8 @@ bool Unreal::LevelStreaming::LoadLevelInstance(const SDK::FString& levelPath, co
 
 SDK::UWorld* Unreal::World::Get()
 {
-	SDK::UWorld* World = SDK::UWorld::GetWorld();
-	return World ? World : nullptr;
+	SDK::UWorld* world = SDK::UWorld::GetWorld();
+	return world ? world : nullptr;
 }
 
 
@@ -320,11 +320,11 @@ SDK::UWorld* Unreal::World::Get()
 
 SDK::APawn* Unreal::Pawn::Get(const int32_t& playerIndex)
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::APawn* Pawn = SDK::UGameplayStatics::GetPlayerPawn(World, playerIndex);
+	SDK::APawn* Pawn = SDK::UGameplayStatics::GetPlayerPawn(world, playerIndex);
 	if (Pawn == nullptr)
 		return nullptr;
 
@@ -395,25 +395,62 @@ bool Unreal::Pawn::PlayAnimation(SDK::APawn* pawnReference, const SDK::FString& 
 
 bool Unreal::CheatManager::Construct(const bool& ignorePresence)
 {
-	SDK::APlayerController* PlayerController = PlayerController::Get();
-	if (PlayerController == nullptr)
+	SDK::APlayerController* playerController = PlayerController::Get();
+	if (playerController == nullptr)
 		return false;
 
-	if (ignorePresence == false && PlayerController->CheatManager) // If presence shouldn't be ignored, we're looking up if Cheat Manager already exist.
+	if (ignorePresence == false && playerController->CheatManager) // If presence shouldn't be ignored, we're looking up if Cheat Manager already exist.
 		return false;
 
-	if (PlayerController->CheatClass == nullptr) // If Player Controller has no cheating class specified, fallback to default Cheat Manager class.
-		PlayerController->CheatClass = SDK::UCheatManager::StaticClass();
+	if (playerController->CheatClass == nullptr) // If Player Controller has no cheating class specified, fallback to default Cheat Manager class.
+		playerController->CheatClass = SDK::UCheatManager::StaticClass();
 
 	/* Before assigning Cheat Manager to the Player Controller, ensure that SpawnObject() returned a valid pointer. */
-	if (SDK::UObject* objectReference = SDK::UGameplayStatics::SpawnObject(PlayerController->CheatClass, PlayerController))
+	if (SDK::UObject* objectReference = SDK::UGameplayStatics::SpawnObject(playerController->CheatClass, playerController))
 	{
-		PlayerController->CheatManager = static_cast<SDK::UCheatManager*>(objectReference); // Clarify that newly spawned Object is of class Cheat Manager.
+		playerController->CheatManager = static_cast<SDK::UCheatManager*>(objectReference); // Clarify that newly spawned Object is of class Cheat Manager.
 		return true;
 	}
 	else
 		return false;
 }
+
+
+#ifdef SOFT_PATH
+bool Unreal::CheatManager::Summon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath)
+{
+	if (cheatManagerReference == nullptr)
+		return false;
+
+	/* Ensure Soft Path is valid and Actor is loaded in to game memory, so we could spawn it later on. */
+	SDK::UClass* actorClass = Unreal::Object::SoftLoadClass(actorPath);
+	if (actorClass == nullptr)
+		return false;
+
+	std::wstring wActorPath = actorPath.ToWString();
+	size_t dotPos = wActorPath.find_last_of(L'.');
+	if (dotPos == std::wstring::npos)
+		return false;
+
+	std::wstring actorName = wActorPath.substr(dotPos + 1);
+	cheatManagerReference->Summon(Unreal::String::WString_ToFString(actorName));
+
+	return true;
+}
+
+bool Unreal::CheatManager::Summon(const SDK::FString& actorPath)
+{
+	SDK::APlayerController* playerController = PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	SDK::UObject* objectReference = SDK::UGameplayStatics::SpawnObject(SDK::UCheatManager::StaticClass(), playerController);
+	if (objectReference == nullptr)
+		return false;
+
+	return Summon(static_cast<SDK::UCheatManager*>(objectReference), actorPath);
+}
+#endif
 
 
 
@@ -422,11 +459,11 @@ bool Unreal::CheatManager::Construct(const bool& ignorePresence)
 
 SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex)
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::APlayerController* PlayerController = SDK::UGameplayStatics::GetPlayerController(World, playerIndex);
+	SDK::APlayerController* PlayerController = SDK::UGameplayStatics::GetPlayerController(world, playerIndex);
 	if (PlayerController == nullptr)
 		return nullptr;
 
@@ -440,11 +477,11 @@ SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex
 
 SDK::ACharacter* Unreal::Character::Get(const int32_t& playerIndex)
 {
-	SDK::UWorld* World = World::Get();
-	if (World == nullptr)
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
 		return nullptr;
 
-	SDK::ACharacter* Character = SDK::UGameplayStatics::GetPlayerCharacter(World, playerIndex);
+	SDK::ACharacter* Character = SDK::UGameplayStatics::GetPlayerCharacter(world, playerIndex);
 	if (Character == nullptr)
 		return nullptr;
 
@@ -805,7 +842,7 @@ void Unreal::Actor::SetVisibility(SDK::AActor* actorReference, const bool& newVi
 
 SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform)
 {
-	SDK::UWorld* world = Unreal::World::Get();
+	SDK::UWorld* world = World::Get();
 	if (world == nullptr)
 		return nullptr;
 
@@ -896,7 +933,7 @@ bool Unreal::Actor::IsValid(SDK::AActor* actorReference)
 			use full scan as our last resort - if neither of methods have found the Actor.
 			
 		*/
-		SDK::UWorld* world = Unreal::World::Get();
+		SDK::UWorld* world = World::Get();
 		if (world)
 		{
 			/* Check is Actor is present within current Persistent Level. */
@@ -1090,7 +1127,7 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClass
 
 SDK::UUserWidget* Unreal::UserWidget::Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass)
 {
-	SDK::UWorld* world = Unreal::World::Get();
+	SDK::UWorld* world = World::Get();
 	if (world == nullptr)
 		return nullptr;
 
@@ -1155,7 +1192,7 @@ std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<
 #ifdef SOFT_PATH
 SDK::UClass* Unreal::Object::SoftLoadClass(const SDK::FString& objectPath)
 {
-	SDK::UWorld* world = Unreal::World::Get();
+	SDK::UWorld* world = World::Get();
 	if (world == nullptr)
 		return nullptr;
 
@@ -1192,7 +1229,7 @@ SDK::UClass* Unreal::Object::SoftLoadClass(const SDK::FString& objectPath)
 
 SDK::UObject* Unreal::Object::SoftLoadObject(const SDK::FString& objectPath)
 {
-	SDK::UWorld* world = Unreal::World::Get();
+	SDK::UWorld* world = World::Get();
 	if (world == nullptr)
 		return nullptr;
 

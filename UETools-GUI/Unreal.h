@@ -513,6 +513,27 @@ namespace Unreal
 		* @return 'True' if the Cheat Manager was successfully created and assigned; 'False' otherwise.
 		*/
 		static bool Construct(const bool& ignorePresence = false);
+
+
+#ifdef SOFT_PATH
+		/*
+		* @brief Calls Summon() function in provided Cheat Manager.
+		* Function exist as a workaround and is not recommended to be used 
+		* unless Actor::Summon() fails for one reason or another.
+		* @param cheatManagerReference - Reference to an valid Cheat Manager instance.
+		* @param actorPath - Soft path leading to an Actor, for example: "/Game/Blueprints/BP_SentryGun.BP_SentryGun_C".
+		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
+		*/
+		static bool Summon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath);
+		/*
+		* @brief Creates new Cheat Manager and calls Summon() function in it.
+		* Function exist as a workaround and is not recommended to be used
+		* unless Actor::Summon() fails for one reason or another.
+		* @param actorPath - Soft path leading to an Actor, for example: "/Game/Blueprints/BP_SentryGun.BP_SentryGun_C".
+		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
+		*/
+		static bool Summon(const SDK::FString& actorPath);
+#endif
 	};
 
 
