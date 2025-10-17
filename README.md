@@ -2,10 +2,9 @@
 Dumper-7 (SDK) based solution for rapid debugging of Unreal Engine powered titles. Designed for a minimal setup experience: you can have it running within 5 minutes from the initial download.
 
 > [!NOTE]
-> Title is considered supported only if Dumper-7 successfully generates a valid SDK.
-
-> [!NOTE]
 > Solution is targeting Unreal Engine 4.27.2 as the base. That allows it to be upgraded or downgraded with relative ease; however, certain code segments may require adjustment to accommodate engine-specific differences (e.g., deprecated or not-yet-implemented variables and functions).
+>
+> Title is considered supported only if Dumper-7 successfully generates a valid SDK.
 
 > [!TIP]
 > When targeting Unreal Engine 5 based titles, it's recommended to uncomment `#define UE5` in `definitions.h`. In many cases that action alone would be enough to adapt entirity of solution for newer engine.
@@ -31,6 +30,11 @@ Build Configuration: Release
 4. Build `UETools-GUI.dll` and load it into the target title process using an appropriate instrumentation method that complies with the game’s EULA and applicable laws. For the purpose, [Cheat Engine](https://www.cheatengine.org/) and [System Informer](https://systeminformer.sourceforge.io/downloads) can be found applicable tools.
 
 While in the title, press Insert (INS) to toggle the menu.
+> [!CAUTION]
+> Windows 11 users may encounter a black screen issue immediately after injecting UETools-GUI. While this issue is not addressed within the project itself, if you experience it, please follow these steps:
+> 1) Navigate to the title’s installation directory, then open the following path: `{Title internal name}\Binaries\Win64`.
+> 2) Locate the game executable and open its Properties (Right-click → Properties).
+> 3) Go to the Compatibility tab and enable "Disable fullscreen optimizations" feature.
 
 # Great First Experience Games
 ## [Lies of P (Unreal Engine 4.27.2)](https://store.steampowered.com/app/1627720)
