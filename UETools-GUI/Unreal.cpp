@@ -416,8 +416,34 @@ bool Unreal::CheatManager::Construct(const bool& ignorePresence)
 }
 
 
+bool Unreal::CheatManager::Summon(SDK::UCheatManager* cheatManagerReference, SDK::TSubclassOf<SDK::AActor> actorClass)
+{
+	if (cheatManagerReference == nullptr)
+		return false;
+
+	if (actorClass == nullptr)
+		return false;
+
+	cheatManagerReference->Summon(Unreal::String::String_ToFString(actorClass->GetName()));
+	return true;
+}
+
+bool Unreal::CheatManager::Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass)
+{
+	SDK::APlayerController* playerController = PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	SDK::UObject* objectReference = SDK::UGameplayStatics::SpawnObject(SDK::UCheatManager::StaticClass(), playerController);
+	if (objectReference == nullptr)
+		return false;
+
+	return Summon(static_cast<SDK::UCheatManager*>(objectReference), actorClass);
+}
+
+
 #ifdef SOFT_PATH
-bool Unreal::CheatManager::Summon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath)
+bool Unreal::CheatManager::SoftSummon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath)
 {
 	if (cheatManagerReference == nullptr)
 		return false;
@@ -438,7 +464,7 @@ bool Unreal::CheatManager::Summon(SDK::UCheatManager* cheatManagerReference, con
 	return true;
 }
 
-bool Unreal::CheatManager::Summon(const SDK::FString& actorPath)
+bool Unreal::CheatManager::SoftSummon(const SDK::FString& actorPath)
 {
 	SDK::APlayerController* playerController = PlayerController::Get();
 	if (playerController == nullptr)
@@ -448,7 +474,7 @@ bool Unreal::CheatManager::Summon(const SDK::FString& actorPath)
 	if (objectReference == nullptr)
 		return false;
 
-	return Summon(static_cast<SDK::UCheatManager*>(objectReference), actorPath);
+	return SoftSummon(static_cast<SDK::UCheatManager*>(objectReference), actorPath);
 }
 #endif
 
@@ -468,6 +494,24 @@ SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex
 		return nullptr;
 
 	return PlayerController;
+}
+
+
+void Unreal::PlayerController::SetViewTarget(SDK::AActor* actorReference, const SDK::EViewTargetBlendFunction& blendFunction, const float& blendTime, const float& blendExponent)
+{
+	if (actorReference == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	playerController->SetViewTargetWithBlend(actorReference, blendTime, blendFunction, blendExponent, false);
+}
+
+void Unreal::PlayerController::SetViewTarget(SDK::AActor* actorReference)
+{
+	SetViewTarget(actorReference, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, 0.0f);
 }
 
 

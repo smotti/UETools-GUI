@@ -137,9 +137,6 @@ void DirectWindow::MoveWindow(const HWND hCurrentProcessWindow)
     int lWindowWidth = rect.right - rect.left; 
     int lWindowHeight = rect.bottom - rect.top;
 
-    // lWindowWidth -= 5; // Heuristic border compensation.
-    // lWindowHeight -= 29; // Heuristic title bar compensation.
-
     SetWindowPos(hCurrentProcessWindow, nullptr, rect.left, rect.top, lWindowWidth, lWindowHeight, SWP_SHOWWINDOW);
 }
 
@@ -257,7 +254,12 @@ void DirectWindow::Create()
     ::RegisterClassEx(&wc);
 
     /* Create a layered, click-through (initially), always-on-top popup that spans the screen. */
-    const HWND hwnd = ::CreateWindowExW(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE, wc.lpszClassName, L"D3D11 Overlay ImGui", WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), nullptr, nullptr, wc.hInstance, nullptr);
+    const HWND hwnd = ::CreateWindowExW
+    (
+        WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE, 
+        wc.lpszClassName, L"UETools-GUI", WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), 
+        nullptr, nullptr, wc.hInstance, nullptr
+    );
 
     /* Make the layered window fully opaque alpha (we'll clear to transparent in the render path). */
     SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
@@ -326,6 +328,8 @@ void DirectWindow::Create()
     bool bDone = false;
     while (!bDone)
     {
+        static const float color_transparent[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
         MSG msg;
         /* Process all pending messages; exit if WM_QUIT arrives. */
         while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
@@ -352,17 +356,16 @@ void DirectWindow::Create()
         bool isMenuActive = GUI::GetIsMenuActive();
         static bool lastIsMenuActive = !isMenuActive; // Small trick to encourage initial SetWindowLong(). W/o it game wouldn't receive any inputs.
 
-        /* Clear overlay when the targeted window is not focus. */
+        /* Clear overlay when the targeted window is not in focus. */
         if (!IsWindowFocus(hwnd) && bTargetSet)
         {
             lastIsMenuActive = !isMenuActive; // Small trick to make sure ImGui wouldn't loose focus after ALT + TAB'ing. W/o it menu woudn't receive any inputs.
 
             /* Clear to fully transparent so overlay is invisible when target is not focused. */
-            const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
             GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView, nullptr);
-            GetDeviceContext()->ClearRenderTargetView(renderTargetView, clear_color_with_alpha);
+            GetDeviceContext()->ClearRenderTargetView(renderTargetView, color_transparent);
 
-            GetSwapChain()->Present(1, 0); // VSync (interval 1).
+            GetSwapChain()->Present(DXGI_SWAP_EFFECT_SEQUENTIAL, 0x0); // VSync (interval 1).
 
             continue;
         }
@@ -387,8 +390,11 @@ void DirectWindow::Create()
                 ex &= ~WS_EX_NOACTIVATE;
                 ex |= (WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
                 SetWindowLong(hwnd, GWL_EXSTYLE, ex);
-                SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                SetWindowPos
+                (
+                    hwnd, nullptr, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
+                );
 
                 /* Activate the overlay so the game stops receiving input. */
                 DWORD gameTid = GetWindowThreadProcessId(hTargetWindow, nullptr);
@@ -414,8 +420,11 @@ void DirectWindow::Create()
                 ex &= ~WS_EX_NOACTIVATE; // keep without NOACTIVATE so clicking can activate
                 ex |= (WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
                 SetWindowLong(hwnd, GWL_EXSTYLE, ex);
-                SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+                SetWindowPos
+                (
+                    hwnd, nullptr, 0, 0, 0, 0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
+                );
 
                 if (GetCapture() == hwnd)
                     ReleaseCapture();
@@ -441,12 +450,11 @@ void DirectWindow::Create()
         // |  RENDER PASS  |
         // =================
         ImGui::Render();
-        const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView, nullptr);
-        GetDeviceContext()->ClearRenderTargetView(renderTargetView, clear_color_with_alpha);
+        GetDeviceContext()->ClearRenderTargetView(renderTargetView, color_transparent);
         ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-        GetSwapChain()->Present(1, 0); // VSync (interval 1).
+        GetSwapChain()->Present(DXGI_SWAP_EFFECT_SEQUENTIAL, 0x0); // VSync (interval 1).
     }
 
 

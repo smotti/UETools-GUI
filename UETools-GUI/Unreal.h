@@ -515,16 +515,35 @@ namespace Unreal
 		static bool Construct(const bool& ignorePresence = false);
 
 
+		/*
+		* @brief Calls Summon() function in provided Cheat Manager.
+		* Function exist as a workaround and is not recommended to be used
+		* unless Actor::Summon() fails for one reason or another.
+		* @param cheatManagerReference - Reference to an valid Cheat Manager instance.
+		* @param actorClass - Class of the Actor to be summoned.
+		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
+		*/
+		static bool Summon(SDK::UCheatManager* cheatManagerReference, SDK::TSubclassOf<SDK::AActor> actorClass);
+		/*
+		* @brief Creates new Cheat Manager and calls Summon() function in it.
+		* Function exist as a workaround and is not recommended to be used
+		* unless Actor::Summon() fails for one reason or another.
+		* @param actorClass - Class of the Actor to be summoned.
+		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
+		*/
+		static bool Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass);
+
+
 #ifdef SOFT_PATH
 		/*
 		* @brief Calls Summon() function in provided Cheat Manager.
 		* Function exist as a workaround and is not recommended to be used 
 		* unless Actor::Summon() fails for one reason or another.
 		* @param cheatManagerReference - Reference to an valid Cheat Manager instance.
-		* @param actorPath - Soft path leading to an Actor, for example: "/Game/Blueprints/BP_SentryGun.BP_SentryGun_C".
+		* @param actorPath - Class of the Actor to be summoned.
 		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
 		*/
-		static bool Summon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath);
+		static bool SoftSummon(SDK::UCheatManager* cheatManagerReference, const SDK::FString& actorPath);
 		/*
 		* @brief Creates new Cheat Manager and calls Summon() function in it.
 		* Function exist as a workaround and is not recommended to be used
@@ -532,7 +551,7 @@ namespace Unreal
 		* @param actorPath - Soft path leading to an Actor, for example: "/Game/Blueprints/BP_SentryGun.BP_SentryGun_C".
 		* @return 'True' if Actor was attempted to be spawned; 'False' otherwise.
 		*/
-		static bool Summon(const SDK::FString& actorPath);
+		static bool SoftSummon(const SDK::FString& actorPath);
 #endif
 	};
 
@@ -556,7 +575,6 @@ namespace Unreal
 		};
 
 
-	public:
 		/*
 		* @brief Retrieves the current instance of the Player Controller, if one is available.
 		* @param playerIndex - index of the local player to query.
@@ -564,6 +582,10 @@ namespace Unreal
 		*		  otherwise returns 'nullptr' to indicate that no instance is currently accessible.
 		*/
 		static SDK::APlayerController* Get(const int32_t& playerIndex = 0);
+
+
+		static void SetViewTarget(SDK::AActor* actorReference, const SDK::EViewTargetBlendFunction& blendFunction, const float& blendTime, const float& blendExponent);
+		static void SetViewTarget(SDK::AActor* actorReference);
 	};
 
 

@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.7b)");
+			ImGui::Text("UETools GUI (v1.7c)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1508,6 +1508,10 @@ void GUI::Draw()
 
 						if (ImGui::TreeNode("Details##ActorSpawn"))
 						{
+							ImGui::SetFontTitle();
+							ImGui::Text("Quick Summon");
+							ImGui::SetFontRegular();
+
 							if (ImGui::Button("Point Light"))
 							{
 								SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::APointLight::StaticClass());
@@ -1522,6 +1526,10 @@ void GUI::Draw()
 
 #ifdef SOFT_PATH
 							ImGui::CategorySeparator();
+
+							ImGui::SetFontTitle();
+							ImGui::Text("Soft Summon");
+							ImGui::SetFontRegular();
 
 							ImGui::Text("Actor Path:    ");
 							ImGui::SameLine();
@@ -1910,6 +1918,40 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
+								ImGui::NewLine();
+
+								ImGui::Text("Blend Time");
+								ImGui::SameLine();
+								static float viewTargetBlendTime = 1.0f;
+								ImGui::InputFloat("##ViewTargetBlendTime", &viewTargetBlendTime, 0.1f, 1.0f);
+
+								ImGui::Text("Blend Exponent");
+								ImGui::SameLine();
+								static float viewTargetBlendExponent = 1.0f;
+								ImGui::InputFloat("##ViewTargetBlendExponent", &viewTargetBlendExponent, 0.1f, 1.0f);
+
+								if (ImGui::Button("View Target (Linear)"))
+								{
+									if (actor.reference)
+									{
+										Unreal::PlayerController::SetViewTarget(actor.reference, SDK::EViewTargetBlendFunction::VTBlend_Linear, viewTargetBlendTime, viewTargetBlendExponent);
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+								ImGui::SameLine();
+								if (ImGui::Button("View Target (Cubic)"))
+								{
+									if (actor.reference)
+									{
+										Unreal::PlayerController::SetViewTarget(actor.reference, SDK::EViewTargetBlendFunction::VTBlend_Cubic, viewTargetBlendTime, viewTargetBlendExponent);
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+
 #ifdef ACTOR_KIND
 								if (actor.kind != Unreal::Actor::E_ActorKind::General)
 								{
@@ -2076,6 +2118,34 @@ void GUI::Draw()
 
 														ImGui::NewLine();
 
+														ImGui::Text("Soft Source Radius");
+														static float pointLightSoftSourceRadius = 0.0f;
+														if (ImGui::Button("Get##PointLightSoftSourceRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightSoftSourceRadius = pointLightComponent->SoftSourceRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##PointLightSoftSourceRadius", &pointLightSoftSourceRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##PointLightSoftSourceRadius"))
+														{
+															if (pointLightComponent)
+															{
+																pointLightComponent->SetSoftSourceRadius(pointLightSoftSourceRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
 														ImGui::Text("Attenuation Radius");
 														static float pointLightAttenuationRadius = 0.0f;
 														if (ImGui::Button("Get##PointLightAttenuationRadius"))
@@ -2105,7 +2175,7 @@ void GUI::Draw()
 														ImGui::NewLine();
 
 														ImGui::Text("Color");
-														static float pointLightColor[4];
+														static float pointLightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 														if (ImGui::Button("Get##PointLightColor"))
 														{
 															if (pointLightComponent)
@@ -2307,6 +2377,34 @@ void GUI::Draw()
 
 														ImGui::NewLine();
 
+														ImGui::Text("Soft Source Radius");
+														static float spotLightSoftSourceRadius = 0.0f;
+														if (ImGui::Button("Get##SpotLightSoftSourceRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightSoftSourceRadius = spotLightComponent->SoftSourceRadius;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##SpotLightSoftSourceRadius", &spotLightSoftSourceRadius, 10.0f, 100.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##SpotLightSoftSourceRadius"))
+														{
+															if (spotLightComponent)
+															{
+																spotLightComponent->SetSoftSourceRadius(spotLightSoftSourceRadius);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+
+														ImGui::NewLine();
+
 														ImGui::Text("Attenuation Radius");
 														static float spotLightAttenuationRadius = 0.0f;
 														if (ImGui::Button("Get##SpotLightAttenuationRadius"))
@@ -2392,7 +2490,7 @@ void GUI::Draw()
 														ImGui::NewLine();
 
 														ImGui::Text("Color");
-														static float spotLightColor[4];
+														static float spotLightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 														if (ImGui::Button("Get##SpotLightColor"))
 														{
 															if (spotLightComponent)

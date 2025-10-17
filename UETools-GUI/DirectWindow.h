@@ -3,6 +3,7 @@
 
 #include "dwmapi.h"
 #include "d3d11.h"
+
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
@@ -95,8 +96,11 @@ public:
 	}
 	static void InvalidateDeviceContext()
 	{
-		deviceContext->Release();
-		deviceContext = nullptr;
+		if (deviceContext)
+		{
+			deviceContext->Release();
+			deviceContext = nullptr;
+		}
 	}
 
 
@@ -115,8 +119,11 @@ public:
 	}
 	static void InvalidateSwapChain()
 	{
-		swapChain->Release();
-		swapChain = nullptr;
+		if (swapChain)
+		{
+			swapChain->Release();
+			swapChain = nullptr;
+		}
 	}
 
 
@@ -131,8 +138,11 @@ public:
 	}
 	static void InvalidateRenderTargetView()
 	{
-		renderTargetView->Release();
-		renderTargetView = nullptr;
+		if (renderTargetView)
+		{
+			renderTargetView->Release();
+			renderTargetView = nullptr;
+		}
 	}
 private:
 	/**
