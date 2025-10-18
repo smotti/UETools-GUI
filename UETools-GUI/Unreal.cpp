@@ -711,6 +711,9 @@ Unreal::Actor::E_ActorKind Unreal::Actor::GetActorKind(SDK::AActor* actorReferen
 	if (actorReference->IsA(SDK::APawn::StaticClass()))
 		return E_ActorKind::Pawn;
 
+	if (actorReference->IsA(SDK::ATextRenderActor::StaticClass()))
+		return E_ActorKind::TextRender;
+
 	return E_ActorKind::General;
 }
 #endif

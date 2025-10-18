@@ -657,7 +657,8 @@ namespace Unreal
 			General,
 			PointLight,
 			SpotLight,
-			Pawn
+			Pawn,
+			TextRender
 		};
 		static E_ActorKind GetActorKind(SDK::AActor* actorReference);
 #endif

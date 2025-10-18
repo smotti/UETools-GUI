@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.7c)");
+			ImGui::Text("UETools GUI (v1.7d)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -749,12 +749,7 @@ void GUI::Draw()
 			}
 
 
-
-
-
 			ImGui::Text(" | ");
-
-
 
 
 			if (ImGui::BeginMenu("Debug"))
@@ -2591,7 +2586,7 @@ void GUI::Draw()
 
 												ImGui::SetFontTitle();
 												ImGui::Text("Pawn Actions");
-												ImGui::SetFontSmall();
+												ImGui::SetFontRegular();
 
 												if (ImGui::TreeNode("Details##PawnActions"))
 												{
@@ -2614,6 +2609,72 @@ void GUI::Draw()
 
 													ImGui::TreePop();
 												}
+											}
+											break;
+
+										case Unreal::Actor::E_ActorKind::TextRender:
+											if (SDK::ATextRenderActor* textRender = static_cast<SDK::ATextRenderActor*>(actor.reference))
+											{
+												ImGui::SetFontTitle();
+												ImGui::Text("Text Render Settings");
+												ImGui::SetFontRegular();
+
+												ImGui::BeginDisabled(textRender->TextRender == nullptr);
+												if (ImGui::TreeNode("Details##TextRender"))
+												{
+													if (SDK::UTextRenderComponent* textRenderComponent = textRender->TextRender)
+													{
+														ImGui::Text("Content");
+														static const size_t textRenderContentBufferSize = 255;
+														static char textRenderContentBuffer[textRenderContentBufferSize] = {};
+														if (ImGui::Button("Get##TextRenderContent"))
+														{
+															if (textRenderComponent)
+															{
+																strcpy_s(textRenderContentBuffer, textRenderComponent->Text.ToString().c_str());
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputText("##TextRenderContent", textRenderContentBuffer, textRenderContentBufferSize);
+
+														ImGui::NewLine();
+
+														ImGui::Text("Font Size");
+														static float textRenderFontSize = 26.0f;
+														if (ImGui::Button("Get##TextRenderFontSize"))
+														{
+															if (textRenderComponent)
+															{
+																textRenderFontSize = textRenderComponent->WorldSize;
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+														ImGui::SameLine();
+														ImGui::InputFloat("##TextRenderFontSize", &textRenderFontSize, 1.0f, 10.0f);
+														ImGui::SameLine();
+														if (ImGui::Button("Set##TextRenderFontSize"))
+														{
+															if (textRenderComponent)
+															{
+																textRenderComponent->SetWorldSize(textRenderFontSize);
+																PlayActionSound(true);
+															}
+															else
+																PlayActionSound(false);
+														}
+													}
+													else
+														ImGui::Text("Text Render Component Doesn't Exist!");
+
+													ImGui::TreePop();
+												}
+
+												ImGui::EndDisabled();
 											}
 											break;
 									}
