@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.7d)");
+			ImGui::Text("UETools GUI (v1.7e)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1846,6 +1846,28 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
+								if (ImGui::Button("Enable Collision"))
+								{
+									if (actor.reference)
+									{
+										actor.reference->SetActorEnableCollision(true);
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+								ImGui::SameLine();
+								if (ImGui::Button("Disable Collision"))
+								{
+									if (actor.reference)
+									{
+										actor.reference->SetActorEnableCollision(false);
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+
 								static bool visibilityPropagateToComponents = false;
 								if (ImGui::Button("Set Visible"))
 								{
@@ -1907,6 +1929,34 @@ void GUI::Draw()
 									if (actor.reference)
 									{
 										actor.reference->K2_DestroyActor();
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+
+								ImGui::NewLine();
+
+								ImGui::Text("Custom Time Dilation");
+								static float customTimeDilation = 1.0f;
+								if (ImGui::Button("Get##CustomTimeDilation"))
+								{
+									if (actor.reference)
+									{
+										customTimeDilation = actor.reference->CustomTimeDilation;
+										PlayActionSound(true);
+									}
+									else
+										PlayActionSound(false);
+								}
+								ImGui::SameLine();
+								ImGui::InputFloat("##CustomTimeDilation", &customTimeDilation, 0.1f, 1.0f);
+								ImGui::SameLine();
+								if (ImGui::Button("Set##CustomTimeDilation"))
+								{
+									if (actor.reference)
+									{
+										actor.reference->CustomTimeDilation = customTimeDilation;
 										PlayActionSound(true);
 									}
 									else
