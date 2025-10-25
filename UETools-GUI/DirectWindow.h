@@ -1,6 +1,8 @@
 #pragma once
 #include "GUI.h"
 
+#include "definitions.h"
+
 #include "dwmapi.h"
 #include "d3d11.h"
 

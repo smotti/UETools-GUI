@@ -1,6 +1,26 @@
 #pragma once
 
 
+
+
+// =======================
+// |  RENDERING SECTION  |
+// =======================
+
+/*
+	#define INACTIVE_ZERO_SIZE
+
+	Sets overlay window to { 0, 0 } size when menu isn't active or target window isn't in focus.
+	Should only be used as an emergency solution for Windows 24H2+ black screen glitch as it disables all of background rendering features.
+*/
+
+
+
+
+// ======================
+// |  FEATURES SECTION  |
+// ======================
+
 /*
 	#define UE5
 

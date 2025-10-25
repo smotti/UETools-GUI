@@ -357,6 +357,7 @@ void DirectWindow::Create()
 
         /* Move the window on top of the targeted window and handle resize. */
         if (hTargetWindow != nullptr)
+#ifdef INACTIVE_ZERO_SIZE
             /*
             * Windows 11 24H2
             * Set ImGui overlay to size of zero on both axis (X - Width & Y - Height) when menu isn't active.
@@ -366,6 +367,9 @@ void DirectWindow::Create()
             * into similar issue and was able to find a workaround, although it took a few weeks if not months.
             */
             MoveWindow(hwnd, !isMenuActive || !isInFocus);
+#else
+            MoveWindow(hwnd);
+#endif
         else
             continue;
 
