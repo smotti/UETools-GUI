@@ -112,7 +112,7 @@ void DirectWindow::GetWindow()
     EnumWindows(EnumWind, NULL);
 }
 
-BOOL CALLBACK DirectWindow::EnumWind(const HWND hWindow, const LPARAM lParam)
+BOOL CALLBACK DirectWindow::EnumWind(HWND hWindow, LPARAM lParam)
 {
     DWORD procID;
     GetWindowThreadProcessId(hWindow, &procID);
@@ -126,7 +126,7 @@ BOOL CALLBACK DirectWindow::EnumWind(const HWND hWindow, const LPARAM lParam)
     return FALSE;  // Stop enumeration after finding the first match.
 }
 
-void DirectWindow::MoveWindow(const HWND hCurrentProcessWindow)
+void DirectWindow::MoveWindow(const HWND& hWindow, const bool& forceInvalidSize)
 {
     RECT rect;
     if (hTargetWindow == nullptr)
@@ -134,13 +134,13 @@ void DirectWindow::MoveWindow(const HWND hCurrentProcessWindow)
 
     GetWindowRect(hTargetWindow, &rect);
 
-    int lWindowWidth = rect.right - rect.left; 
-    int lWindowHeight = rect.bottom - rect.top;
+    int lWindowWidth = forceInvalidSize ? 0 : rect.right - rect.left;
+    int lWindowHeight = forceInvalidSize ? 0 : rect.bottom - rect.top;
 
-    SetWindowPos(hCurrentProcessWindow, nullptr, rect.left, rect.top, lWindowWidth, lWindowHeight, SWP_SHOWWINDOW);
+    SetWindowPos(hWindow, nullptr, rect.left, rect.top, lWindowWidth, lWindowHeight, SWP_SHOWWINDOW);
 }
 
-BOOL DirectWindow::IsWindowFocus(const HWND hCurrentProcessWindow)
+BOOL DirectWindow::IsWindowFocus(const HWND& hWindow)
 {
     char lpCurrentWindowUsedClass[125];
     char lpCurrentWindowClass[125];
@@ -153,31 +153,31 @@ BOOL DirectWindow::IsWindowFocus(const HWND hCurrentProcessWindow)
     if (GetClassNameA(hTargetWindow, lpCurrentWindowClass, sizeof(lpCurrentWindowClass)) == 0)
         return FALSE;
 
-    if (GetClassNameA(hCurrentProcessWindow, lpOverlayWindowClass, sizeof(lpOverlayWindowClass)) == 0)
+    if (GetClassNameA(hWindow, lpOverlayWindowClass, sizeof(lpOverlayWindowClass)) == 0)
         return FALSE;
 
     // If the foreground window is neither the target nor the overlay, make overlay click-through.
     if (strcmp(lpCurrentWindowUsedClass, lpCurrentWindowClass) != 0 && strcmp(lpCurrentWindowUsedClass, lpOverlayWindowClass) != 0)
     {
-        SetWindowLong(hCurrentProcessWindow, GWL_EXSTYLE, WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
+        SetWindowLong(hWindow, GWL_EXSTYLE, WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW);
         return FALSE;
     }
 
     return TRUE;
 }
 
-BOOL DirectWindow::IsWindowValid(const HWND hCurrentWindow)
+BOOL DirectWindow::IsWindowValid(const HWND& hWindow)
 {
     DWORD styles, ex_styles;
     RECT rect;
 
-    if (!IsWindowVisible(hCurrentWindow) ||
-        (IsIconic(hCurrentWindow) || IsWindowCloaked(hCurrentWindow)))
+    if (!IsWindowVisible(hWindow) ||
+        (IsIconic(hWindow) || IsWindowCloaked(hWindow)))
         return FALSE;
 
-    GetClientRect(hCurrentWindow, &rect);
-    styles = (DWORD)GetWindowLongPtr(hCurrentWindow, GWL_STYLE);
-    ex_styles = (DWORD)GetWindowLongPtr(hCurrentWindow, GWL_EXSTYLE);
+    GetClientRect(hWindow, &rect);
+    styles = (DWORD)GetWindowLongPtr(hWindow, GWL_STYLE);
+    ex_styles = (DWORD)GetWindowLongPtr(hWindow, GWL_EXSTYLE);
 
     if (ex_styles & WS_EX_TOOLWINDOW)
         return FALSE;
@@ -189,15 +189,15 @@ BOOL DirectWindow::IsWindowValid(const HWND hCurrentWindow)
     return TRUE;
 }
 
-BOOL DirectWindow::IsWindowCloaked(const HWND hCurrentWindow)
+BOOL DirectWindow::IsWindowCloaked(const HWND& hWindow)
 {
     DWORD cloaked;
-    const HRESULT hr = DwmGetWindowAttribute(hCurrentWindow, DWMWA_CLOAKED, &cloaked,
+    const HRESULT hr = DwmGetWindowAttribute(hWindow, DWMWA_CLOAKED, &cloaked,
         sizeof(cloaked));
     return SUCCEEDED(hr) && cloaked;
 }
 
-void DirectWindow::SetTargetWindow(const HWND hWindow)
+void DirectWindow::SetTargetWindow(const HWND& hWindow)
 {
     hTargetWindow = hWindow;
     SetForegroundWindow(hTargetWindow);
@@ -347,24 +347,37 @@ void DirectWindow::Create()
         if (bDone)
             break;
 
-        /* Move the window on top of the targeted window and handle resize. */
-        if (hTargetWindow != nullptr)
-            MoveWindow(hwnd);
-        else
-            continue;
-
         bool isMenuActive = GUI::GetIsMenuActive();
         static bool lastIsMenuActive = !isMenuActive; // Small trick to encourage initial SetWindowLong(). W/o it game wouldn't receive any inputs.
 
+        /* External: Keybindings processing lives here. */
+        Keybindings::Process();
+
+        bool isInFocus = IsWindowFocus(hwnd) && bTargetSet;
+
+        /* Move the window on top of the targeted window and handle resize. */
+        if (hTargetWindow != nullptr)
+            /*
+            * Windows 11 24H2
+            * Set ImGui overlay to size of zero on both axis (X - Width & Y - Height) when menu isn't active.
+            * We'll rely on such a stupid compromise until solution for updated Desktop Window Manager (DWM) is discovered.
+            * 
+            * Developer of Lossless Scaling (https://store.steampowered.com/app/993090/Lossless_Scaling/) did run
+            * into similar issue and was able to find a workaround, although it took a few weeks if not months.
+            */
+            MoveWindow(hwnd, !isMenuActive || !isInFocus);
+        else
+            continue;
+
         /* Clear overlay when the targeted window is not in focus. */
-        if (!IsWindowFocus(hwnd) && bTargetSet)
+        if (isInFocus == false)
         {
             lastIsMenuActive = !isMenuActive; // Small trick to make sure ImGui wouldn't loose focus after ALT + TAB'ing. W/o it menu woudn't receive any inputs.
 
             /* Clear to fully transparent so overlay is invisible when target is not focused. */
             GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView, nullptr);
             GetDeviceContext()->ClearRenderTargetView(renderTargetView, color_transparent);
-
+            
             GetSwapChain()->Present(DXGI_SWAP_EFFECT_SEQUENTIAL, 0x0); // VSync (interval 1).
 
             continue;
@@ -439,10 +452,6 @@ void DirectWindow::Create()
             lastIsMenuActive = isMenuActive;
         }
         
-
-        /* External: Keybindings processing lives here. */
-        Keybindings::Process();
-
 
 
 

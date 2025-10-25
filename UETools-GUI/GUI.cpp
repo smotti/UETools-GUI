@@ -738,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.7e)");
+			ImGui::Text("UETools GUI (v1.8)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1630,7 +1630,41 @@ void GUI::Draw()
 						ImGui::SameLine();
 						ImGui::Checkbox("Enable Tracking##Actors", &Features::ActorsTracker::enabled);
 
-						if (ImGui::Button("Show All##Actors"))
+						ImGui::NewLine();
+
+						if (ImGui::Button("Enable Collision (All)##Actors"))
+						{
+							bool anyActorCollisionEnabled = false;
+							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+							{
+								if (actor.reference)
+								{
+									actor.reference->SetActorEnableCollision(true);
+									anyActorCollisionEnabled = true;
+								}
+							}
+
+							PlayActionSound(anyActorCollisionEnabled);
+						}
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						if (ImGui::Button("Disable Collision (All)##Actors"))
+						{
+							bool anyActorCollisionDisabled = false;
+							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+							{
+								if (actor.reference)
+								{
+									actor.reference->SetActorEnableCollision(false);
+									anyActorCollisionDisabled = true;
+								}
+							}
+
+							PlayActionSound(anyActorCollisionDisabled);
+						}
+
+						if (ImGui::Button("Set Visible (All)##Actors"))
 						{
 							bool anyActorShown = false;
 							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
@@ -1647,7 +1681,7 @@ void GUI::Draw()
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						if (ImGui::Button("Hide All##Actors"))
+						if (ImGui::Button("Set Hidden (All)##Actors"))
 						{
 							bool anyActorHidden = false;
 							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
@@ -1661,10 +1695,8 @@ void GUI::Draw()
 
 							PlayActionSound(anyActorHidden);
 						}
-						ImGui::SameLine();
-						ImGui::Spacing();
-						ImGui::SameLine();
-						if (ImGui::Button("Destroy All##Actors"))
+
+						if (ImGui::Button("Destroy (All)##Actors"))
 						{
 							bool anyActorDestroyed = false;
 							for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
@@ -1813,7 +1845,7 @@ void GUI::Draw()
 
 								ImGui::NewLine();
 
-								if (ImGui::Button("Static"))
+								if (ImGui::Button("Make Static"))
 								{
 									if (actor.reference && actor.reference->RootComponent)
 									{
@@ -1824,7 +1856,7 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 								ImGui::SameLine();
-								if (ImGui::Button("Stationary"))
+								if (ImGui::Button("Make Stationary"))
 								{
 									if (actor.reference && actor.reference->RootComponent)
 									{
@@ -1835,7 +1867,7 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 								ImGui::SameLine();
-								if (ImGui::Button("Movable"))
+								if (ImGui::Button("Make Movable"))
 								{
 									if (actor.reference && actor.reference->RootComponent)
 									{
@@ -1845,6 +1877,8 @@ void GUI::Draw()
 									else
 										PlayActionSound(false);
 								}
+								ImGui::SameLine();
+								ImGui::TextHint("Static - Never moves and relies entirely on baked lightmaps and shadows for lighting.\nLowest performance cost, ideal for architecture and environment pieces.\n\nStationary - Cannot move but allows changes to materials and visibility, and combines baked lighting with some dynamic shadow interactions.\nSlightly higher cost than Static, good for objects that stay in place but need minor runtime variations.\n\nMovable - Can move, rotate, scale, or animate and uses fully dynamic lighting and shadows.\nHighest performance cost, suited for characters, doors, vehicles, and interactive gameplay objects.");
 
 								if (ImGui::Button("Enable Collision"))
 								{
@@ -1923,8 +1957,8 @@ void GUI::Draw()
 									else
 										PlayActionSound(false);
 								}
-								ImGui::SameLine();
-								if (ImGui::Button("Destroy Actor"))
+
+								if (ImGui::Button("Destroy"))
 								{
 									if (actor.reference)
 									{
@@ -2893,7 +2927,9 @@ void GUI::Draw()
 						ImGui::SameLine();
 						ImGui::Checkbox("Top Level Only##Widgets", &Features::WidgetsList::filterTopLevelOnly);
 
-						if (ImGui::Button("Show All##Widgets"))
+						ImGui::NewLine();
+
+						if (ImGui::Button("Set Visible (All)##Widgets"))
 						{
 							Features::WidgetsList::storedWidgetsVisibility.clear();
 							bool anyWidgetAffected = false;
@@ -2912,7 +2948,7 @@ void GUI::Draw()
 							PlayActionSound(anyWidgetAffected);
 						}
 						ImGui::SameLine();
-						if (ImGui::Button("Hide All##Widgets"))
+						if (ImGui::Button("Set Hidden (All)##Widgets"))
 						{
 							Features::WidgetsList::storedWidgetsVisibility.clear();
 							bool anyWidgetAffected = false;
@@ -2931,7 +2967,7 @@ void GUI::Draw()
 							PlayActionSound(anyWidgetAffected);
 						}
 						ImGui::SameLine();
-						if (ImGui::Button("Restore Last State##Widgets"))
+						if (ImGui::Button("Restore Previous State##Widgets"))
 						{
 							bool anyWidgetAffected = false;
 

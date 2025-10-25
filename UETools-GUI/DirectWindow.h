@@ -166,7 +166,7 @@ private:
 	* 		 This is used only when the overlay is build as an EXE.
 	* @param hWindow : target window.
 	*/
-	static void SetTargetWindow(HWND hWindow);
+	static void SetTargetWindow(const HWND& hWindow);
 	/**
 	* @brief : Callback function that retrive the main window of the process.
 			 This function is only called when the overlay is build as DLL.
@@ -183,25 +183,25 @@ private:
 	* @brief : Function that move the overlay on top of the targeted window.
 	* @param hWindow: Window of the overlay.
 	*/
-	static void MoveWindow(HWND hWindow);
+	static void MoveWindow(const HWND& hWindow, const bool& forceInvalidSize = false);
 	/**
 	* @brief : Function that check if the overlay window or the targeted window is focus.
 	* @param  hWindow: Window of the overlay.
 	* @retval : TRUE if one of the window is focus else FALSE.
 	*/
-	static BOOL IsWindowFocus(HWND hWindow);
+	static BOOL IsWindowFocus(const HWND& hWindow);
 	/**
 	* @brief : Function that check if a window is valid.
 	* @param  hWindow : window to be tested.
 	* @retval : TRUE if the window is valid else FALSE.
 	*/
-	static BOOL IsWindowValid(HWND hWindow);
+	static BOOL IsWindowValid(const HWND& hWindow);
 	/**
 	* @brief : Function that check if a window is cloacked.
 	* @param  hWindow : window to be tested.
 	* @retval : TRUE if the window is cloacked else FALSE.
 	*/
-	static BOOL IsWindowCloaked(HWND hWindow);
+	static BOOL IsWindowCloaked(const HWND& hWindow);
 	/**
 	* @brief : Function that look if the targeted window has been closed.
 	* @retval : TRUE if the function is still up else FALSE.
