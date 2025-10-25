@@ -35,6 +35,8 @@ While in the title, press Insert (INS) to toggle the menu.
 > 1) Navigate to the title’s installation directory, then open the following path: `{Title internal name}\Binaries\Win64`.
 > 2) Locate the game executable and open its Properties (Right-click → Properties).
 > 3) Go to the Compatibility tab and enable "Disable fullscreen optimizations" feature.
+>
+> Alternatively, `#define INACTIVE_ZERO_SIZE` in `definitions.h` can be uncommented, although it comes with set of compromises.
 
 # Great First Experience Games
 ## [Lies of P (Unreal Engine 4.27.2)](https://store.steampowered.com/app/1627720)
