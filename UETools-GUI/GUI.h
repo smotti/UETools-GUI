@@ -70,6 +70,17 @@ namespace ImGui
 	void ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v);
 
 
+	enum E_HDRColorSpace
+	{
+		Rec709,
+		DCI_P3,
+		Rec2020,
+		ACES,
+		ACEScg
+	};
+	void HDRColorSpaceComboBox(const char* label, E_HDRColorSpace* v);
+
+
 	/*
 	* @brief Using pre-determined table, converts an ImGui key to the corresponding WinAPI virtual-key code.
 	* @param key - ImGui key to be converted.

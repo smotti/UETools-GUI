@@ -388,6 +388,36 @@ void ImGui::ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v)
 
 
 
+void ImGui::HDRColorSpaceComboBox(const char* label, E_HDRColorSpace* v)
+{
+	ImGui::PushID(label);
+
+	if (label)
+	{
+		const char* idPosition = std::strstr(label, "##");
+		if (idPosition)
+			ImGui::TextUnformatted(label, idPosition);
+		else
+			ImGui::TextUnformatted(label);
+
+		ImGui::SameLine();
+	}
+
+	static const char* items[] = { "Rec709 / sRGB", "DCI-P3", "Rec2020", "ACES", "ACEScg" };
+	int index = static_cast<int>(*v);
+
+	ImGui::SetNextItemWidth(200);
+	if (ImGui::Combo("##object_filter_combo", &index, items, IM_ARRAYSIZE(items)))
+	{
+		*v = static_cast<E_HDRColorSpace>(index);
+	}
+
+	ImGui::PopID();
+}
+
+
+
+
 int ImGui::ImGuiKey_ToWinAPI(const ImGuiKey& key)
 {
 	switch (key)
@@ -739,7 +769,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.8c)");
+			ImGui::Text("UETools GUI (v1.9)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -906,7 +936,71 @@ void GUI::Draw()
 								}
 							}
 
+							ImGui::CategorySeparator();
+
+							ImGui::SetFontTitle();
+							ImGui::Text("High Dynamic Range");
+							ImGui::SetFontSmall();
+							ImGui::Text("HDR must be allowed in order to be enabled.");
+							ImGui::SameLine();
+							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.AllowHDR = 1");
+							ImGui::SetFontRegular();
+
 							ImGui::NewLine();
+
+							static float HDRLuminance = 1000;
+							ImGui::Text("HDR Luminance:  ");
+							ImGui::SameLine();
+							ImGui::InputFloat("##HDRLuminance", &HDRLuminance, 10.0f, 100.0f);
+
+							static ImGui::E_HDRColorSpace HDRColorSpace = ImGui::E_HDRColorSpace::Rec2020;
+							ImGui::Text("HDR Color Space:");
+							ImGui::SameLine();
+							ImGui::HDRColorSpaceComboBox("##HDRColorSpace", &HDRColorSpace);
+
+							static float HDRUILevel = 0.6f;
+							ImGui::Text("HDR UI Level:   ");
+							ImGui::SameLine();
+							ImGui::InputFloat("##HDRUILevel", &HDRUILevel, 0.1f, 1.0f);
+
+							ImGui::NewLine();
+
+							if (ImGui::Button("Enable HDR"))
+							{
+								SDK::UGameUserSettings* gameUserSettings = SDK::UGameUserSettings::GetGameUserSettings();
+								if (gameUserSettings)
+								{
+									/* HDR Luminance doesn't change if HDR is already enabled. */
+									gameUserSettings->EnableHDRDisplayOutput(false, 0.0f);
+
+									SDK::UWorld* world = Unreal::World::Get();
+									if (world)
+									{
+										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, SDK::UKismetStringLibrary::Concat_StrStr(L"r.HDR.Display.ColorGamut ", SDK::UKismetStringLibrary::Conv_IntToString(HDRColorSpace)), nullptr);
+										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, SDK::UKismetStringLibrary::Concat_StrStr(L"r.HDR.UI.Level ", SDK::UKismetStringLibrary::Conv_FloatToString(HDRUILevel)), nullptr);
+										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, L"r.HDR.UI.CompositeMode 1", nullptr);
+									}
+
+									gameUserSettings->EnableHDRDisplayOutput(true, HDRLuminance);
+									PlayActionSound(true);
+								}
+								else
+									PlayActionSound(false);
+							}
+							ImGui::SameLine();
+							if (ImGui::Button("Disable HDR"))
+							{
+								SDK::UGameUserSettings* gameUserSettings = SDK::UGameUserSettings::GetGameUserSettings();
+								if (gameUserSettings)
+								{
+									gameUserSettings->EnableHDRDisplayOutput(false, 0.0f);
+									PlayActionSound(true);
+								}
+								else
+									PlayActionSound(false);
+							}
+
+							ImGui::CategorySeparator();
 
 							bool fixedFrameRateEnabled = Features::Debug::engine.fixedFrameRateEnabled;
 							if (ImGui::Checkbox("Fixed FrameRate Enabled", &fixedFrameRateEnabled))
