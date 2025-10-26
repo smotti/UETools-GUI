@@ -70,15 +70,12 @@ namespace ImGui
 	void ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v);
 
 
-	enum E_HDRColorSpace
+	enum E_HDRLuminance
 	{
-		Rec709,
-		DCI_P3,
-		Rec2020,
-		ACES,
-		ACEScg
+		Default,
+		Extended
 	};
-	void HDRColorSpaceComboBox(const char* label, E_HDRColorSpace* v);
+	void HDRLuminanceComboBox(const char* label, E_HDRLuminance* v);
 
 
 	/*

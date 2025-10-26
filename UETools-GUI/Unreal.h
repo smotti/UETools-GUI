@@ -88,6 +88,9 @@ namespace Unreal
 		* @return 'True' if the Console was successfully cleared; 'False' otherwise.
 		*/
 		static bool Clear();
+
+
+		static bool Execute(const SDK::FString& command);
 	};
 
 

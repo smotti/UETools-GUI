@@ -388,7 +388,7 @@ void ImGui::ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v)
 
 
 
-void ImGui::HDRColorSpaceComboBox(const char* label, E_HDRColorSpace* v)
+void ImGui::HDRLuminanceComboBox(const char* label, E_HDRLuminance* v)
 {
 	ImGui::PushID(label);
 
@@ -403,13 +403,13 @@ void ImGui::HDRColorSpaceComboBox(const char* label, E_HDRColorSpace* v)
 		ImGui::SameLine();
 	}
 
-	static const char* items[] = { "Rec709 / sRGB", "DCI-P3", "Rec2020", "ACES", "ACEScg" };
+	static const char* items[] = { "Default (1000 nits)", "Extended (2000 nits)" };
 	int index = static_cast<int>(*v);
 
-	ImGui::SetNextItemWidth(200);
+	ImGui::SetNextItemWidth(320);
 	if (ImGui::Combo("##object_filter_combo", &index, items, IM_ARRAYSIZE(items)))
 	{
-		*v = static_cast<E_HDRColorSpace>(index);
+		*v = static_cast<E_HDRLuminance>(index);
 	}
 
 	ImGui::PopID();
@@ -769,7 +769,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.9)");
+			ImGui::Text("UETools GUI (v1.9b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -912,6 +912,9 @@ void GUI::Draw()
 									ImGui::SetFontRegular();
 									if (Features::Debug::engine.gameViewportClient.console.reference)
 									{
+										ImGui::SameLine();
+										ImGui::TextHint("Press ~ (Tilde) or F10 to open. Second press will switch console to detailed mode.");
+
 										if (ImGui::TreeNode("Details##Console"))
 										{
 											ImGui::Text("Console Class: %s", Features::Debug::engine.gameViewportClient.console.className.c_str());
@@ -941,27 +944,24 @@ void GUI::Draw()
 							ImGui::SetFontTitle();
 							ImGui::Text("High Dynamic Range");
 							ImGui::SetFontSmall();
-							ImGui::Text("HDR must be allowed in order to be enabled.");
+							ImGui::Text("HDR must be allowed through configuration file in order to be enabled.");
 							ImGui::SameLine();
-							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.AllowHDR = 1");
+							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.AllowHDR = 1\n\nCertain titles may try deleting \"Engine.ini\" file from system,\nso it's recommended to mark it as for read-only (RMB -> Properties).");
+							ImGui::Text("Behavior can be adjusted through native console (Engine -> Game Viewport Client -> Console) or configuration file.");
+							ImGui::SameLine();
+#ifdef UE5
+							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.HDR.UI.CompositeMode = 1\nEnables HDR UI composition, which attempts to preserve LDR visuals and blending.\n\nr.HDR.Display.ColorGamut = 2\nDetermines HDR color space.\n0 - Rec709.\n1 - DCI - P3.\n2 - Rec2020.\n3 - ACES.\n4 - ACEScg.\n\nr.HDR.UI.Level = 0.6\nDetermines UI visibility in range of 0.1 - 1.0.\n\nr.HDR.Display.MaxLuminance 1000\nDetermines the peak brightness level (in nits).");
+#else
+							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.HDR.UI.CompositeMode = 1\nEnables HDR UI composition, which attempts to preserve LDR visuals and blending.\n\nr.HDR.Display.ColorGamut = 2\nDetermines HDR color space.\n0 - Rec709.\n1 - DCI - P3.\n2 - Rec2020.\n3 - ACES.\n4 - ACEScg.\n\nr.HDR.UI.Level = 0.6\nDetermines UI visibility in range of 0.1 - 1.0.");
+#endif
 							ImGui::SetFontRegular();
 
 							ImGui::NewLine();
 
-							static float HDRLuminance = 1000;
-							ImGui::Text("HDR Luminance:  ");
+							static ImGui::E_HDRLuminance HDRLuminance = ImGui::E_HDRLuminance::Default;
+							ImGui::Text("HDR Luminance:");
 							ImGui::SameLine();
-							ImGui::InputFloat("##HDRLuminance", &HDRLuminance, 10.0f, 100.0f);
-
-							static ImGui::E_HDRColorSpace HDRColorSpace = ImGui::E_HDRColorSpace::Rec2020;
-							ImGui::Text("HDR Color Space:");
-							ImGui::SameLine();
-							ImGui::HDRColorSpaceComboBox("##HDRColorSpace", &HDRColorSpace);
-
-							static float HDRUILevel = 0.6f;
-							ImGui::Text("HDR UI Level:   ");
-							ImGui::SameLine();
-							ImGui::InputFloat("##HDRUILevel", &HDRUILevel, 0.1f, 1.0f);
+							ImGui::HDRLuminanceComboBox("##HDRLuminance", &HDRLuminance);
 
 							ImGui::NewLine();
 
@@ -973,15 +973,11 @@ void GUI::Draw()
 									/* HDR Luminance doesn't change if HDR is already enabled. */
 									gameUserSettings->EnableHDRDisplayOutput(false, 0.0f);
 
-									SDK::UWorld* world = Unreal::World::Get();
-									if (world)
-									{
-										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, SDK::UKismetStringLibrary::Concat_StrStr(L"r.HDR.Display.ColorGamut ", SDK::UKismetStringLibrary::Conv_IntToString(HDRColorSpace)), nullptr);
-										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, SDK::UKismetStringLibrary::Concat_StrStr(L"r.HDR.UI.Level ", SDK::UKismetStringLibrary::Conv_FloatToString(HDRUILevel)), nullptr);
-										SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, L"r.HDR.UI.CompositeMode 1", nullptr);
-									}
+									/* Disable auto-exposure to avoid over-darkened scenes. */
+									Unreal::Console::Execute(L"r.DefaultFeature.AutoExposure 0");
+									Unreal::Console::Execute(L"r.EyeAdaptationQuality 0");
 
-									gameUserSettings->EnableHDRDisplayOutput(true, HDRLuminance);
+									gameUserSettings->EnableHDRDisplayOutput(true, HDRLuminance == ImGui::E_HDRLuminance::Default ? 1000 : 2000);
 									PlayActionSound(true);
 								}
 								else
@@ -3749,16 +3745,10 @@ void GUI::Draw()
 			ImGui::SameLine();
 			if (ImGui::Button("Execute"))
 			{
-				if (world)
+				SDK::FString command = Unreal::String::CString_ToFString(Features::Console::consoleBuffer);
+				if (command.Num() > 0)
 				{
-					SDK::FString consoleCommand = Unreal::String::CString_ToFString(Features::Console::consoleBuffer);
-					if (consoleCommand.Num() > 0)
-					{
-						SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, consoleCommand, nullptr);
-						GUI::PlayActionSound(true);
-					}
-					else
-						GUI::PlayActionSound(false);
+					GUI::PlayActionSound(Unreal::Console::Execute(command));
 				}
 				else
 					GUI::PlayActionSound(false);

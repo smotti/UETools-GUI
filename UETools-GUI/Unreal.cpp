@@ -100,6 +100,17 @@ bool Unreal::Console::Clear()
 	return Print(emptyLines);
 }
 
+bool Unreal::Console::Execute(const SDK::FString& command)
+{
+	SDK::UWorld* world = World::Get();
+	if (world == nullptr)
+		return false;
+
+	SDK::APlayerController* playerController = PlayerController::Get();
+	SDK::UKismetSystemLibrary::ExecuteConsoleCommand(world, command, playerController ? playerController : nullptr);
+	return true;
+}
+
 
 
 
