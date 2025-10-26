@@ -33,6 +33,13 @@ bool Unreal::Console::Construct(const bool& ignorePresence)
 	if (SDK::UObject* objectReference = SDK::UGameplayStatics::SpawnObject(Engine ? Engine->ConsoleClass : SDK::TSubclassOf<SDK::UConsole>(SDK::UConsole::StaticClass()), GameViewportClient))
 	{
 		GameViewportClient->ViewportConsole = static_cast<SDK::UConsole*>(objectReference); // Clarify that newly spawned Object is of class Console.
+
+		/* Fill empty history buffer with set of general console commands. */
+		if (GameViewportClient->ViewportConsole->HistoryBuffer.Num() == 0)
+		{
+			GameViewportClient->ViewportConsole->HistoryBuffer = SDK::UKismetStringLibrary::ParseIntoArray(L"stat FPS | stat Unit | stat UnitGraph | stat UnitMax | stat Summary | stat Hitches | stat AI & stat Levels & stat ColorList & PrevViewMode & ViewMode Lit", L" & ", true);
+		}
+
 		return true;
 	}
 	else
