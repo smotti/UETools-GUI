@@ -70,14 +70,6 @@ namespace ImGui
 	void ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v);
 
 
-	enum E_HDRLuminance
-	{
-		Default,
-		Extended
-	};
-	void HDRLuminanceComboBox(const char* label, E_HDRLuminance* v);
-
-
 	/*
 	* @brief Using pre-determined table, converts an ImGui key to the corresponding WinAPI virtual-key code.
 	* @param key - ImGui key to be converted.

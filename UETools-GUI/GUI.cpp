@@ -388,36 +388,6 @@ void ImGui::ObjectFilterModeComboBox(const char* label, E_ObjectFilterMode* v)
 
 
 
-void ImGui::HDRLuminanceComboBox(const char* label, E_HDRLuminance* v)
-{
-	ImGui::PushID(label);
-
-	if (label)
-	{
-		const char* idPosition = std::strstr(label, "##");
-		if (idPosition)
-			ImGui::TextUnformatted(label, idPosition);
-		else
-			ImGui::TextUnformatted(label);
-
-		ImGui::SameLine();
-	}
-
-	static const char* items[] = { "Default (1000 nits)", "Extended (2000 nits)" };
-	int index = static_cast<int>(*v);
-
-	ImGui::SetNextItemWidth(320);
-	if (ImGui::Combo("##object_filter_combo", &index, items, IM_ARRAYSIZE(items)))
-	{
-		*v = static_cast<E_HDRLuminance>(index);
-	}
-
-	ImGui::PopID();
-}
-
-
-
-
 int ImGui::ImGuiKey_ToWinAPI(const ImGuiKey& key)
 {
 	switch (key)
@@ -769,7 +739,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.9b)");
+			ImGui::Text("UETools GUI (v1.9c)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -939,64 +909,127 @@ void GUI::Draw()
 								}
 							}
 
-							ImGui::CategorySeparator();
+							ImGui::NewLine();
 
 							ImGui::SetFontTitle();
 							ImGui::Text("High Dynamic Range");
-							ImGui::SetFontSmall();
-							ImGui::Text("HDR must be allowed through configuration file in order to be enabled.");
-							ImGui::SameLine();
-							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.AllowHDR = 1\n\nCertain titles may try deleting \"Engine.ini\" file from system,\nso it's recommended to mark it as for read-only (RMB -> Properties).");
-							ImGui::Text("Behavior can be adjusted through native console (Engine -> Game Viewport Client -> Console) or configuration file.");
-							ImGui::SameLine();
-#ifdef UE5
-							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.HDR.UI.CompositeMode = 1\nEnables HDR UI composition, which attempts to preserve LDR visuals and blending.\n\nr.HDR.Display.ColorGamut = 2\nDetermines HDR color space.\n0 - Rec709.\n1 - DCI - P3.\n2 - Rec2020.\n3 - ACES.\n4 - ACEScg.\n\nr.HDR.UI.Level = 0.6\nDetermines UI visibility in range of 0.1 - 1.0.\n\nr.HDR.Display.MaxLuminance 1000\nDetermines the peak brightness level (in nits).");
-#else
-							ImGui::TextHint("DefaultEngine.ini \\ UserEngine.ini \\ Engine.ini\n\n[/Script/Engine.RendererSettings]\nr.HDR.UI.CompositeMode = 1\nEnables HDR UI composition, which attempts to preserve LDR visuals and blending.\n\nr.HDR.Display.ColorGamut = 2\nDetermines HDR color space.\n0 - Rec709.\n1 - DCI - P3.\n2 - Rec2020.\n3 - ACES.\n4 - ACEScg.\n\nr.HDR.UI.Level = 0.6\nDetermines UI visibility in range of 0.1 - 1.0.");
-#endif
 							ImGui::SetFontRegular();
+							if (ImGui::TreeNode("Details##HDR"))
+							{
+#ifndef UE5
+								ImGui::SetFontTitle();
+								ImGui::Text("[!] DirectX 12 [!]");
+								ImGui::SetFontRegular();
+								ImGui::Text("Unreal Engine 4.14 - 4.27 only support HDR while running under DirectX 11.");
+								ImGui::NewLine();
+#endif
+
+								ImGui::SetFontSmall();
+								ImGui::Text("HDR must be allowed through configuration file in order to be enabled.");
+
+								ImGui::SetFontRegular();
+								ImGui::Text("DefaultEngine.ini | UserEngine.ini | Engine.ini");
+								ImGui::SetFontSmall();
+								static const char* HDRAllowConfigDescription = "[/Script/Engine.RendererSettings]\n"
+									"r.AllowHDR = 1";
+								static const size_t HDRAllowConfigDescriptionLength = strlen(HDRAllowConfigDescription);
+								ImGui::InputTextMultiline("##HDRAllowConfigDescription", const_cast<char*>(HDRAllowConfigDescription), HDRAllowConfigDescriptionLength, { 500, 120 }, ImGuiInputTextFlags_ReadOnly);
+
+								ImGui::NewLine();
+
+								ImGui::Text("Behavior can be adjusted through configuration file or Unreal Engine Console (Engine -> Game Viewport Client -> Console).");
+
+								ImGui::SetFontRegular();
+								ImGui::Text("DefaultEngine.ini | UserEngine.ini | Engine.ini");
+								ImGui::SetFontSmall();
+								static const char* HDRSettingsConfigDescription = "[/Script/Engine.RendererSettings]\n"
+																				  "r.HDR.EnableHDROutput = 1\n"
+																				  "; 0 - LDR.\n"
+																				  "; 1 - HDR.\n"
+																				  "\n"
+																				  "r.HDR.Display.ColorGamut = 2\n"
+																				  "; Color space of the output display.\n"
+																				  "; 0 - Rec709.\n"
+																				  "; 1 - DCI - P3.\n"
+																				  "; 2 - Rec2020.\n"
+																				  "; 3 - ACES.\n"
+																				  "; 4 - ACEScg.\n"
+																				  "\n"
+																				  "r.HDR.Display.OutputDevice = 5\n"
+																				  "; Device format of the output display\n"
+																				  "; 0 - sRGB (LDR).\n"
+																				  "; 1 - Rec709 (LDR).\n"
+																				  "; 2 - Explicit gamma mapping (LDR).\n"
+																				  "; 3 - ACES 1000 nit ST-2084 (Dolby PQ) (HDR).\n"
+																				  "; 4 - ACES 2000 nit ST-2084 (Dolby PQ) (HDR).\n"
+																				  "; 5 - ACES 1000 nit ScRGB (HDR).\n"
+																				  "; 6 - ACES 2000 nit ScRGB (HDR).\n"
+																				  "; 7 - Linear EXR (HDR).\n"
+																				  "; 8 - Linear final color, no tone curve (HDR).\n"
+																				  "; 9 - Linear final color with tone curve (HDR).\n"
+																				  "\n"
+#ifdef UE5																		  										  
+																				  "r.HDR.Display.MaxLuminance = 1000\n"
+																				  "; Output peak nit level.\n"
+																				  "\n"
+																				  "r.HDR.Display.MidLuminance = 15\n"
+																				  "; Output nit level for 18% gray."
+																				  "\n"
+#endif																			  										  
+																				  "r.HDR.UI.CompositeMode = 1\n"
+																				  "; Preserve LDR visuals and blending for UI elements.\n"
+																				  "\n"
+																				  "r.HDR.UI.Level = 0.65\n"
+																				  "; Luminance level for UI elements.";
+								static const size_t HDRSettingsConfigDescriptionLength = strlen(HDRSettingsConfigDescription);
+								ImGui::InputTextMultiline("##HDRSettingsConfigDescription", const_cast<char*>(HDRSettingsConfigDescription), HDRSettingsConfigDescriptionLength, { 800, 600 }, ImGuiInputTextFlags_ReadOnly);
+
+								ImGui::SetFontRegular();
+								ImGui::Text("Unreal Engine Console");
+								ImGui::SetFontSmall();
+								static const char* HDRSettingsConsoleDescription = "r.HDR.EnableHDROutput 1 | "
+																				   "r.HDR.Display.ColorGamut 2 | "
+																				   "r.HDR.Display.OutputDevice 5 | "
+#ifdef UE5																		   
+																				   "r.HDR.Display.MaxLuminance 1000 | "
+																				   "r.HDR.Display.MidLuminance 15 | "
+#endif																			   
+																				   "r.HDR.UI.CompositeMode 1 | "
+																				   "r.HDR.UI.Level 0.65";
+								static const size_t HDRSettingsConsoleDescriptionLength = strlen(HDRSettingsConsoleDescription);
+								ImGui::InputTextMultiline("##HDRSettingsConsoleDescription", const_cast<char*>(HDRSettingsConsoleDescription), HDRSettingsConsoleDescriptionLength, { 800, 40 }, ImGuiInputTextFlags_ReadOnly);
+
+								ImGui::NewLine();
+
+								ImGui::Text("Autoexposure and fake HDR can cause scenes to appear overly dark.");
+
+								ImGui::SetFontRegular();
+								ImGui::Text("DefaultEngine.ini | UserEngine.ini | Engine.ini");
+								ImGui::SetFontSmall();
+								static const char* HDRDisturbanceConfigDescription = "[/Script/Engine.RendererSettings]\n"
+																					 "r.DefaultFeature.AutoExposure = 0\n"
+																					 "r.EyeAdaptationQuality = 0";
+								static const size_t HDRDisturbanceConfigDescriptionLength = strlen(HDRDisturbanceConfigDescription);
+								ImGui::InputTextMultiline("##HDRDisturbanceConfigDescription", const_cast<char*>(HDRDisturbanceConfigDescription), HDRDisturbanceConfigDescriptionLength, { 500, 120 }, ImGuiInputTextFlags_ReadOnly);
+
+								ImGui::SetFontRegular();
+								ImGui::Text("Unreal Engine Console");
+								ImGui::SetFontSmall();
+								static const char* HDRDisturbanceConsoleDescription = "r.DefaultFeature.AutoExposure 0 | "
+																					  "r.EyeAdaptationQuality 0";
+								static const size_t HDRDisturbanceConsoleDescriptionLength = strlen(HDRDisturbanceConsoleDescription);
+								ImGui::InputTextMultiline("##HDRDisturbanceConsoleDescription", const_cast<char*>(HDRDisturbanceConsoleDescription), HDRDisturbanceConsoleDescriptionLength, { 800, 40 }, ImGuiInputTextFlags_ReadOnly);
+
+								ImGui::NewLine();
+
+								ImGui::Text("Certain titles may try deleting \"Engine.ini\" configuration file from the system!\nIt's recommended to set it as for read-only (RMB -> Properties).");
+								
+								ImGui::SetFontRegular();
+								ImGui::TreePop();
+							}
+							
 
 							ImGui::NewLine();
-
-							static ImGui::E_HDRLuminance HDRLuminance = ImGui::E_HDRLuminance::Default;
-							ImGui::Text("HDR Luminance:");
-							ImGui::SameLine();
-							ImGui::HDRLuminanceComboBox("##HDRLuminance", &HDRLuminance);
-
-							ImGui::NewLine();
-
-							if (ImGui::Button("Enable HDR"))
-							{
-								SDK::UGameUserSettings* gameUserSettings = SDK::UGameUserSettings::GetGameUserSettings();
-								if (gameUserSettings)
-								{
-									/* HDR Luminance doesn't change if HDR is already enabled. */
-									gameUserSettings->EnableHDRDisplayOutput(false, 0.0f);
-
-									/* Disable auto-exposure to avoid over-darkened scenes. */
-									Unreal::Console::Execute(L"r.DefaultFeature.AutoExposure 0");
-									Unreal::Console::Execute(L"r.EyeAdaptationQuality 0");
-
-									gameUserSettings->EnableHDRDisplayOutput(true, HDRLuminance == ImGui::E_HDRLuminance::Default ? 1000 : 2000);
-									PlayActionSound(true);
-								}
-								else
-									PlayActionSound(false);
-							}
-							ImGui::SameLine();
-							if (ImGui::Button("Disable HDR"))
-							{
-								SDK::UGameUserSettings* gameUserSettings = SDK::UGameUserSettings::GetGameUserSettings();
-								if (gameUserSettings)
-								{
-									gameUserSettings->EnableHDRDisplayOutput(false, 0.0f);
-									PlayActionSound(true);
-								}
-								else
-									PlayActionSound(false);
-							}
-
-							ImGui::CategorySeparator();
 
 							bool fixedFrameRateEnabled = Features::Debug::engine.fixedFrameRateEnabled;
 							if (ImGui::Checkbox("Fixed FrameRate Enabled", &fixedFrameRateEnabled))
