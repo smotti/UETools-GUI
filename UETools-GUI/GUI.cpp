@@ -931,7 +931,7 @@ void GUI::Draw()
 								ImGui::Text("DefaultEngine.ini | UserEngine.ini | Engine.ini");
 								ImGui::SetFontSmall();
 								static const char* HDRAllowConfigDescription = "[/Script/Engine.RendererSettings]\n"
-									"r.AllowHDR = 1";
+																			   "r.AllowHDR = 1";
 								static const size_t HDRAllowConfigDescriptionLength = strlen(HDRAllowConfigDescription);
 								ImGui::InputTextMultiline("##HDRAllowConfigDescription", const_cast<char*>(HDRAllowConfigDescription), HDRAllowConfigDescriptionLength, { 500, 120 }, ImGuiInputTextFlags_ReadOnly);
 
