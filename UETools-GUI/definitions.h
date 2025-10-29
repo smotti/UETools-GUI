@@ -45,6 +45,20 @@
 */
 
 /*
+	#define ACTORS_TRACKING
+
+	Enables everything related to Actors tracking (e.g. Enable Tracking).
+	It's disabled by default in order to avoid massive occurencies of incompatibility on older Engine versions.
+*/
+
+/*
+	#define COLLISION_VISUALIZER
+
+	Enables everything related to collision visualization (e.g. Draw Collision).
+	It's disabled by default in order to avoid massive occurencies of incompatibility on older Engine versions.
+*/
+
+/*
 	#define ACTOR_KIND
 
 	Enables everything related to Actor Kind subsystem (e.g. Point Light Settings, Spot Light Settings, Pawn Actions...).

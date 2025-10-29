@@ -16,6 +16,16 @@ SDK::FVector Math::NormalizeVector(const SDK::FVector& vector)
 }
 
 
+float Math::Vector_Distance(const SDK::FVector& A, const SDK::FVector& B)
+{
+    const float X_Distance = A.X - B.X;
+    const float Y_Distance = A.Y - B.Y;
+    const float Z_Distance = A.Z - B.Z;
+
+    return std::sqrtf(X_Distance * X_Distance + Y_Distance * Y_Distance + Z_Distance * Z_Distance);
+}
+
+
 
 
 SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
@@ -63,6 +73,18 @@ SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
     }
 
     return quat;
+}
+
+
+
+
+uint32_t Math::ColorFloat4_ToU32(const float color[4])
+{
+    uint8_t r = (uint8_t)(std::clamp(color[0], 0.0f, 1.0f) * 255.0f + 0.5f);
+    uint8_t g = (uint8_t)(std::clamp(color[1], 0.0f, 1.0f) * 255.0f + 0.5f);
+    uint8_t b = (uint8_t)(std::clamp(color[2], 0.0f, 1.0f) * 255.0f + 0.5f);
+    uint8_t a = (uint8_t)(std::clamp(color[3], 0.0f, 1.0f) * 255.0f + 0.5f);
+    return (uint32_t)((a << 24) | (b << 16) | (g << 8) | (r));
 }
 
 

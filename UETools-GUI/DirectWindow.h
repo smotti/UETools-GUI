@@ -54,33 +54,26 @@ public:
 
 
 private:
-	static inline ID3D11Device* device = nullptr;
+	static inline ID3D11RenderTargetView* renderTargetView = nullptr;
 public:
-	static ID3D11Device* GetDevice()
+	static ID3D11RenderTargetView* GetRenderTargetView()
 	{
-		return device;
+		return renderTargetView;
 	}
-	static void SetDevice(ID3D11Device* newDevice)
+	static void InvalidateRenderTargetView()
 	{
-		device = newDevice;
-	}
-	static void InvalidateDevice()
-	{
-		device->Release();
-		device = nullptr;
+		if (renderTargetView)
+		{
+			renderTargetView->Release();
+			renderTargetView = nullptr;
+		}
 	}
 private:
 	/**
-	* @brief Initializes a Direct3D device, device context, and swap chain for the given window.
-	* @param hWnd - Handle to the target window that will own the Direct3D swap chain.
-	* @return true on successful device/swap-chain creation; false if initialization fails.
+	* @brief Creates (or recreates) the render target for the current swap chain back buffer.
+	* @details Typically retrieves the back-buffer texture and creates a render-target view (RTV) from it.
 	*/
-	static bool CreateDevice(HWND hWnd);
-	/**
-	* @brief Releases all Direct3D resources created by CreateDeviceD3D().
-	* @details Safely releases the device, device context, swap chain, and any associated COM objects.
-	*/
-	static void CleanupDevice();
+	static bool CreateRenderTargetView();
 
 
 
@@ -132,26 +125,33 @@ public:
 
 
 private:
-	static inline ID3D11RenderTargetView* renderTargetView = nullptr;
+	static inline ID3D11Device* device = nullptr;
 public:
-	static ID3D11RenderTargetView* GetRenderTargetView()
+	static ID3D11Device* GetDevice()
 	{
-		return renderTargetView;
+		return device;
 	}
-	static void InvalidateRenderTargetView()
+	static void SetDevice(ID3D11Device* newDevice)
 	{
-		if (renderTargetView)
-		{
-			renderTargetView->Release();
-			renderTargetView = nullptr;
-		}
+		device = newDevice;
+	}
+	static void InvalidateDevice()
+	{
+		device->Release();
+		device = nullptr;
 	}
 private:
 	/**
-	* @brief Creates (or recreates) the render target for the current swap chain back buffer.
-	* @details Typically retrieves the back-buffer texture and creates a render-target view (RTV) from it.
+	* @brief Initializes a Direct3D device, device context, and swap chain for the given window.
+	* @param hWnd - Handle to the target window that will own the Direct3D swap chain.
+	* @return true on successful device/swap-chain creation; false if initialization fails.
 	*/
-	static void CreateRenderTargetView();
+	static bool CreateDevice(HWND hWnd, const bool& HDR = false);
+	/**
+	* @brief Releases all Direct3D resources created by CreateDeviceD3D().
+	* @details Safely releases the device, device context, swap chain, and any associated COM objects.
+	*/
+	static void CleanupDevice();
 
 
 

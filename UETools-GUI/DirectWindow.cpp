@@ -40,35 +40,40 @@ LRESULT WINAPI DirectWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 
 
 
-bool DirectWindow::CreateDevice(HWND hWnd)
+bool DirectWindow::CreateDevice(HWND hWnd, const bool& HDR)
 {
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory(&sd, sizeof(sd));
-    sd.BufferCount = 2; // Double-buffering.
-    sd.BufferDesc.Width = 0;
-    sd.BufferDesc.Height = 0;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // Standard 32-bit RGBA.
-    sd.BufferDesc.RefreshRate.Numerator = 60; // 60 Hz (vsync target).
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // Allow fullscreen switch (legacy style).
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // Back buffers used as render targets.
-    sd.OutputWindow = hWnd;
-    sd.SampleDesc.Count = 1; // No MSAA.
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE; // Start windowed.
-    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // Legacy blt model swap effect.
+    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+    swapChainDesc.BufferDesc.Width = 0;
+    swapChainDesc.BufferDesc.Height = 0;
+    swapChainDesc.BufferDesc.Format = HDR ? DXGI_FORMAT_R10G10B10A2_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM; // Standard 32-bit RGBA.
 
-    const UINT createDeviceFlags = 0; 
-    D3D_FEATURE_LEVEL featureLevel;
-    const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+    swapChainDesc.SampleDesc.Count = 1; // No MSAA.
+    swapChainDesc.SampleDesc.Quality = 0;
+
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // Back buffers used as render targets.
+    swapChainDesc.BufferCount = 2; // Double-buffering.
+
+    swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    swapChainDesc.BufferDesc.RefreshRate.Numerator = 60; // 60 Hz (vsync target).
+    swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+
+    swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // Allow fullscreen switch (legacy style).
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // Legacy blt model swap effect.
+
+    swapChainDesc.OutputWindow = hWnd;
+    swapChainDesc.Windowed = TRUE; // Start windowed.
+
+    const UINT createDeviceFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+    const D3D_FEATURE_LEVEL createDeviceFeatureLevels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
+    D3D_FEATURE_LEVEL createDeviceOutFeatureLevel;
 
     /* Create Device + Swap Chain (hardware). */
-    HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &swapChain, &device, &featureLevel, &deviceContext);
+    HRESULT createDeviceAndSwapChainResult = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, createDeviceFeatureLevels, static_cast<UINT>(std::size(createDeviceFeatureLevels)), D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, &createDeviceOutFeatureLevel, &deviceContext);
 
-    if (res == DXGI_ERROR_UNSUPPORTED) // Fallback to WARP (software rasterizer) if no hardware support.
-        res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &swapChain, &device, &featureLevel, &deviceContext);
+    if (createDeviceAndSwapChainResult == DXGI_ERROR_UNSUPPORTED) // Fallback to WARP (software rasterizer) if no hardware support.
+        createDeviceAndSwapChainResult = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, createDeviceFeatureLevels, static_cast<UINT>(std::size(createDeviceFeatureLevels)), D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, &createDeviceOutFeatureLevel, &deviceContext);
 
-    if (res != S_OK)
+    if (FAILED(createDeviceAndSwapChainResult))
         return false;
 
     CreateRenderTargetView(); // Create RTV for the Swap Chain back buffer.
@@ -80,11 +85,11 @@ void DirectWindow::CleanupDevice()
     if (GetRenderTargetView())
         InvalidateRenderTargetView();
 
-    if (GetSwapChain())
-        InvalidateSwapChain();
-
     if (GetDeviceContext())
         InvalidateDeviceContext();
+
+    if (GetSwapChain())
+        InvalidateSwapChain();
 
     if (GetDevice())
         InvalidateDevice();
@@ -93,15 +98,19 @@ void DirectWindow::CleanupDevice()
 
 
 
-void DirectWindow::CreateRenderTargetView()
+bool DirectWindow::CreateRenderTargetView()
 {
-    ID3D11Texture2D* pBackBuffer;
-    GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-    if (pBackBuffer != nullptr)
-    {
-        GetDevice()->CreateRenderTargetView(pBackBuffer, nullptr, &renderTargetView);
-        pBackBuffer->Release(); // Release our reference to the back buffer.
-    }
+    ID3D11Texture2D* backBuffer = nullptr;
+    HRESULT backBufferResult = GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+    if (FAILED(backBufferResult))
+        return false;
+
+    HRESULT createRenderTargetViewResult = GetDevice()->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView);
+    backBuffer->Release();
+    if (FAILED(createRenderTargetViewResult))
+        return false;
+
+    return true;
 }
 
 

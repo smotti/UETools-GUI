@@ -363,6 +363,10 @@ namespace Features
 		static inline bool filterCaseSensitive = true;
 		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
 		static inline bool filterCheckValidness = false;
+		static inline float filterDistance = 0.0f;
+
+		static inline float color_Valid[4] = { 0.2f, 0.8f, 0.3f, 1.0f };
+		static inline float color_Invalid[4] = { 0.8f, 0.3f, 0.2f, 1.0f };
 
 		static inline std::vector<Unreal::Actor::DataStructure> actors;
 		static inline std::vector<Unreal::Actor::DataStructure> filteredActors;
@@ -378,15 +382,35 @@ namespace Features
 
 
 
+#ifdef COLLISION_VISUALIZER
+	class CollisionVisualizer
+	{
+	public:
+		static inline bool enabled = false;
+
+		static inline float color_TriggerVolume[4] = { 1.0f, 0.5f, 0.0f, 0.5f };
+		static inline float color_BlockingVolume[4] = { 1.0f, 0.0f, 0.0f, 0.5f };
+		static inline float color_UnknownVolume[4] = { 1.0f, 1.0f, 1.0f, 0.5f };
+
+		static inline float color_StaticMesh[4] = { 0.0f, 0.5f, 1.0f, 0.5f };
+	};
+#endif
+
+
+
+
+#ifdef ACTORS_TRACKING
 	class ActorsTracker
 	{
 	public:
 		static inline bool enabled = false;
 	};
+#endif
 
 
 
 
+#ifdef SOFT_PATH
 	class PawnAnimation
 	{
 	public:
@@ -404,7 +428,6 @@ namespace Features
 
 
 
-#ifdef SOFT_PATH
 	class WidgetConstruct
 	{
 	public:
@@ -514,7 +537,7 @@ namespace Features
 	class DirectionalMovement
 	{
 	public:
-		static inline bool enabled = true;
+		static inline bool enabled = false;
 
 		static inline double step = 45.0;
 		static inline double delay = 0.05;

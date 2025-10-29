@@ -739,7 +739,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v1.9c)");
+			ImGui::Text("UETools GUI (v2.0)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1749,11 +1749,34 @@ void GUI::Draw()
 						ImGui::Spacing();
 						ImGui::SameLine();
 						ImGui::Checkbox("Check Validness##Actors", &Features::ActorsList::filterCheckValidness);
+
+#ifdef COLLISION_VISUALIZER
+						ImGui::Checkbox("Draw Collision##Actors", &Features::CollisionVisualizer::enabled);
+						ImGui::SameLine();
+						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nVolume\n- RED: Blocking.\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nStatic Mesh\n- BLUE: Collision.");
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
-						ImGui::Checkbox("Enable Tracking##Actors", &Features::ActorsTracker::enabled);
+#endif
 
+#ifdef ACTORS_TRACKING
+						ImGui::Checkbox("Enable Tracking##Actors", &Features::ActorsTracker::enabled);
+						ImGui::SameLine();
+						ImGui::TextHint("Draws circle at root location alongside Actor technical name.\n\nExtremely useful when it's needed to find an specific Actor in 3D space.");
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+#endif
+
+						ImGui::Text("In Distance:");
+						ImGui::SameLine();
+						if (ImGui::InputFloat("##FilterDistance##Actors", &Features::ActorsList::filterDistance, 100.0f, 1000.0f))
+						{
+							Features::ActorsList::filterDistance = std::clamp(Features::ActorsList::filterDistance, 0.0f, 100000.0f);
+						}
+						ImGui::SameLine();
+						ImGui::TextHint("Maximum Actor distance from Player in centimetres. Calculations doesn't update in background!\n\nThat allows to return to the game while keeping needed Actors filtered.");
+						
 						ImGui::NewLine();
 
 						if (ImGui::Button("Enable Collision (All)##Actors"))
@@ -1841,15 +1864,15 @@ void GUI::Draw()
 						switch (Features::ActorsList::filterMode)
 						{
 							case ImGui::E_ObjectFilterMode::ClassName:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
 								break;
 
 							case ImGui::E_ObjectFilterMode::ObjectName:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
 								break;
 
 							case ImGui::E_ObjectFilterMode::All:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive);
+								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
 								break;
 						}
 						
@@ -1859,9 +1882,7 @@ void GUI::Draw()
 							bool isTreeNodeOpen;
 							if (Features::ActorsList::filterCheckValidness)
 							{
-								static const ImU32 color_valid = IM_COL32(51, 204, 77, 255);
-								static const ImU32 color_invalid = IM_COL32(204, 77, 51, 255);
-								ImU32 color = Unreal::Actor::IsValid(actor.reference) ? color_valid : color_invalid;
+								ImU32 color = Math::ColorFloat4_ToU32(Unreal::Actor::IsValid(actor.reference) ? Features::ActorsList::color_Valid : Features::ActorsList::color_Invalid);
 
 								ImGui::PushStyleColor(ImGuiCol_Text, color);
 								isTreeNodeOpen = ImGui::TreeNode(actor.objectName.c_str());
@@ -3897,6 +3918,7 @@ void GUI::Draw()
 
 
 
+#ifdef ACTORS_TRACKING
 	if (Features::ActorsTracker::enabled)
 	{
 		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
@@ -3909,11 +3931,7 @@ void GUI::Draw()
 				{
 					ImU32 color;
 					if (Features::ActorsList::filterCheckValidness)
-					{
-						static const ImU32 color_valid = IM_COL32(51, 204, 77, 255);
-						static const ImU32 color_invalid = IM_COL32(204, 77, 51, 255);
-						color = Unreal::Actor::IsValid(actor.reference) ? color_valid : color_invalid;
-					}
+						color = Math::ColorFloat4_ToU32(Unreal::Actor::IsValid(actor.reference) ? Features::ActorsList::color_Valid : Features::ActorsList::color_Invalid);
 					else
 						color = IM_COL32(255, 255, 255, 255);
 					
@@ -3933,6 +3951,117 @@ void GUI::Draw()
 			}
 		}
 	}
+#endif
+
+
+
+
+#ifdef COLLISION_VISUALIZER
+	if (Features::CollisionVisualizer::enabled)
+	{
+		/* UGameplayStatics::ProjectWorldToScreen() verify Player Controller reference within its code. */
+		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+		if (playerController)
+		{
+			SDK::FVector playerLocation = Unreal::PlayerController::GetLocation(playerController);
+
+			for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+			{
+				if (actor.reference == nullptr)
+					continue;
+
+				SDK::UBodySetup* bodySetup = nullptr;
+				SDK::FTransform transform = {};
+				ImU32 color = {};
+
+				if (actor.reference->IsA(SDK::AVolume::StaticClass()))
+				{
+					if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
+						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume);
+					else if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
+						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume);
+					else
+						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_UnknownVolume);
+
+					SDK::AVolume* volume = static_cast<SDK::AVolume*>(actor.reference);
+					if (volume->BrushComponent == nullptr)
+						continue;
+
+					SDK::UBrushComponent* brushComponent = volume->BrushComponent;
+					if (brushComponent->BrushBodySetup == nullptr)
+						continue;
+
+					bodySetup = brushComponent->BrushBodySetup;
+					transform.Translation = brushComponent->K2_GetComponentLocation();
+					transform.Rotation = Math::Rotator_ToQuat(brushComponent->K2_GetComponentRotation());
+					transform.Scale3D = brushComponent->K2_GetComponentScale();
+				}
+				else if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
+				{
+					color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh);
+
+					SDK::AStaticMeshActor* staticMeshActor = static_cast<SDK::AStaticMeshActor*>(actor.reference);
+					if (staticMeshActor->StaticMeshComponent == nullptr)
+						continue;
+
+					SDK::UStaticMeshComponent* staticMeshComponent = staticMeshActor->StaticMeshComponent;
+					if (staticMeshComponent->StaticMesh == nullptr)
+						continue;
+
+					SDK::UStaticMesh* staticMesh = staticMeshComponent->StaticMesh;
+					if (staticMesh->BodySetup == nullptr)
+						continue;
+
+					bodySetup = staticMesh->BodySetup;
+					transform.Translation = staticMeshComponent->K2_GetComponentLocation();
+					transform.Rotation = Math::Rotator_ToQuat(staticMeshComponent->K2_GetComponentRotation());
+					transform.Scale3D = staticMeshComponent->K2_GetComponentScale();
+				}
+				else
+					continue;
+
+				for (SDK::FKConvexElem& convexElement : bodySetup->AggGeom.ConvexElems)
+				{
+					const SDK::TArray<SDK::FVector>& vertexData = convexElement.VertexData;
+					if (vertexData.Num() == 0)
+						continue;
+
+					const SDK::TArray<int32_t>& indexData = convexElement.IndexData;
+					const size_t indexDataLength = indexData.Num();
+					if (indexDataLength < 3 || indexDataLength % 3 != 0)
+						continue;
+
+					for (int32_t i = 0; i + 2 < indexDataLength; i += 3)
+					{
+						int32_t A_Index = indexData[i];
+						int32_t B_Index = indexData[i + 1];
+						int32_t C_Index = indexData[i + 2];
+
+						SDK::FVector A_Local = vertexData[A_Index];
+						SDK::FVector B_Local = vertexData[B_Index];
+						SDK::FVector C_Local = vertexData[C_Index];
+
+						SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(transform, A_Local);
+						SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(transform, B_Local);
+						SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(transform, C_Local);
+
+						SDK::FVector2D A_Screen, B_Screen, C_Screen;
+						bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
+						bool B_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, B_World, &B_Screen, false);
+						bool C_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, C_World, &C_Screen, false);
+
+						if (A_Project && B_Project && C_Project)
+						{
+							iDrawList->AddLine(ImVec2(A_Screen.X, A_Screen.Y), ImVec2(B_Screen.X, B_Screen.Y), color);
+							iDrawList->AddLine(ImVec2(B_Screen.X, B_Screen.Y), ImVec2(C_Screen.X, C_Screen.Y), color);
+							iDrawList->AddLine(ImVec2(C_Screen.X, C_Screen.Y), ImVec2(A_Screen.X, A_Screen.Y), color);
+						}
+					}
+				}
+			}
+		}
+	}
+#endif
 }
 
 

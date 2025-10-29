@@ -587,6 +587,10 @@ namespace Unreal
 		static SDK::APlayerController* Get(const int32_t& playerIndex = 0);
 
 
+		static SDK::FVector GetLocation(SDK::APlayerController* playerControllerReference);
+		static SDK::FVector GetLocation(const int32_t& playerIndex);
+
+
 		static void SetViewTarget(SDK::AActor* actorReference, const SDK::EViewTargetBlendFunction& blendFunction, const float& blendTime, const float& blendExponent);
 		static void SetViewTarget(SDK::AActor* actorReference);
 	};
@@ -702,9 +706,9 @@ namespace Unreal
 		static std::vector<SDK::AActor*> GetAllOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass);
 
 
-		static std::vector<Actor::DataStructure> FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
-		static std::vector<Actor::DataStructure> FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
-		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<Actor::DataStructure> FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
+		static std::vector<Actor::DataStructure> FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
+		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
 
 
 		static void SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents = false);

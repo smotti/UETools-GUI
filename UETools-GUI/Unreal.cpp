@@ -515,6 +515,26 @@ SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex
 }
 
 
+SDK::FVector Unreal::PlayerController::GetLocation(SDK::APlayerController* playerControllerReference)
+{
+	if (playerControllerReference == nullptr)
+		return SDK::FVector();
+
+	if (playerControllerReference->AcknowledgedPawn)
+		return playerControllerReference->AcknowledgedPawn->K2_GetActorLocation();
+	else if (playerControllerReference->PlayerCameraManager)
+		return playerControllerReference->PlayerCameraManager->K2_GetActorLocation();
+	else
+		return SDK::FVector();
+}
+
+SDK::FVector Unreal::PlayerController::GetLocation(const int32_t& playerIndex)
+{
+	SDK::APlayerController* playerController = PlayerController::Get(playerIndex);
+	return GetLocation(playerController);
+}
+
+
 void Unreal::PlayerController::SetViewTarget(SDK::AActor* actorReference, const SDK::EViewTargetBlendFunction& blendFunction, const float& blendTime, const float& blendExponent)
 {
 	if (actorReference == nullptr)
@@ -775,14 +795,25 @@ std::vector<SDK::AActor*> Unreal::Actor::GetAllOfClass(const SDK::TSubclassOf<SD
 }
 
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
+	SDK::FVector playerLocation = {};
+	bool filterByDistance = inDistance > 0.0f;
+	if (filterByDistance)
+		playerLocation = Unreal::PlayerController::GetLocation(0);
+
 	/* Filter Actors by "Search Filter" */
 	for (Unreal::Actor::DataStructure actor : actorsArray)
 	{
+		if (filterByDistance)
+		{
+			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+				continue;
+		}
+
 		/* "Search Filter" is empty - Actor considered a match automatically. */
 		bool matchFilters = filterLength == 0;
 
@@ -814,14 +845,25 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const
 	return outCollection;
 }
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
+	SDK::FVector playerLocation = {};
+	bool filterByDistance = inDistance > 0.0f;
+	if (filterByDistance)
+		playerLocation = Unreal::PlayerController::GetLocation(0);
+
 	/* Filter Actors by "Search Filter" */
 	for (Unreal::Actor::DataStructure actor : actorsArray)
 	{
+		if (filterByDistance)
+		{
+			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+				continue;
+		}
+
 		/* "Search Filter" is empty - Actor considered a match automatically. */
 		bool matchFilters = filterLength == 0;
 
@@ -850,14 +892,25 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 	return outCollection;
 }
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
+	SDK::FVector playerLocation = {};
+	bool filterByDistance = inDistance > 0.0f;
+	if (filterByDistance)
+		playerLocation = Unreal::PlayerController::GetLocation(0);
+
 	/* Filter Actors by "Search Filter" */
 	for (Unreal::Actor::DataStructure actor : actorsArray)
 	{
+		if (filterByDistance)
+		{
+			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+				continue;
+		}
+
 		/* "Search Filter" is empty - Actor considered a match automatically. */
 		bool matchFilters = filterLength == 0;
 
