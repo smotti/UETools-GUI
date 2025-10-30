@@ -693,6 +693,15 @@ bool Unreal::Character::Ghost(const int32_t& playerIndex)
 
 
 
+Unreal::Transform Unreal::ActorComponent::GetTransform(SDK::USceneComponent* sceneComponentReference)
+{
+	if (sceneComponentReference == nullptr)
+		return Unreal::Transform();
+
+	return { sceneComponentReference->K2_GetComponentLocation(), sceneComponentReference->K2_GetComponentRotation(), sceneComponentReference->K2_GetComponentScale() };
+}
+
+
 std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<ActorComponent::DataStructure> outCollection;

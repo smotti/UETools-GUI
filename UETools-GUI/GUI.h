@@ -388,11 +388,15 @@ namespace Features
 	public:
 		static inline bool enabled = false;
 
+		static inline float color_Pawn[4] = { 0.0f, 1.0f, 0.3f, 0.5f };
+
 		static inline float color_TriggerVolume[4] = { 1.0f, 0.5f, 0.0f, 0.5f };
 		static inline float color_BlockingVolume[4] = { 1.0f, 0.0f, 0.0f, 0.5f };
 		static inline float color_UnknownVolume[4] = { 1.0f, 1.0f, 1.0f, 0.5f };
 
 		static inline float color_StaticMesh[4] = { 0.0f, 0.5f, 1.0f, 0.5f };
+
+		static inline float thickness = 0.5f;
 	};
 #endif
 

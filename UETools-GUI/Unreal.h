@@ -651,6 +651,9 @@ namespace Unreal
 		};
 
 
+		static Unreal::Transform GetTransform(SDK::USceneComponent* sceneComponentReference);
+
+
 		static std::vector<ActorComponent::DataStructure> FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
 	};
 

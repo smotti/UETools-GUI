@@ -1,11 +1,12 @@
 #include "Math.h"
+#include "Unreal.h"
 
 
 
 
 
 
-SDK::FVector Math::NormalizeVector(const SDK::FVector& vector)
+SDK::FVector Math::Vector_Normalize(const SDK::FVector& vector)
 {
     float vectorLengthSquared = (vector.X * vector.X) + (vector.Y * vector.Y) + (vector.Z * vector.Z);
     if (vectorLengthSquared < 0.01f)
@@ -28,12 +29,60 @@ float Math::Vector_Distance(const SDK::FVector& A, const SDK::FVector& B)
 
 
 
+SDK::FRotator Math::Quat_ToRotator(const SDK::FQuat& quat)
+{
+    /* Ensure quaternion is normalized before conversion. */
+    SDK::FQuat q = quat;
+    const float normSq = q.X * q.X + q.Y * q.Y + q.Z * q.Z + q.W * q.W;
+    if (normSq > TINY)
+    {
+        const float invLen = 1.0f / std::sqrt(normSq);
+        q.X *= invLen;
+        q.Y *= invLen;
+        q.Z *= invLen;
+        q.W *= invLen;
+    }
+    else
+    {
+        /* Fall back to identity quaternion. */
+        q = SDK::FQuat{ 0.0f, 0.0f, 0.0f, 1.0f };
+    }
+
+    /* Convert quaternion to Euler angles (in Z(Yaw)->Y(Pitch)->X(Roll) order). */
+    SDK::FRotator rotator;
+
+    /* Compute roll (X) using standard quaternion-to-Euler formulas. */
+    const float sinr_cosp = 2.0f * (q.W * q.X + q.Y * q.Z);
+    const float cosr_cosp = 1.0f - 2.0f * (q.X * q.X + q.Y * q.Y);
+    rotator.Roll = std::atan2(sinr_cosp, cosr_cosp);
+
+    /* Compute sin(pitch) value; clamp to [-1,1] to avoid invalid asin() results due to precision errors. */
+    const float sinp = 2.0f * (q.W * q.Y - q.Z * q.X);
+    if (std::fabs(sinp) >= 1.0f)
+    {
+        /* Use 90 degrees if out of range (gimbal lock). */
+        rotator.Pitch = std::copysign(PI / 2.0f, sinp);
+    }
+    else
+    {
+        rotator.Pitch = std::asin(sinp);
+    }
+
+    /* Compute yaw (Z) using standard quaternion-to-Euler formulas. */
+    const float siny_cosp = 2.0f * (q.W * q.Z + q.X * q.Y);
+    const float cosy_cosp = 1.0f - 2.0f * (q.Y * q.Y + q.Z * q.Z);
+    rotator.Yaw = std::atan2(siny_cosp, cosy_cosp);
+
+    /* Convert radians back to degrees. */
+    rotator.Roll  *= RTD; // X
+    rotator.Pitch *= RTD; // Y
+    rotator.Yaw   *= RTD; // Z
+
+    return rotator;
+}
+
 SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
 {
-    static const float PI   = 3.14f;
-    static const float DTR  = PI / 180.0f; // degrees-to-radians factor
-    static const float TINY = 1e-8f; // small epsilon to avoid divide-by-zero in normalization
-
     /* Convert degrees to radians and take half - angles, as quaternion uses half - angle trig. */
     const float halfRoll  = 0.5f * rotator.Roll * DTR;  // X
     const float halfPitch = 0.5f * rotator.Pitch * DTR; // Y
@@ -73,6 +122,29 @@ SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
     }
 
     return quat;
+}
+
+
+
+
+Unreal::Transform Math::F_ToUnrealTransform(const SDK::FTransform& fTransform)
+{
+    Unreal::Transform unrealTransform;
+    unrealTransform.location = fTransform.Translation;
+    unrealTransform.rotation = Math::Quat_ToRotator(fTransform.Rotation);
+    unrealTransform.scale = fTransform.Scale3D;
+
+    return unrealTransform;
+}
+
+SDK::FTransform Math::Unreal_ToFTransform(const Unreal::Transform& unrealTransform)
+{
+    SDK::FTransform fTransform;
+    fTransform.Translation = unrealTransform.location;
+    fTransform.Rotation = Math::Rotator_ToQuat(unrealTransform.rotation);
+    fTransform.Scale3D = unrealTransform.scale;
+
+    return fTransform;
 }
 
 

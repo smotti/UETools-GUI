@@ -739,7 +739,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.0)");
+			ImGui::Text("UETools GUI (v2.1)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1753,7 +1753,7 @@ void GUI::Draw()
 #ifdef COLLISION_VISUALIZER
 						ImGui::Checkbox("Draw Collision##Actors", &Features::CollisionVisualizer::enabled);
 						ImGui::SameLine();
-						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nVolume\n- RED: Blocking.\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nStatic Mesh\n- BLUE: Collision.");
+						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nStatic Mesh\n- BLUE: Collision.\n\nVolume\n- RED: Blocking.\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nCharacter | Pawn\n-GREEN: Collision.");
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
@@ -3963,98 +3963,173 @@ void GUI::Draw()
 		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
 		if (playerController)
 		{
-			SDK::FVector playerLocation = Unreal::PlayerController::GetLocation(playerController);
+			SDK::FVector playerLocation = Unreal::PlayerController::GetLocation(0);
 
 			for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
 			{
 				if (actor.reference == nullptr)
 					continue;
 
-				SDK::UBodySetup* bodySetup = nullptr;
-				SDK::FTransform transform = {};
 				ImU32 color = {};
 
-				if (actor.reference->IsA(SDK::AVolume::StaticClass()))
+				if (actor.reference->IsA(SDK::APawn::StaticClass()))
 				{
-					if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
-						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume);
-					else if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
-						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume);
-					else
-						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_UnknownVolume);
+					color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Pawn);
 
-					SDK::AVolume* volume = static_cast<SDK::AVolume*>(actor.reference);
-					if (volume->BrushComponent == nullptr)
-						continue;
+					SDK::APawn* pawn = static_cast<SDK::APawn*>(actor.reference);
+					SDK::UCapsuleComponent* capsuleComponent = nullptr;
 
-					SDK::UBrushComponent* brushComponent = volume->BrushComponent;
-					if (brushComponent->BrushBodySetup == nullptr)
-						continue;
+					if (pawn->IsA(SDK::ACharacter::StaticClass()))
+					{
+						SDK::ACharacter* character = static_cast<SDK::ACharacter*>(pawn);
+						if (character->CapsuleComponent)
+							capsuleComponent = character->CapsuleComponent;
+					}
 
-					bodySetup = brushComponent->BrushBodySetup;
-					transform.Translation = brushComponent->K2_GetComponentLocation();
-					transform.Rotation = Math::Rotator_ToQuat(brushComponent->K2_GetComponentRotation());
-					transform.Scale3D = brushComponent->K2_GetComponentScale();
-				}
-				else if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
-				{
-					color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh);
+					if (capsuleComponent == nullptr)
+					{
+						if (SDK::UActorComponent* foundComponent = pawn->GetComponentByClass(SDK::UCapsuleComponent::StaticClass()))
+							capsuleComponent = static_cast<SDK::UCapsuleComponent*>(foundComponent);
+						else
+							continue;
+					}
 
-					SDK::AStaticMeshActor* staticMeshActor = static_cast<SDK::AStaticMeshActor*>(actor.reference);
-					if (staticMeshActor->StaticMeshComponent == nullptr)
-						continue;
+					float capsuleRadius = capsuleComponent->GetScaledCapsuleRadius();
+					float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
 
-					SDK::UStaticMeshComponent* staticMeshComponent = staticMeshActor->StaticMeshComponent;
-					if (staticMeshComponent->StaticMesh == nullptr)
-						continue;
+					Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
+					SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
 
-					SDK::UStaticMesh* staticMesh = staticMeshComponent->StaticMesh;
-					if (staticMesh->BodySetup == nullptr)
-						continue;
+					/* Construct an orthonormal basis (axis, u, v) for building capsule rings. */
+					SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
+					SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
+					SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
 
-					bodySetup = staticMesh->BodySetup;
-					transform.Translation = staticMeshComponent->K2_GetComponentLocation();
-					transform.Rotation = Math::Rotator_ToQuat(staticMeshComponent->K2_GetComponentRotation());
-					transform.Scale3D = staticMeshComponent->K2_GetComponentScale();
+					const SDK::FVector capsuleTopLocation = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
+					const SDK::FVector capsuleBottomLocation = capsuleTransform.location - capsuleUpVector * capsuleHalfHeight;
+
+					static const int32_t capsuleSegments = 24;
+					for (int32_t i = 0; i < capsuleSegments; i++)
+					{
+						/* Compute the start (ring0_Angle) and end (ring1_Angle) angles for the current ring segment in radians. */
+						const float ring0_Angle = (2.0f * Math::PI) * (float)i / (float)capsuleSegments;
+						const float ring1_Angle = (2.0f * Math::PI) * (float)(i + 1) / (float)capsuleSegments;
+
+						/* Compute points on the top and bottom rings using circular parametrization. */
+						SDK::FVector ring0_Top = capsuleTopLocation + (ortho_U * cosf(ring0_Angle) + ortho_V * sinf(ring0_Angle)) * capsuleRadius;
+						SDK::FVector ring1_Top = capsuleTopLocation + (ortho_U * cosf(ring1_Angle) + ortho_V * sinf(ring1_Angle)) * capsuleRadius;
+						SDK::FVector ring0_Bottom = capsuleBottomLocation + (ortho_U * cosf(ring0_Angle) + ortho_V * sinf(ring0_Angle)) * capsuleRadius;
+						SDK::FVector ring1_Bottom = capsuleBottomLocation + (ortho_U * cosf(ring1_Angle) + ortho_V * sinf(ring1_Angle)) * capsuleRadius;
+
+						SDK::FVector2D ring0_Top_Screen, ring1_Top_Screen, ring0_Bottom_Screen, ring1_Bottom_Screen;
+						bool ring0_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring0_Top, &ring0_Top_Screen, false);
+						bool ring1_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring1_Top, &ring1_Top_Screen, false);
+						bool ring0_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring0_Bottom, &ring0_Bottom_Screen, false);
+						bool ring1_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring1_Bottom, &ring1_Bottom_Screen, false);
+
+						if (ring0_Top_Project && ring1_Top_Project)
+							iDrawList->AddLine(ImVec2(ring0_Top_Screen.X, ring0_Top_Screen.Y), ImVec2(ring1_Top_Screen.X, ring1_Top_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+						if (ring0_Bottom_Project && ring1_Bottom_Project)
+							iDrawList->AddLine(ImVec2(ring0_Bottom_Screen.X, ring0_Bottom_Screen.Y), ImVec2(ring1_Bottom_Screen.X, ring1_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+						if (ring0_Top_Project && ring0_Bottom_Project)
+							iDrawList->AddLine(ImVec2(ring0_Top_Screen.X, ring0_Top_Screen.Y), ImVec2(ring0_Bottom_Screen.X, ring0_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+					}
 				}
 				else
-					continue;
-
-				for (SDK::FKConvexElem& convexElement : bodySetup->AggGeom.ConvexElems)
 				{
-					const SDK::TArray<SDK::FVector>& vertexData = convexElement.VertexData;
-					if (vertexData.Num() == 0)
-						continue;
+					SDK::UBodySetup* bodySetup = nullptr;
+					Unreal::Transform transform = {};
 
-					const SDK::TArray<int32_t>& indexData = convexElement.IndexData;
-					const size_t indexDataLength = indexData.Num();
-					if (indexDataLength < 3 || indexDataLength % 3 != 0)
-						continue;
-
-					for (int32_t i = 0; i + 2 < indexDataLength; i += 3)
+					if (actor.reference->IsA(SDK::AVolume::StaticClass()))
 					{
-						int32_t A_Index = indexData[i];
-						int32_t B_Index = indexData[i + 1];
-						int32_t C_Index = indexData[i + 2];
+						if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
+							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume);
+						else if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
+							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume);
+						else
+							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_UnknownVolume);
 
-						SDK::FVector A_Local = vertexData[A_Index];
-						SDK::FVector B_Local = vertexData[B_Index];
-						SDK::FVector C_Local = vertexData[C_Index];
+						SDK::AVolume* volume = static_cast<SDK::AVolume*>(actor.reference);
+						if (volume->BrushComponent == nullptr)
+							continue;
 
-						SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(transform, A_Local);
-						SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(transform, B_Local);
-						SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(transform, C_Local);
+						SDK::UBrushComponent* brushComponent = volume->BrushComponent;
+						if (brushComponent->BrushBodySetup == nullptr)
+							continue;
 
-						SDK::FVector2D A_Screen, B_Screen, C_Screen;
-						bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
-						bool B_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, B_World, &B_Screen, false);
-						bool C_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, C_World, &C_Screen, false);
+						bodySetup = brushComponent->BrushBodySetup;
+						transform = Unreal::ActorComponent::GetTransform(brushComponent);
+					}
+					else if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
+					{
+						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh);
 
-						if (A_Project && B_Project && C_Project)
+						SDK::AStaticMeshActor* staticMeshActor = static_cast<SDK::AStaticMeshActor*>(actor.reference);
+						if (staticMeshActor->StaticMeshComponent == nullptr)
+							continue;
+
+						SDK::UStaticMeshComponent* staticMeshComponent = staticMeshActor->StaticMeshComponent;
+						if (staticMeshComponent->StaticMesh == nullptr)
+							continue;
+
+						SDK::UStaticMesh* staticMesh = staticMeshComponent->StaticMesh;
+						if (staticMesh->BodySetup == nullptr)
+							continue;
+
+						bodySetup = staticMesh->BodySetup;
+						transform = Unreal::ActorComponent::GetTransform(staticMeshComponent);
+					}
+					else
+						continue;
+
+					for (SDK::FKConvexElem& convexElement : bodySetup->AggGeom.ConvexElems)
+					{
+						const SDK::TArray<SDK::FVector>& vertexData = convexElement.VertexData;
+						const size_t vertexDataLength = vertexData.Num();
+						if (vertexDataLength == 0)
+							continue;
+
+						const SDK::TArray<int32_t>& indexData = convexElement.IndexData;
+						const size_t indexDataLength = indexData.Num();
+						if (indexDataLength < 3 || indexDataLength % 3 != 0)
+							continue;
+
+						for (int32_t i = 0; i + 2 < indexDataLength; i += 3)
 						{
-							iDrawList->AddLine(ImVec2(A_Screen.X, A_Screen.Y), ImVec2(B_Screen.X, B_Screen.Y), color);
-							iDrawList->AddLine(ImVec2(B_Screen.X, B_Screen.Y), ImVec2(C_Screen.X, C_Screen.Y), color);
-							iDrawList->AddLine(ImVec2(C_Screen.X, C_Screen.Y), ImVec2(A_Screen.X, A_Screen.Y), color);
+							int32_t A_Index = indexData[i];
+							int32_t B_Index = indexData[i + 1];
+							int32_t C_Index = indexData[i + 2];
+
+							if (A_Index < 0 || A_Index >= vertexDataLength ||
+								B_Index < 0 || B_Index >= vertexDataLength ||
+								C_Index < 0 || C_Index >= vertexDataLength)
+								continue;
+
+							if (A_Index == B_Index || B_Index == C_Index || C_Index == A_Index)
+								continue;
+
+							SDK::FVector A_Local = vertexData[A_Index];
+							SDK::FVector B_Local = vertexData[B_Index];
+							SDK::FVector C_Local = vertexData[C_Index];
+
+							SDK::FTransform fTransform = Math::Unreal_ToFTransform(transform);
+							SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, A_Local);
+							SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, B_Local);
+							SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, C_Local);
+
+							SDK::FVector2D A_Screen, B_Screen, C_Screen;
+							bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
+							bool B_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, B_World, &B_Screen, false);
+							bool C_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, C_World, &C_Screen, false);
+
+							if (A_Project && B_Project && C_Project)
+							{
+								iDrawList->AddLine(ImVec2(A_Screen.X, A_Screen.Y), ImVec2(B_Screen.X, B_Screen.Y), color, Features::CollisionVisualizer::thickness);
+								iDrawList->AddLine(ImVec2(B_Screen.X, B_Screen.Y), ImVec2(C_Screen.X, C_Screen.Y), color, Features::CollisionVisualizer::thickness);
+								iDrawList->AddLine(ImVec2(C_Screen.X, C_Screen.Y), ImVec2(A_Screen.X, A_Screen.Y), color, Features::CollisionVisualizer::thickness);
+							}
 						}
 					}
 				}
@@ -4621,7 +4696,7 @@ void Features::DirectionalMovement::Worker()
 			continue;
 
 		/* Normalize Character velocity (-1.0 to 1.0) and get Camera forward vector. */
-		SDK::FVector characterVelocityNormalized = Math::NormalizeVector(characterVelocity);
+		SDK::FVector characterVelocityNormalized = Math::Vector_Normalize(characterVelocity);
 		SDK::FVector cameraForwardVector = playerController->PlayerCameraManager->GetActorForwardVector();
 
 		/*
