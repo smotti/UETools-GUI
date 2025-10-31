@@ -739,7 +739,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.1)");
+			ImGui::Text("UETools GUI (v2.2)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1753,7 +1753,7 @@ void GUI::Draw()
 #ifdef COLLISION_VISUALIZER
 						ImGui::Checkbox("Draw Collision##Actors", &Features::CollisionVisualizer::enabled);
 						ImGui::SameLine();
-						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nStatic Mesh\n- BLUE: Collision.\n\nVolume\n- RED: Blocking.\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nCharacter | Pawn\n-GREEN: Collision.");
+						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nStatic Mesh\n- BLUE: Collision.\n\nVolume\n- RED: Blocking (Collision).\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nPawn\n-GREEN: Capsule Collision.");
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
@@ -3976,65 +3976,80 @@ void GUI::Draw()
 				{
 					color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Pawn);
 
-					SDK::APawn* pawn = static_cast<SDK::APawn*>(actor.reference);
-					SDK::UCapsuleComponent* capsuleComponent = nullptr;
+					SDK::TArray<SDK::UActorComponent*> actorComponents = actor.reference->K2_GetComponentsByClass(SDK::UCapsuleComponent::StaticClass());
+					if (actorComponents.Num() == 0)
+						continue;
 
-					if (pawn->IsA(SDK::ACharacter::StaticClass()))
+					for (SDK::UActorComponent* component : actorComponents)
 					{
-						SDK::ACharacter* character = static_cast<SDK::ACharacter*>(pawn);
-						if (character->CapsuleComponent)
-							capsuleComponent = character->CapsuleComponent;
-					}
-
-					if (capsuleComponent == nullptr)
-					{
-						if (SDK::UActorComponent* foundComponent = pawn->GetComponentByClass(SDK::UCapsuleComponent::StaticClass()))
-							capsuleComponent = static_cast<SDK::UCapsuleComponent*>(foundComponent);
-						else
+						SDK::UCapsuleComponent* capsuleComponent = static_cast<SDK::UCapsuleComponent*>(component);
+						if (capsuleComponent == nullptr)
 							continue;
-					}
 
-					float capsuleRadius = capsuleComponent->GetScaledCapsuleRadius();
-					float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
+						float capsuleRadius = capsuleComponent->GetScaledCapsuleRadius();
+						float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
 
-					Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
-					SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
+						Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
+						SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
 
-					/* Construct an orthonormal basis (axis, u, v) for building capsule rings. */
-					SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
-					SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
-					SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
+						/* Construct an orthonormal basis (axis, U, V) for building capsule rings. */
+						SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
+						SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
+						SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
 
-					const SDK::FVector capsuleTopLocation = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
-					const SDK::FVector capsuleBottomLocation = capsuleTransform.location - capsuleUpVector * capsuleHalfHeight;
+						const SDK::FVector capsuleTopLocation = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
+						const SDK::FVector capsuleBottomLocation = capsuleTransform.location - capsuleUpVector * capsuleHalfHeight;
 
-					static const int32_t capsuleSegments = 24;
-					for (int32_t i = 0; i < capsuleSegments; i++)
-					{
-						/* Compute the start (ring0_Angle) and end (ring1_Angle) angles for the current ring segment in radians. */
-						const float ring0_Angle = (2.0f * Math::PI) * (float)i / (float)capsuleSegments;
-						const float ring1_Angle = (2.0f * Math::PI) * (float)(i + 1) / (float)capsuleSegments;
+						/* Project capsule centers to draw them later on. */
+						SDK::FVector2D capsuleTop_Screen, capsuleBottom_Screen;
+						const bool capsuleTop_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleTopLocation, &capsuleTop_Screen, false);
+						const bool capsuleBottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleBottomLocation, &capsuleBottom_Screen, false);
 
-						/* Compute points on the top and bottom rings using circular parametrization. */
-						SDK::FVector ring0_Top = capsuleTopLocation + (ortho_U * cosf(ring0_Angle) + ortho_V * sinf(ring0_Angle)) * capsuleRadius;
-						SDK::FVector ring1_Top = capsuleTopLocation + (ortho_U * cosf(ring1_Angle) + ortho_V * sinf(ring1_Angle)) * capsuleRadius;
-						SDK::FVector ring0_Bottom = capsuleBottomLocation + (ortho_U * cosf(ring0_Angle) + ortho_V * sinf(ring0_Angle)) * capsuleRadius;
-						SDK::FVector ring1_Bottom = capsuleBottomLocation + (ortho_U * cosf(ring1_Angle) + ortho_V * sinf(ring1_Angle)) * capsuleRadius;
+						static const int32_t capsuleSegments = 24;
+						for (int32_t i = 0; i < capsuleSegments; i++)
+						{
+							/*
+								A ----------> B
 
-						SDK::FVector2D ring0_Top_Screen, ring1_Top_Screen, ring0_Bottom_Screen, ring1_Bottom_Screen;
-						bool ring0_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring0_Top, &ring0_Top_Screen, false);
-						bool ring1_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring1_Top, &ring1_Top_Screen, false);
-						bool ring0_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring0_Bottom, &ring0_Bottom_Screen, false);
-						bool ring1_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ring1_Bottom, &ring1_Bottom_Screen, false);
+								A - Current ring.
+								B - Next ring.
+							*/
 
-						if (ring0_Top_Project && ring1_Top_Project)
-							iDrawList->AddLine(ImVec2(ring0_Top_Screen.X, ring0_Top_Screen.Y), ImVec2(ring1_Top_Screen.X, ring1_Top_Screen.Y), color, Features::CollisionVisualizer::thickness);
+							/* Compute the start (ringA_Angle) and end (ringB_Angle) angles for the current ring segment in radians. */
+							const float ringA_Angle = (2.0f * Math::PI) * (float)i / (float)capsuleSegments;
+							const float ringB_Angle = (2.0f * Math::PI) * (float)(i + 1) / (float)capsuleSegments;
 
-						if (ring0_Bottom_Project && ring1_Bottom_Project)
-							iDrawList->AddLine(ImVec2(ring0_Bottom_Screen.X, ring0_Bottom_Screen.Y), ImVec2(ring1_Bottom_Screen.X, ring1_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+							/* Compute points on the top and bottom rings using circular parametrization. */
+							SDK::FVector ringA_Top = capsuleTopLocation + (ortho_U * cosf(ringA_Angle) + ortho_V * sinf(ringA_Angle)) * capsuleRadius;
+							SDK::FVector ringB_Top = capsuleTopLocation + (ortho_U * cosf(ringB_Angle) + ortho_V * sinf(ringB_Angle)) * capsuleRadius;
+							SDK::FVector ringA_Bottom = capsuleBottomLocation + (ortho_U * cosf(ringA_Angle) + ortho_V * sinf(ringA_Angle)) * capsuleRadius;
+							SDK::FVector ringB_Bottom = capsuleBottomLocation + (ortho_U * cosf(ringB_Angle) + ortho_V * sinf(ringB_Angle)) * capsuleRadius;
 
-						if (ring0_Top_Project && ring0_Bottom_Project)
-							iDrawList->AddLine(ImVec2(ring0_Top_Screen.X, ring0_Top_Screen.Y), ImVec2(ring0_Bottom_Screen.X, ring0_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+							SDK::FVector2D ringA_Top_Screen, ringB_Top_Screen, ringA_Bottom_Screen, ringB_Bottom_Screen;
+							bool ringA_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Top, &ringA_Top_Screen, false);
+							bool ringB_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Top, &ringB_Top_Screen, false);
+							bool ringA_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Bottom, &ringA_Bottom_Screen, false);
+							bool ringB_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Bottom, &ringB_Bottom_Screen, false);
+
+							/* Outlines the top edge. */
+							if (ringA_Top_Project && ringB_Top_Project)
+								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringB_Top_Screen.X, ringB_Top_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+							/* Outlines the bottom edge. */
+							if (ringA_Bottom_Project && ringB_Bottom_Project)
+								iDrawList->AddLine(ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), ImVec2(ringB_Bottom_Screen.X, ringB_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+							/* Outlines side walls. */
+							if (ringA_Top_Project && ringA_Bottom_Project)
+								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+							/* Outlines ring points to top and bottom centers. */
+							if (capsuleTop_Project && ringA_Top_Project)
+								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(capsuleTop_Screen.X, capsuleTop_Screen.Y), color, Features::CollisionVisualizer::thickness);
+
+							if (capsuleBottom_Project && ringA_Bottom_Project)
+								iDrawList->AddLine(ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), ImVec2(capsuleBottom_Screen.X, capsuleBottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
+						}
 					}
 				}
 				else
