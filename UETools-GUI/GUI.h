@@ -4,7 +4,6 @@
 
 #include "definitions.h"
 #include "Unreal.h"
-#include "Clipboard.h"
 #include "Math.h"
 
 #include <Windows.h>
@@ -374,6 +373,7 @@ namespace Features
 		static inline const size_t componentsFilterBufferSize = 255;
 		static inline char componentsFilterBuffer[componentsFilterBufferSize] = {};
 		static inline bool componentsFilterCaseSensitive = true;
+		static inline ImGui::E_ObjectFilterMode componentsFilterMode = ImGui::E_ObjectFilterMode::All;
 
 
 		static void Update();

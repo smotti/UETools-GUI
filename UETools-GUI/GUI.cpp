@@ -347,8 +347,7 @@ void ImGui::ReadOnlyInputText(const char* label, const char* text, const bool& s
 		ImGui::SameLine();
 		if (ImGui::Button("Copy"))
 		{
-			Clipboard::SetClipboard(buffer.data());
-			GUI::PlayActionSound(true);
+			GUI::PlayActionSound(Utilities::Clipboard::Set(buffer.data()));
 		}
 	}
 
@@ -739,7 +738,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.2)");
+			ImGui::Text("UETools GUI (v2.3)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -934,6 +933,11 @@ void GUI::Draw()
 																			   "r.AllowHDR = 1";
 								static const size_t HDRAllowConfigDescriptionLength = strlen(HDRAllowConfigDescription);
 								ImGui::InputTextMultiline("##HDRAllowConfigDescription", const_cast<char*>(HDRAllowConfigDescription), HDRAllowConfigDescriptionLength, { 500, 120 }, ImGuiInputTextFlags_ReadOnly);
+								ImGui::SameLine();
+								if (ImGui::Button("Copy##HDRAllowConfigDescription"))
+								{
+									PlayActionSound(Utilities::Clipboard::Set(HDRAllowConfigDescription));
+								}
 
 								ImGui::NewLine();
 
@@ -983,6 +987,11 @@ void GUI::Draw()
 																				  "; Luminance level for UI elements.";
 								static const size_t HDRSettingsConfigDescriptionLength = strlen(HDRSettingsConfigDescription);
 								ImGui::InputTextMultiline("##HDRSettingsConfigDescription", const_cast<char*>(HDRSettingsConfigDescription), HDRSettingsConfigDescriptionLength, { 800, 600 }, ImGuiInputTextFlags_ReadOnly);
+								ImGui::SameLine();
+								if (ImGui::Button("Copy##HDRSettingsConfigDescription"))
+								{
+									PlayActionSound(Utilities::Clipboard::Set(HDRSettingsConfigDescription));
+								}
 
 								ImGui::SetFontRegular();
 								ImGui::Text("Unreal Engine Console");
@@ -998,6 +1007,11 @@ void GUI::Draw()
 																				   "r.HDR.UI.Level 0.65";
 								static const size_t HDRSettingsConsoleDescriptionLength = strlen(HDRSettingsConsoleDescription);
 								ImGui::InputTextMultiline("##HDRSettingsConsoleDescription", const_cast<char*>(HDRSettingsConsoleDescription), HDRSettingsConsoleDescriptionLength, { 800, 40 }, ImGuiInputTextFlags_ReadOnly);
+								ImGui::SameLine();
+								if (ImGui::Button("Copy##HDRSettingsConsoleDescription"))
+								{
+									PlayActionSound(Utilities::Clipboard::Set(HDRSettingsConsoleDescription));
+								}
 
 								ImGui::NewLine();
 
@@ -1011,6 +1025,11 @@ void GUI::Draw()
 																					 "r.EyeAdaptationQuality = 0";
 								static const size_t HDRDisturbanceConfigDescriptionLength = strlen(HDRDisturbanceConfigDescription);
 								ImGui::InputTextMultiline("##HDRDisturbanceConfigDescription", const_cast<char*>(HDRDisturbanceConfigDescription), HDRDisturbanceConfigDescriptionLength, { 500, 120 }, ImGuiInputTextFlags_ReadOnly);
+								ImGui::SameLine();
+								if (ImGui::Button("Copy##HDRDisturbanceConfigDescription"))
+								{
+									PlayActionSound(Utilities::Clipboard::Set(HDRDisturbanceConfigDescription));
+								}
 
 								ImGui::SetFontRegular();
 								ImGui::Text("Unreal Engine Console");
@@ -1019,6 +1038,11 @@ void GUI::Draw()
 																					  "r.EyeAdaptationQuality 0";
 								static const size_t HDRDisturbanceConsoleDescriptionLength = strlen(HDRDisturbanceConsoleDescription);
 								ImGui::InputTextMultiline("##HDRDisturbanceConsoleDescription", const_cast<char*>(HDRDisturbanceConsoleDescription), HDRDisturbanceConsoleDescriptionLength, { 800, 40 }, ImGuiInputTextFlags_ReadOnly);
+								ImGui::SameLine();
+								if (ImGui::Button("Copy##HDRDisturbanceConsoleDescription"))
+								{
+									PlayActionSound(Utilities::Clipboard::Set(HDRDisturbanceConsoleDescription));
+								}
 
 								ImGui::NewLine();
 
@@ -1907,8 +1931,16 @@ void GUI::Draw()
 
 								ImGui::NewLine();
 
-								ImGui::Text("Actor Super Class: %s", actor.superClassName.c_str());
 								ImGui::Text("Actor Class: %s", actor.className.c_str());
+								if (ImGui::TreeNode("Class Hierarchy"))
+								{
+									for (std::string className : actor.superClassesNames)
+									{
+										ImGui::Text(("- " + className).c_str());
+									}
+
+									ImGui::TreePop();
+								}
 								ImGui::Text("Actor Object: %s", actor.objectName.c_str());
 
 								ImGui::NewLine();
@@ -2923,10 +2955,30 @@ void GUI::Draw()
 									ImGui::Spacing();
 									ImGui::SameLine();
 									ImGui::Checkbox("Case Sensitive##Components", &Features::ActorsList::componentsFilterCaseSensitive);
+									ImGui::SameLine();
+									ImGui::Spacing();
+									ImGui::SameLine();
+									ImGui::ObjectFilterModeComboBox("##Components", &Features::ActorsList::componentsFilterMode);
 
 									ImGui::NewLine();
 
-									std::vector<Unreal::ActorComponent::DataStructure> filteredComponents = Unreal::ActorComponent::FilterByObjectName(actor.components, Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterCaseSensitive);
+									/* Filter Components by "Search Filter" */
+									std::vector<Unreal::ActorComponent::DataStructure> filteredComponents;
+									switch (Features::ActorsList::componentsFilterMode)
+									{
+										case ImGui::E_ObjectFilterMode::ClassName:
+											filteredComponents = Unreal::ActorComponent::FilterByClassName(actor.components, Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterCaseSensitive);
+											break;
+
+										case ImGui::E_ObjectFilterMode::ObjectName:
+											filteredComponents = Unreal::ActorComponent::FilterByObjectName(actor.components, Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterCaseSensitive);
+											break;
+
+										case ImGui::E_ObjectFilterMode::All:
+											filteredComponents = Unreal::ActorComponent::FilterByClassAndObjectName(actor.components, Features::ActorsList::componentsFilterBuffer, Features::ActorsList::componentsFilterCaseSensitive);
+											break;
+									}
+
 									for (Unreal::ActorComponent::DataStructure& component : filteredComponents) // <-- Reference!
 									{
 										if (ImGui::TreeNode(component.objectName.c_str()))
@@ -4542,8 +4594,14 @@ void Features::ActorsList::Update()
 
 			SDK::AActor* actor = static_cast<SDK::AActor*>(objectReference);
 			actorData.reference = actor;
-			actorData.superClassName = actor->Class->Super->GetFullName();
-			actorData.className = actor->Class->GetFullName();
+			
+			Unreal::Class::Hierarchy classHierarchy = Unreal::Class::GetClassHierarchy(actor);
+			actorData.className = classHierarchy.derivedClass->GetFullName();
+			for (SDK::UClass* superClass : classHierarchy.superClasses)
+			{
+				actorData.superClassesNames.push_back(superClass->GetFullName());
+			}
+
 			actorData.objectName = actor->GetFullName();
 
 #ifdef ACTOR_KIND

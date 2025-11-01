@@ -149,17 +149,17 @@
     <ClCompile Include="..\SDKs\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\SDKs\ImGui\imgui_tables.cpp" />
     <ClCompile Include="..\SDKs\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="DirectWindow.cpp" />
+    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Unreal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Clipboard.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="DirectWindow.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Unreal.h" />

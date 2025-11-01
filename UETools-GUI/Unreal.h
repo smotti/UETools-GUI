@@ -5,11 +5,11 @@
 
 #include "definitions.h"
 #include "Math.h"
+#include "Utilities.h"
 
 #include "Windows.h"
 
 #include <vector>
-#include <algorithm>
 #include <cwctype>
 
 
@@ -654,7 +654,9 @@ namespace Unreal
 		static Unreal::Transform GetTransform(SDK::USceneComponent* sceneComponentReference);
 
 
+		static std::vector<ActorComponent::DataStructure> FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
 		static std::vector<ActorComponent::DataStructure> FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<ActorComponent::DataStructure> FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
 	};
 
 
@@ -677,8 +679,8 @@ namespace Unreal
 		struct DataStructure
 		{
 			SDK::AActor* reference;
-			std::string superClassName;
 			std::string className;
+			std::vector<std::string> superClassesNames;
 			std::string objectName;
 
 #ifdef ACTOR_KIND
@@ -808,6 +810,24 @@ namespace Unreal
 		static SDK::UClass* SoftLoadClass(const SDK::FString& objectPath);
 		static SDK::UObject* SoftLoadObject(const SDK::FString& objectPath);
 #endif
+	};
+
+
+
+
+
+
+	class Class
+	{
+	public:
+		struct Hierarchy
+		{
+			SDK::UClass* derivedClass;
+			std::vector<SDK::UClass*> superClasses;
+		};
+
+
+		static Hierarchy GetClassHierarchy(SDK::UObject* objectReference);
 	};
 
 

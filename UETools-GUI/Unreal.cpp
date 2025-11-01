@@ -698,9 +698,38 @@ Unreal::Transform Unreal::ActorComponent::GetTransform(SDK::USceneComponent* sce
 	if (sceneComponentReference == nullptr)
 		return Unreal::Transform();
 
-	return { sceneComponentReference->K2_GetComponentLocation(), sceneComponentReference->K2_GetComponentRotation(), sceneComponentReference->K2_GetComponentScale() };
+	return Math::F_ToUnrealTransform(sceneComponentReference->K2_GetComponentToWorld());
 }
 
+
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<ActorComponent::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Components by "Search Filter" */
+	for (ActorComponent::DataStructure component : componentsArray)
+	{
+		/* "Search Filter" is empty - Component considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = component.className.find(filter) != std::string::npos;
+			else
+			{
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(component.className).find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(component); // Component is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
 
 std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
 {
@@ -719,15 +748,45 @@ std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::Filte
 				matchFilters = component.objectName.find(filter) != std::string::npos;
 			else
 			{
-				std::string classNameLowerCase = component.objectName;
-				std::string filterLowerCase = filter;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(component.objectName).find(filterLowerCase) != std::string::npos;
+			}
+		}
 
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
+		if (matchFilters)
+			outCollection.push_back(component); // Component is good to go, can be considered "filtered".
+	}
 
-				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+	return outCollection;
+}
+
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<ActorComponent::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Components by "Search Filter" */
+	for (ActorComponent::DataStructure component : componentsArray)
+	{
+		/* "Search Filter" is empty - Component considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+			{
+				bool inClass = component.className.find(filter) != std::string::npos;
+				bool inObject = component.objectName.find(filter) != std::string::npos;
+
+				matchFilters = inClass || inObject;
+			}
+			else
+			{
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(component.className).find(filterLowerCase) != std::string::npos;
+				bool inObject = Utilities::String::ToLowerCase(component.objectName).find(filterLowerCase) != std::string::npos;
+
+				matchFilters = inClass || inObject;
 			}
 		}
 
@@ -829,21 +888,26 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const
 		if (matchFilters == false)
 		{
 			if (caseSensitive)
-				matchFilters = (actor.superClassName.find(filter) != std::string::npos) || (actor.className.find(filter) != std::string::npos);
+			{
+				bool inClass = actor.className.find(filter) != std::string::npos;
+				bool inSuperClass = std::any_of(actor.superClassesNames.begin(), actor.superClassesNames.end(), [&](const std::string& className)
+				{
+						return className.find(filter) != std::string::npos;
+				});
+
+				matchFilters = inClass || inSuperClass;
+			}
+				
 			else
 			{
-				std::string superClassNameLowerCase = actor.superClassName;
-				std::string classNameLowerCase = actor.className;
-				std::string filterLowerCase = filter;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(actor.className).find(filterLowerCase) != std::string::npos;
+				bool inSuperClass = std::any_of(actor.superClassesNames.begin(), actor.superClassesNames.end(), [&](const std::string& className)
+				{
+					return Utilities::String::ToLowerCase(className).find(filterLowerCase) != std::string::npos;
+				});
 
-				std::transform(superClassNameLowerCase.begin(), superClassNameLowerCase.end(), superClassNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = (superClassNameLowerCase.find(filterLowerCase) != std::string::npos) || (classNameLowerCase.find(filterLowerCase) != std::string::npos);
+				matchFilters = inClass || inSuperClass;
 			}
 		}
 
@@ -882,15 +946,8 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 				matchFilters = actor.objectName.find(filter) != std::string::npos;
 			else
 			{
-				std::string objectNameLowerCase = actor.objectName;
-				std::string filterLowerCase = filter;
-
-				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = objectNameLowerCase.find(filterLowerCase) != std::string::npos;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(actor.objectName).find(filterLowerCase) != std::string::npos;
 			}
 		}
 
@@ -926,24 +983,27 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectN
 		if (matchFilters == false)
 		{
 			if (caseSensitive)
-				matchFilters = (actor.superClassName.find(filter) != std::string::npos) || (actor.className.find(filter) != std::string::npos) || (actor.objectName.find(filter) != std::string::npos);
+			{
+				bool inClass = actor.className.find(filter) != std::string::npos;
+				bool inSuperClass = std::any_of(actor.superClassesNames.begin(), actor.superClassesNames.end(), [&](const std::string& className)
+				{
+					return className.find(filter) != std::string::npos;
+				});
+				bool inObject = actor.objectName.find(filter) != std::string::npos;
+
+				matchFilters = inClass || inSuperClass || inObject;
+			}
 			else
 			{
-				std::string superClassNameLowerCase = actor.superClassName;
-				std::string classNameLowerCase = actor.className;
-				std::string objectNameLowerCase = actor.objectName;
-				std::string filterLowerCase = filter;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(actor.className).find(filterLowerCase) != std::string::npos;
+				bool inSuperClass = std::any_of(actor.superClassesNames.begin(), actor.superClassesNames.end(), [&](const std::string& className)
+					{
+						return Utilities::String::ToLowerCase(className).find(filterLowerCase) != std::string::npos;
+					});
+				bool inObject = Utilities::String::ToLowerCase(actor.objectName).find(filterLowerCase) != std::string::npos;
 
-				std::transform(superClassNameLowerCase.begin(), superClassNameLowerCase.end(), superClassNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = (superClassNameLowerCase.find(filterLowerCase) != std::string::npos) || (classNameLowerCase.find(filterLowerCase) != std::string::npos) || (objectNameLowerCase.find(filterLowerCase) != std::string::npos);
+				matchFilters = inClass || inSuperClass || inObject;
 			}
 		}
 
@@ -1040,12 +1100,7 @@ Unreal::Transform Unreal::Actor::GetTransform(SDK::AActor* actorReference)
 	if (actorReference == nullptr)
 		return Transform();
 
-	Unreal::Transform outTransform;
-	outTransform.location = actorReference->K2_GetActorLocation();
-	outTransform.rotation = actorReference->K2_GetActorRotation();
-	outTransform.scale = actorReference->GetActorScale3D();
-
-	return outTransform;
+	return Math::F_ToUnrealTransform(actorReference->GetTransform());
 }
 
 
@@ -1151,15 +1206,8 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClass
 				matchFilters = widget.className.find(filter) != std::string::npos;
 			else
 			{
-				std::string classNameLowerCase = widget.className;
-				std::string filterLowerCase = filter;
-
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = classNameLowerCase.find(filterLowerCase) != std::string::npos;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(widget.className).find(filterLowerCase) != std::string::npos;
 			}
 		}
 
@@ -1190,15 +1238,8 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjec
 				matchFilters = widget.objectName.find(filter) != std::string::npos;
 			else
 			{
-				std::string objectNameLowerCase = widget.objectName;
-				std::string filterLowerCase = filter;
-
-				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = objectNameLowerCase.find(filterLowerCase) != std::string::npos;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(widget.objectName).find(filterLowerCase) != std::string::npos;
 			}
 		}
 
@@ -1226,21 +1267,19 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClass
 		if (matchFilters == false)
 		{
 			if (caseSensitive)
-				matchFilters = (widget.className.find(filter) != std::string::npos) || (widget.objectName.find(filter) != std::string::npos);
+			{
+				bool inClass = widget.className.find(filter) != std::string::npos;
+				bool inObject = widget.objectName.find(filter) != std::string::npos;
+
+				matchFilters = inClass || inObject;
+			}
 			else
 			{
-				std::string classNameLowerCase = widget.className;
-				std::string objectNameLowerCase = widget.objectName;
-				std::string filterLowerCase = filter;
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(widget.className).find(filterLowerCase) != std::string::npos;
+				bool inObject = Utilities::String::ToLowerCase(widget.objectName).find(filterLowerCase) != std::string::npos;
 
-				std::transform(classNameLowerCase.begin(), classNameLowerCase.end(), classNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(objectNameLowerCase.begin(), objectNameLowerCase.end(), objectNameLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-				std::transform(filterLowerCase.begin(), filterLowerCase.end(), filterLowerCase.begin(),
-					[](unsigned char c) { return std::tolower(c); });
-
-				matchFilters = (classNameLowerCase.find(filterLowerCase) != std::string::npos) || (objectNameLowerCase.find(filterLowerCase) != std::string::npos);
+				matchFilters = inClass || inObject;
 			}
 		}
 
@@ -1391,6 +1430,37 @@ SDK::UObject* Unreal::Object::SoftLoadObject(const SDK::FString& objectPath)
 	}
 }
 #endif
+
+
+
+
+
+
+Unreal::Class::Hierarchy Unreal::Class::GetClassHierarchy(SDK::UObject* objectReference)
+{
+	Unreal::Class::Hierarchy outHierarchy;
+
+	if (objectReference == nullptr)
+		return outHierarchy;
+
+	SDK::UClass* actorClass = objectReference->Class;
+	if (actorClass == nullptr)
+		return outHierarchy;
+
+	outHierarchy.derivedClass = actorClass;
+	while (actorClass)
+	{
+		if (SDK::UStruct* superStruct = actorClass->Super)
+		{
+			actorClass = static_cast<SDK::UClass*>(superStruct);
+			outHierarchy.superClasses.push_back(actorClass);
+		}
+		else
+			break;
+	}
+
+	return outHierarchy;
+}
 
 
 
