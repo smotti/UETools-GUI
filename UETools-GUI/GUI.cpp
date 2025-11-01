@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.4)");
+			ImGui::Text("UETools GUI (v2.4b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -4157,6 +4157,7 @@ void GUI::PlaySound(const E_Sound& soundToPlay)
 
 
 
+#ifdef COLLISION_VISUALIZER
 void DebugDraw::DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transform& componentTransform, const uint32_t& drawColor, const float& drawThickness)
 {
 	if (bodySetup == nullptr)
@@ -4496,7 +4497,7 @@ void DebugDraw::DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_
 		}
 	}
 }
-
+#endif
 
 
 

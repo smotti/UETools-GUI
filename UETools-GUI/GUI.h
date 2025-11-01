@@ -290,6 +290,7 @@ public:
 class DebugDraw
 {
 public:
+#ifdef COLLISION_VISUALIZER
 	static void DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transform& componentTransform, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawStaticMeshActor(SDK::AStaticMeshActor* staticMeshActor, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, const float& drawThickness);
@@ -298,6 +299,7 @@ public:
 	static void DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawSphereComponent(SDK::USphereComponent* sphereComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_t& drawColor, const float& drawThickness);
+#endif
 };
 
 
