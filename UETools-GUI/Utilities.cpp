@@ -5,7 +5,33 @@
 
 
 
-bool Utilities::Clipboard::Set(const std::string& str)
+std::string Utilities::Clipboard::GetClipboardText()
+{
+    if (OpenClipboard(nullptr))
+    {
+        HANDLE hData = GetClipboardData(CF_TEXT);
+        if (hData)
+        {
+            char* pData = static_cast<char*>(GlobalLock(hData));
+            if (pData)
+            {
+                std::string text(pData);
+                GlobalUnlock(hData);
+
+                CloseClipboard();
+                return text;
+            }
+
+            GlobalUnlock(hData);
+        }
+
+        CloseClipboard();
+    }
+
+    return std::string();
+}
+
+bool Utilities::Clipboard::SetClipboardText(const std::string& str)
 {
     if (OpenClipboard(nullptr))
     {
@@ -26,7 +52,6 @@ bool Utilities::Clipboard::Set(const std::string& str)
                 CloseClipboard();
                 return true;
             }
-
 
             GlobalUnlock(hGlobal);
         }

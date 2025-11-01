@@ -8,6 +8,31 @@
 // ========================================================
 // |             #IMGUI #CONTROLS #KEYBINDINGS            |
 // ========================================================
+ImGui::Viewport ImGui::GetViewport()
+{
+	ImGui::Viewport viewport;
+
+	ImGuiViewport* iViewport = ImGui::GetMainViewport();
+	if (iViewport == nullptr)
+		return viewport;
+
+	viewport.iViewport = iViewport;
+	viewport.iViewportPosition = { iViewport->Pos.x, iViewport->Pos.y };
+	viewport.iViewportSize = { iViewport->Size.x, iViewport->Size.y };
+
+	return viewport;
+}
+
+
+ImDrawList* ImGui::GetDrawList()
+{
+	ImDrawList* iDrawList = ImGui::GetBackgroundDrawList();
+	return iDrawList ? iDrawList : nullptr;
+}
+
+
+
+
 void ImGui::TextBool(const char* label, const bool& inBool, const char* text_true, const char* text_false, const bool& useColoring, const ImU32& color_true, const ImU32& color_false)
 {
 	if (label)
@@ -347,7 +372,7 @@ void ImGui::ReadOnlyInputText(const char* label, const char* text, const bool& s
 		ImGui::SameLine();
 		if (ImGui::Button("Copy"))
 		{
-			GUI::PlayActionSound(Utilities::Clipboard::Set(buffer.data()));
+			GUI::PlayActionSound(Utilities::Clipboard::SetClipboardText(buffer.data()));
 		}
 	}
 
@@ -727,18 +752,11 @@ void GUI::Init(const HMODULE& applicationModule)
 
 void GUI::Draw()
 {
-	ImGuiViewport* iViewPort = ImGui::GetMainViewport();
-	ImVec2 iViewPortPosition = { iViewPort->Pos.x, iViewPort->Pos.y };
-	ImVec2 iViewPortSize = { iViewPort->Size.x, iViewPort->Size.y };
-
-	ImDrawList* iDrawList = ImGui::GetBackgroundDrawList();
-
-
 	if (GetIsMenuActive())
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.3)");
+			ImGui::Text("UETools GUI (v2.4)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -936,7 +954,7 @@ void GUI::Draw()
 								ImGui::SameLine();
 								if (ImGui::Button("Copy##HDRAllowConfigDescription"))
 								{
-									PlayActionSound(Utilities::Clipboard::Set(HDRAllowConfigDescription));
+									PlayActionSound(Utilities::Clipboard::SetClipboardText(HDRAllowConfigDescription));
 								}
 
 								ImGui::NewLine();
@@ -990,7 +1008,7 @@ void GUI::Draw()
 								ImGui::SameLine();
 								if (ImGui::Button("Copy##HDRSettingsConfigDescription"))
 								{
-									PlayActionSound(Utilities::Clipboard::Set(HDRSettingsConfigDescription));
+									PlayActionSound(Utilities::Clipboard::SetClipboardText(HDRSettingsConfigDescription));
 								}
 
 								ImGui::SetFontRegular();
@@ -1010,7 +1028,7 @@ void GUI::Draw()
 								ImGui::SameLine();
 								if (ImGui::Button("Copy##HDRSettingsConsoleDescription"))
 								{
-									PlayActionSound(Utilities::Clipboard::Set(HDRSettingsConsoleDescription));
+									PlayActionSound(Utilities::Clipboard::SetClipboardText(HDRSettingsConsoleDescription));
 								}
 
 								ImGui::NewLine();
@@ -1028,7 +1046,7 @@ void GUI::Draw()
 								ImGui::SameLine();
 								if (ImGui::Button("Copy##HDRDisturbanceConfigDescription"))
 								{
-									PlayActionSound(Utilities::Clipboard::Set(HDRDisturbanceConfigDescription));
+									PlayActionSound(Utilities::Clipboard::SetClipboardText(HDRDisturbanceConfigDescription));
 								}
 
 								ImGui::SetFontRegular();
@@ -1041,7 +1059,7 @@ void GUI::Draw()
 								ImGui::SameLine();
 								if (ImGui::Button("Copy##HDRDisturbanceConsoleDescription"))
 								{
-									PlayActionSound(Utilities::Clipboard::Set(HDRDisturbanceConsoleDescription));
+									PlayActionSound(Utilities::Clipboard::SetClipboardText(HDRDisturbanceConsoleDescription));
 								}
 
 								ImGui::NewLine();
@@ -1777,7 +1795,7 @@ void GUI::Draw()
 #ifdef COLLISION_VISUALIZER
 						ImGui::Checkbox("Draw Collision##Actors", &Features::CollisionVisualizer::enabled);
 						ImGui::SameLine();
-						ImGui::TextHint("Draws simplified polygonal wireframe color of which depends on Actor type:\n\nStatic Mesh\n- BLUE: Collision.\n\nVolume\n- RED: Blocking (Collision).\n- ORANGE: Trigger.\n- WHITE: Unknown.\n\nPawn\n-GREEN: Capsule Collision.");
+						ImGui::TextHint("Draws polygonal wireframe color of which depends on collision type:\n\nBLUE: Static Mesh Actor.\n\nRED: Blocking Volume.\nORANGE: Trigger Volume.\nPURPLE: Other Volume.\n\nGREEN: Capsule/Sphere/Box Collision.");
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
@@ -3870,98 +3888,103 @@ void GUI::Draw()
 #ifdef ACTOR_TRACE
 	if (Features::ActorTrace::enabled)
 	{
-		if (Features::ActorTrace::showOnScreen)
+		ImDrawList* drawList = ImGui::GetDrawList();
+		if (drawList)
 		{
+			if (Features::ActorTrace::showOnScreen)
+			{
+				ImGui::Viewport viewport = ImGui::GetViewport();
+
 #ifdef UE5
-			const char* labelText = Features::ActorTrace::traceHit ? Features::ActorTrace::object.objectName.c_str() : "No Object Traced";
+				const char* labelText = Features::ActorTrace::traceHit ? Features::ActorTrace::object.objectName.c_str() : "No Object Traced";
 #else
-			const char* labelText = Features::ActorTrace::traceHit ? Features::ActorTrace::actor.objectName.c_str() : "No Actor Traced";
+				const char* labelText = Features::ActorTrace::traceHit ? Features::ActorTrace::actor.objectName.c_str() : "No Actor Traced";
 #endif
-			ImVec2 labelSize = ImGui::CalcTextSize(labelText);
+				ImVec2 labelSize = ImGui::CalcTextSize(labelText);
+				ImVec2 labelPosition = ImVec2
+				(
+					/*
+						Horizontal: ImGui Viewport center;
+						Vertical: ImGui Viewport bottom - 12 pixels.
 
-			ImVec2 labelPosition = ImVec2
-			(
-				/*
-					Horizontal: ImGui Viewport center;
-					Vertical: ImGui Viewport bottom - 12 pixels.
+						Flooring the values allows to avoid potential subpixel conflicts.
+					*/
+					floorf(viewport.iViewportSize.x + (viewport.iViewportSize.x - labelSize.x) * 0.5f),
+					floorf(viewport.iViewportSize.y - labelSize.y - 12.0f)
+				);
 
-					Flooring the values allows to avoid potential subpixel conflicts.
-				*/
-				floorf(iViewPortPosition.x + (iViewPortSize.x - labelSize.x) * 0.5f),
-				floorf(iViewPortSize.y - labelSize.y - 12.0f)
-			);
-
-			iDrawList->AddText(labelPosition, ImGui::GetColorU32(ImGuiCol_Text), labelText);
-		}
-
-		if (Features::ActorTrace::showLineTrace && Features::ActorTrace::traceCast)
-		{
-			SDK::FVector2D screenStartPosition;
-			SDK::FVector2D screenEndPosition;
-
-			/* UGameplayStatics::ProjectWorldToScreen() verify Player Controller reference within its code. */
-			SDK::APlayerController* playerController = Unreal::PlayerController::Get();
-			bool startPositionProjected = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, Features::ActorTrace::traceStartLocation, &screenStartPosition, false);
-			bool endPositionProjected = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, Features::ActorTrace::traceEndLocation, &screenEndPosition, false);
-
-			/* Inverse Normalize RGBA values set by color picker. */
-			ImU32 color = ImGui::ColorConvertFloat4ToU32(ImVec4(Features::ActorTrace::traceColor[0], Features::ActorTrace::traceColor[1], Features::ActorTrace::traceColor[2], Features::ActorTrace::traceColor[3]));
-
-			static float traceStartCircleRadius;
-			if (startPositionProjected)
-				traceStartCircleRadius = Features::ActorTrace::traceThickness * 1.5f;
-
-			static float traceEndCircleRadius;
-			static float traceCrossSize;
-			if (endPositionProjected)
-			{
-				traceEndCircleRadius = Features::ActorTrace::traceThickness * 1.75f;
-				traceCrossSize = 8.0f + (Features::ActorTrace::traceThickness * 0.5f);
+				drawList->AddText(labelPosition, ImGui::GetColorU32(ImGuiCol_Text), labelText);
 			}
 
-			/* Both start and end position are within player view. */
-			if (startPositionProjected && endPositionProjected)
+			if (Features::ActorTrace::showLineTrace && Features::ActorTrace::traceCast)
 			{
-				ImVec2 startPosition = { (float)screenStartPosition.X, (float)screenStartPosition.Y };
-				ImVec2 endPosition = { (float)screenEndPosition.X, (float)screenEndPosition.Y };
+				SDK::FVector2D screenStartPosition;
+				SDK::FVector2D screenEndPosition;
 
-				/* Draw the trace. */
-				iDrawList->AddLine(startPosition, endPosition, color, Features::ActorTrace::traceThickness);
+				/* UGameplayStatics::ProjectWorldToScreen() verify Player Controller reference within its code. */
+				SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+				bool startPositionProjected = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, Features::ActorTrace::traceStartLocation, &screenStartPosition, false);
+				bool endPositionProjected = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, Features::ActorTrace::traceEndLocation, &screenEndPosition, false);
 
-				/* Draw a hollow circle to mark position where trace was sent from. */
-				iDrawList->AddCircle(startPosition, traceStartCircleRadius, color);
+				/* Inverse Normalize RGBA values set by color picker. */
+				ImU32 color = ImGui::ColorConvertFloat4ToU32(ImVec4(Features::ActorTrace::traceColor[0], Features::ActorTrace::traceColor[1], Features::ActorTrace::traceColor[2], Features::ActorTrace::traceColor[3]));
 
-				/*
-					If trace has hit something, draw a cross to mark position where the trace hit;
-					Otherwise draw a filled circle to mark position where the trace ends.
-				*/
-				if (Features::ActorTrace::traceHit)
+				static float traceStartCircleRadius;
+				if (startPositionProjected)
+					traceStartCircleRadius = Features::ActorTrace::traceThickness * 1.5f;
+
+				static float traceEndCircleRadius;
+				static float traceCrossSize;
+				if (endPositionProjected)
 				{
-					iDrawList->AddLine({ endPosition.x - traceCrossSize, endPosition.y - traceCrossSize }, { endPosition.x + traceCrossSize, endPosition.y + traceCrossSize }, color, Features::ActorTrace::traceThickness);
-					iDrawList->AddLine({ endPosition.x - traceCrossSize, endPosition.y + traceCrossSize }, { endPosition.x + traceCrossSize, endPosition.y - traceCrossSize }, color, Features::ActorTrace::traceThickness);
+					traceEndCircleRadius = Features::ActorTrace::traceThickness * 1.75f;
+					traceCrossSize = 8.0f + (Features::ActorTrace::traceThickness * 0.5f);
 				}
-				else
-					iDrawList->AddCircleFilled(endPosition, traceEndCircleRadius, color);
-			}
-			/* Only start position is within player view. */
-			else if (startPositionProjected)
-			{
-				ImVec2 position = { (float)screenStartPosition.X, (float)screenStartPosition.Y };
 
-				iDrawList->AddCircle(position, traceStartCircleRadius, color);
-			}
-			/* Only end position is within player view. */
-			else if (endPositionProjected)
-			{
-				ImVec2 position = { (float)screenEndPosition.X, (float)screenEndPosition.Y };
-
-				if (Features::ActorTrace::traceHit)
+				/* Both start and end position are within player view. */
+				if (startPositionProjected && endPositionProjected)
 				{
-					iDrawList->AddLine({ position.x - traceCrossSize, position.y - traceCrossSize }, { position.x + traceCrossSize, position.y + traceCrossSize }, color, Features::ActorTrace::traceThickness);
-					iDrawList->AddLine({ position.x - traceCrossSize, position.y + traceCrossSize }, { position.x + traceCrossSize, position.y - traceCrossSize }, color, Features::ActorTrace::traceThickness);
+					ImVec2 startPosition = { (float)screenStartPosition.X, (float)screenStartPosition.Y };
+					ImVec2 endPosition = { (float)screenEndPosition.X, (float)screenEndPosition.Y };
+
+					/* Draw the trace. */
+					drawList->AddLine(startPosition, endPosition, color, Features::ActorTrace::traceThickness);
+
+					/* Draw a hollow circle to mark position where trace was sent from. */
+					drawList->AddCircle(startPosition, traceStartCircleRadius, color);
+
+					/*
+						If trace has hit something, draw a cross to mark position where the trace hit;
+						Otherwise draw a filled circle to mark position where the trace ends.
+					*/
+					if (Features::ActorTrace::traceHit)
+					{
+						drawList->AddLine({ endPosition.x - traceCrossSize, endPosition.y - traceCrossSize }, { endPosition.x + traceCrossSize, endPosition.y + traceCrossSize }, color, Features::ActorTrace::traceThickness);
+						drawList->AddLine({ endPosition.x - traceCrossSize, endPosition.y + traceCrossSize }, { endPosition.x + traceCrossSize, endPosition.y - traceCrossSize }, color, Features::ActorTrace::traceThickness);
+					}
+					else
+						drawList->AddCircleFilled(endPosition, traceEndCircleRadius, color);
 				}
-				else
-					iDrawList->AddCircleFilled(position, traceEndCircleRadius, color);
+				/* Only start position is within player view. */
+				else if (startPositionProjected)
+				{
+					ImVec2 position = { (float)screenStartPosition.X, (float)screenStartPosition.Y };
+
+					drawList->AddCircle(position, traceStartCircleRadius, color);
+				}
+				/* Only end position is within player view. */
+				else if (endPositionProjected)
+				{
+					ImVec2 position = { (float)screenEndPosition.X, (float)screenEndPosition.Y };
+
+					if (Features::ActorTrace::traceHit)
+					{
+						drawList->AddLine({ position.x - traceCrossSize, position.y - traceCrossSize }, { position.x + traceCrossSize, position.y + traceCrossSize }, color, Features::ActorTrace::traceThickness);
+						drawList->AddLine({ position.x - traceCrossSize, position.y + traceCrossSize }, { position.x + traceCrossSize, position.y - traceCrossSize }, color, Features::ActorTrace::traceThickness);
+					}
+					else
+						drawList->AddCircleFilled(position, traceEndCircleRadius, color);
+				}
 			}
 		}
 	}
@@ -3976,29 +3999,33 @@ void GUI::Draw()
 		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
 		if (playerController)
 		{
-			for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
+			ImDrawList* drawList = ImGui::GetDrawList();
+			if (drawList)
 			{
-				SDK::FVector2D screenPosition;
-				if (SDK::UGameplayStatics::ProjectWorldToScreen(playerController, actor.location, &screenPosition, false))
+				for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
 				{
-					ImU32 color;
-					if (Features::ActorsList::filterCheckValidness)
-						color = Math::ColorFloat4_ToU32(Unreal::Actor::IsValid(actor.reference) ? Features::ActorsList::color_Valid : Features::ActorsList::color_Invalid);
-					else
-						color = IM_COL32(255, 255, 255, 255);
-					
-					iDrawList->AddCircleFilled({ (float)screenPosition.X, (float)screenPosition.Y }, 8.0f, color);
+					SDK::FVector2D screenPosition;
+					if (SDK::UGameplayStatics::ProjectWorldToScreen(playerController, actor.location, &screenPosition, false))
+					{
+						ImU32 color;
+						if (Features::ActorsList::filterCheckValidness)
+							color = Math::ColorFloat4_ToU32(Unreal::Actor::IsValid(actor.reference) ? Features::ActorsList::color_Valid : Features::ActorsList::color_Invalid);
+						else
+							color = IM_COL32(255, 255, 255, 255);
 
-					const char* labelText = actor.objectName.c_str();
-					ImVec2 labelSize = ImGui::CalcTextSize(labelText);
-					ImVec2 labelPosition = ImVec2
-					(
-						/* Flooring the values allows to avoid potential subpixel conflicts. */
-						floorf(screenPosition.X - (labelSize.x * 0.5)),
-						floorf(screenPosition.Y - 32.0f)
-					);
+						drawList->AddCircleFilled({ (float)screenPosition.X, (float)screenPosition.Y }, 8.0f, color);
 
-					iDrawList->AddText(labelPosition, color, labelText);
+						const char* labelText = actor.objectName.c_str();
+						ImVec2 labelSize = ImGui::CalcTextSize(labelText);
+						ImVec2 labelPosition = ImVec2
+						(
+							/* Flooring the values allows to avoid potential subpixel conflicts. */
+							floorf(screenPosition.X - (labelSize.x * 0.5)),
+							floorf(screenPosition.Y - 32.0f)
+						);
+
+						drawList->AddText(labelPosition, color, labelText);
+					}
 				}
 			}
 		}
@@ -4022,183 +4049,53 @@ void GUI::Draw()
 				if (actor.reference == nullptr)
 					continue;
 
-				ImU32 color = {};
+				if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
+					DebugDraw::DrawStaticMeshActor(static_cast<SDK::AStaticMeshActor*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh), Features::CollisionVisualizer::thickness);
 
-				if (actor.reference->IsA(SDK::APawn::StaticClass()))
+				else if (actor.reference->IsA(SDK::AVolume::StaticClass()))
 				{
-					color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Pawn);
+					if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
+						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume), Features::CollisionVisualizer::thickness);
 
-					SDK::TArray<SDK::UActorComponent*> actorComponents = actor.reference->K2_GetComponentsByClass(SDK::UCapsuleComponent::StaticClass());
-					if (actorComponents.Num() == 0)
-						continue;
+					else if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
+						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume), Features::CollisionVisualizer::thickness);
 
-					for (SDK::UActorComponent* component : actorComponents)
-					{
-						SDK::UCapsuleComponent* capsuleComponent = static_cast<SDK::UCapsuleComponent*>(component);
-						if (capsuleComponent == nullptr)
-							continue;
-
-						float capsuleRadius = capsuleComponent->GetScaledCapsuleRadius();
-						float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
-
-						Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
-						SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
-
-						/* Construct an orthonormal basis (axis, U, V) for building capsule rings. */
-						SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
-						SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
-						SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
-
-						const SDK::FVector capsuleTopLocation = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
-						const SDK::FVector capsuleBottomLocation = capsuleTransform.location - capsuleUpVector * capsuleHalfHeight;
-
-						/* Project capsule centers to draw them later on. */
-						SDK::FVector2D capsuleTop_Screen, capsuleBottom_Screen;
-						const bool capsuleTop_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleTopLocation, &capsuleTop_Screen, false);
-						const bool capsuleBottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleBottomLocation, &capsuleBottom_Screen, false);
-
-						static const int32_t capsuleSegments = 24;
-						for (int32_t i = 0; i < capsuleSegments; i++)
-						{
-							/*
-								A ----------> B
-
-								A - Current ring.
-								B - Next ring.
-							*/
-
-							/* Compute the start (ringA_Angle) and end (ringB_Angle) angles for the current ring segment in radians. */
-							const float ringA_Angle = (2.0f * Math::PI) * (float)i / (float)capsuleSegments;
-							const float ringB_Angle = (2.0f * Math::PI) * (float)(i + 1) / (float)capsuleSegments;
-
-							/* Compute points on the top and bottom rings using circular parametrization. */
-							SDK::FVector ringA_Top = capsuleTopLocation + (ortho_U * cosf(ringA_Angle) + ortho_V * sinf(ringA_Angle)) * capsuleRadius;
-							SDK::FVector ringB_Top = capsuleTopLocation + (ortho_U * cosf(ringB_Angle) + ortho_V * sinf(ringB_Angle)) * capsuleRadius;
-							SDK::FVector ringA_Bottom = capsuleBottomLocation + (ortho_U * cosf(ringA_Angle) + ortho_V * sinf(ringA_Angle)) * capsuleRadius;
-							SDK::FVector ringB_Bottom = capsuleBottomLocation + (ortho_U * cosf(ringB_Angle) + ortho_V * sinf(ringB_Angle)) * capsuleRadius;
-
-							SDK::FVector2D ringA_Top_Screen, ringB_Top_Screen, ringA_Bottom_Screen, ringB_Bottom_Screen;
-							bool ringA_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Top, &ringA_Top_Screen, false);
-							bool ringB_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Top, &ringB_Top_Screen, false);
-							bool ringA_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Bottom, &ringA_Bottom_Screen, false);
-							bool ringB_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Bottom, &ringB_Bottom_Screen, false);
-
-							/* Outlines the top edge. */
-							if (ringA_Top_Project && ringB_Top_Project)
-								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringB_Top_Screen.X, ringB_Top_Screen.Y), color, Features::CollisionVisualizer::thickness);
-
-							/* Outlines the bottom edge. */
-							if (ringA_Bottom_Project && ringB_Bottom_Project)
-								iDrawList->AddLine(ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), ImVec2(ringB_Bottom_Screen.X, ringB_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
-
-							/* Outlines side walls. */
-							if (ringA_Top_Project && ringA_Bottom_Project)
-								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
-
-							/* Outlines ring points to top and bottom centers. */
-							if (capsuleTop_Project && ringA_Top_Project)
-								iDrawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(capsuleTop_Screen.X, capsuleTop_Screen.Y), color, Features::CollisionVisualizer::thickness);
-
-							if (capsuleBottom_Project && ringA_Bottom_Project)
-								iDrawList->AddLine(ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), ImVec2(capsuleBottom_Screen.X, capsuleBottom_Screen.Y), color, Features::CollisionVisualizer::thickness);
-						}
-					}
-				}
-				else
-				{
-					SDK::UBodySetup* bodySetup = nullptr;
-					Unreal::Transform transform = {};
-
-					if (actor.reference->IsA(SDK::AVolume::StaticClass()))
-					{
-						if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
-							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume);
-						else if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
-							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume);
-						else
-							color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_UnknownVolume);
-
-						SDK::AVolume* volume = static_cast<SDK::AVolume*>(actor.reference);
-						if (volume->BrushComponent == nullptr)
-							continue;
-
-						SDK::UBrushComponent* brushComponent = volume->BrushComponent;
-						if (brushComponent->BrushBodySetup == nullptr)
-							continue;
-
-						bodySetup = brushComponent->BrushBodySetup;
-						transform = Unreal::ActorComponent::GetTransform(brushComponent);
-					}
-					else if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
-					{
-						color = Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh);
-
-						SDK::AStaticMeshActor* staticMeshActor = static_cast<SDK::AStaticMeshActor*>(actor.reference);
-						if (staticMeshActor->StaticMeshComponent == nullptr)
-							continue;
-
-						SDK::UStaticMeshComponent* staticMeshComponent = staticMeshActor->StaticMeshComponent;
-						if (staticMeshComponent->StaticMesh == nullptr)
-							continue;
-
-						SDK::UStaticMesh* staticMesh = staticMeshComponent->StaticMesh;
-						if (staticMesh->BodySetup == nullptr)
-							continue;
-
-						bodySetup = staticMesh->BodySetup;
-						transform = Unreal::ActorComponent::GetTransform(staticMeshComponent);
-					}
 					else
+						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_OtherVolume), Features::CollisionVisualizer::thickness);
+				}
+					
+
+				std::vector<SDK::UCapsuleComponent*> capsuleComponents;
+				std::vector<SDK::USphereComponent*> sphereComponents;
+				std::vector<SDK::UBoxComponent*> boxComponents;
+				for (Unreal::ActorComponent::DataStructure actorComponent : actor.components)
+				{
+					if (actorComponent.reference == nullptr)
 						continue;
 
-					for (SDK::FKConvexElem& convexElement : bodySetup->AggGeom.ConvexElems)
-					{
-						const SDK::TArray<SDK::FVector>& vertexData = convexElement.VertexData;
-						const size_t vertexDataLength = vertexData.Num();
-						if (vertexDataLength == 0)
-							continue;
+					if (actorComponent.reference->IsA(SDK::UCapsuleComponent::StaticClass()))
+						capsuleComponents.push_back(static_cast<SDK::UCapsuleComponent*>(actorComponent.reference));
 
-						const SDK::TArray<int32_t>& indexData = convexElement.IndexData;
-						const size_t indexDataLength = indexData.Num();
-						if (indexDataLength < 3 || indexDataLength % 3 != 0)
-							continue;
+					else if (actorComponent.reference->IsA(SDK::USphereComponent::StaticClass()))
+						sphereComponents.push_back(static_cast<SDK::USphereComponent*>(actorComponent.reference));
 
-						for (int32_t i = 0; i + 2 < indexDataLength; i += 3)
-						{
-							int32_t A_Index = indexData[i];
-							int32_t B_Index = indexData[i + 1];
-							int32_t C_Index = indexData[i + 2];
+					else if (actorComponent.reference->IsA(SDK::UBoxComponent::StaticClass()))
+						boxComponents.push_back(static_cast<SDK::UBoxComponent*>(actorComponent.reference));
+				}
 
-							if (A_Index < 0 || A_Index >= vertexDataLength ||
-								B_Index < 0 || B_Index >= vertexDataLength ||
-								C_Index < 0 || C_Index >= vertexDataLength)
-								continue;
+				for (SDK::UCapsuleComponent* capsuleComponent : capsuleComponents)
+				{
+					DebugDraw::DrawCapsuleComponent(capsuleComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Primitive), Features::CollisionVisualizer::thickness);
+				}
 
-							if (A_Index == B_Index || B_Index == C_Index || C_Index == A_Index)
-								continue;
+				for (SDK::USphereComponent* sphereComponent : sphereComponents)
+				{
+					DebugDraw::DrawSphereComponent(sphereComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Primitive), Features::CollisionVisualizer::thickness);
+				}
 
-							SDK::FVector A_Local = vertexData[A_Index];
-							SDK::FVector B_Local = vertexData[B_Index];
-							SDK::FVector C_Local = vertexData[C_Index];
-
-							SDK::FTransform fTransform = Math::Unreal_ToFTransform(transform);
-							SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, A_Local);
-							SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, B_Local);
-							SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, C_Local);
-
-							SDK::FVector2D A_Screen, B_Screen, C_Screen;
-							bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
-							bool B_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, B_World, &B_Screen, false);
-							bool C_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, C_World, &C_Screen, false);
-
-							if (A_Project && B_Project && C_Project)
-							{
-								iDrawList->AddLine(ImVec2(A_Screen.X, A_Screen.Y), ImVec2(B_Screen.X, B_Screen.Y), color, Features::CollisionVisualizer::thickness);
-								iDrawList->AddLine(ImVec2(B_Screen.X, B_Screen.Y), ImVec2(C_Screen.X, C_Screen.Y), color, Features::CollisionVisualizer::thickness);
-								iDrawList->AddLine(ImVec2(C_Screen.X, C_Screen.Y), ImVec2(A_Screen.X, A_Screen.Y), color, Features::CollisionVisualizer::thickness);
-							}
-						}
-					}
+				for (SDK::UBoxComponent* boxComponent : boxComponents)
+				{
+					DebugDraw::DrawBoxComponent(boxComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Primitive), Features::CollisionVisualizer::thickness);
 				}
 			}
 		}
@@ -4254,6 +4151,352 @@ void GUI::PlaySound(const E_Sound& soundToPlay)
 			Beep(soundFrequency, soundDuration);
 		}).detach();
 }
+
+
+
+
+
+
+void DebugDraw::DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transform& componentTransform, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (bodySetup == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	for (SDK::FKConvexElem& convexElement : bodySetup->AggGeom.ConvexElems)
+	{
+		const SDK::TArray<SDK::FVector>& vertexData = convexElement.VertexData;
+		const size_t vertexDataLength = vertexData.Num();
+		if (vertexDataLength == 0)
+			continue;
+
+		const SDK::TArray<int32_t>& indexData = convexElement.IndexData;
+		const size_t indexDataLength = indexData.Num();
+		if (indexDataLength < 3 || indexDataLength % 3 != 0)
+			continue;
+
+		for (int32_t i = 0; i + 2 < indexDataLength; i += 3)
+		{
+			int32_t A_Index = indexData[i];
+			int32_t B_Index = indexData[i + 1];
+			int32_t C_Index = indexData[i + 2];
+
+			if (A_Index < 0 || A_Index >= vertexDataLength ||
+				B_Index < 0 || B_Index >= vertexDataLength ||
+				C_Index < 0 || C_Index >= vertexDataLength)
+				continue;
+
+			if (A_Index == B_Index || B_Index == C_Index || C_Index == A_Index)
+				continue;
+
+			SDK::FVector A_Local = vertexData[A_Index];
+			SDK::FVector B_Local = vertexData[B_Index];
+			SDK::FVector C_Local = vertexData[C_Index];
+
+			SDK::FTransform fTransform = Math::Unreal_ToFTransform(componentTransform);
+			SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, A_Local);
+			SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, B_Local);
+			SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, C_Local);
+
+			SDK::FVector2D A_Screen, B_Screen, C_Screen;
+			bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
+			bool B_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, B_World, &B_Screen, false);
+			bool C_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, C_World, &C_Screen, false);
+
+			if (A_Project && B_Project && C_Project)
+			{
+				drawList->AddLine(ImVec2(A_Screen.X, A_Screen.Y), ImVec2(B_Screen.X, B_Screen.Y), drawColor, drawThickness);
+				drawList->AddLine(ImVec2(B_Screen.X, B_Screen.Y), ImVec2(C_Screen.X, C_Screen.Y), drawColor, drawThickness);
+				drawList->AddLine(ImVec2(C_Screen.X, C_Screen.Y), ImVec2(A_Screen.X, A_Screen.Y), drawColor, drawThickness);
+			}
+		}
+	}
+}
+
+void DebugDraw::DrawStaticMeshActor(SDK::AStaticMeshActor* staticMeshActor, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (staticMeshActor == nullptr)
+		return;
+
+	if (staticMeshActor->StaticMeshComponent == nullptr)
+		return;
+
+	SDK::UStaticMeshComponent* staticMeshComponent = static_cast<SDK::UStaticMeshComponent*>(staticMeshActor->StaticMeshComponent);
+	if (staticMeshComponent->StaticMesh == nullptr)
+		return;
+
+	SDK::UStaticMesh* staticMesh = static_cast<SDK::UStaticMesh*>(staticMeshComponent->StaticMesh);
+	if (staticMesh->BodySetup == nullptr)
+		return;
+
+	SDK::UBodySetup* bodySetup = staticMesh->BodySetup;
+	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(staticMeshComponent);
+
+	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
+}
+
+void DebugDraw::DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (volume == nullptr)
+		return;
+
+	if (volume->BrushComponent == nullptr)
+		return;
+
+	SDK::UBrushComponent* brushComponent = volume->BrushComponent;
+	if (brushComponent->BrushBodySetup == nullptr)
+		return;
+
+	SDK::UBodySetup* bodySetup = brushComponent->BrushBodySetup;
+	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(brushComponent);
+
+	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
+}
+
+
+
+
+void DebugDraw::DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (capsuleComponent == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	float capsuleRadius = capsuleComponent->GetScaledCapsuleRadius();
+	float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
+
+	Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
+	SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
+
+	/* Construct an orthonormal basis (axis, U, V) for building capsule rings. */
+	SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
+	SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
+	SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
+
+	/* True top/bottom endpoints of the capsule (tips). */
+	const SDK::FVector capsuleTopTip = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
+	const SDK::FVector capsuleBottomTip = capsuleTransform.location - capsuleUpVector * capsuleHalfHeight;
+
+	/* Centers of the hemispherical caps. These are located radius units away from the tips toward the middle. */
+	const SDK::FVector sphereTopCenter = capsuleTransform.location + capsuleUpVector * (capsuleHalfHeight - capsuleRadius);
+	const SDK::FVector sphereBottomCenter = capsuleTransform.location - capsuleUpVector * (capsuleHalfHeight - capsuleRadius);
+
+	/* Project tips to optionally use for hemisphere polylines. */
+	SDK::FVector2D capsuleTopTip_Screen, capsuleBottomTip_Screen;
+	const bool capsuleTopTip_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleTopTip, &capsuleTopTip_Screen, false);
+	const bool capsuleBottomTip_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, capsuleBottomTip, &capsuleBottomTip_Screen, false);
+
+	static const int32_t capsuleSegments = 24;
+	static const int32_t hemisphereSegments = 6; // Number of segments from tip to seam to approximate the spherical rounding.
+	for (int32_t i = 0; i < capsuleSegments; i++)
+	{
+		/*
+			A ----------> B
+
+			A - Current ring angle (azimuth).
+			B - Next ring angle (azimuth).
+		*/
+
+		/* Compute the start (ringA_Angle) and end (ringB_Angle) angles for the current ring segment in radians. */
+		const float ringA_Angle = (2.0f * Math::PI) * (float)i / (float)capsuleSegments;
+		const float ringB_Angle = (2.0f * Math::PI) * (float)(i + 1) / (float)capsuleSegments;
+
+		/* Unit directions around the capsule axis for current and next azimuths. */
+		const SDK::FVector unitDirectionA = ortho_U * cosf(ringA_Angle) + ortho_V * sinf(ringA_Angle);
+		const SDK::FVector unitDirectionB = ortho_U * cosf(ringB_Angle) + ortho_V * sinf(ringB_Angle);
+
+		/* Rings at the cylinder/hemisphere seam (equators of the spherical caps). */
+		SDK::FVector ringA_Top = sphereTopCenter + unitDirectionA * capsuleRadius;
+		SDK::FVector ringB_Top = sphereTopCenter + unitDirectionB * capsuleRadius;
+		SDK::FVector ringA_Bottom = sphereBottomCenter + unitDirectionA * capsuleRadius;
+		SDK::FVector ringB_Bottom = sphereBottomCenter + unitDirectionB * capsuleRadius;
+
+		SDK::FVector2D ringA_Top_Screen, ringB_Top_Screen, ringA_Bottom_Screen, ringB_Bottom_Screen;
+		bool ringA_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Top, &ringA_Top_Screen, false);
+		bool ringB_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Top, &ringB_Top_Screen, false);
+		bool ringA_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringA_Bottom, &ringA_Bottom_Screen, false);
+		bool ringB_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, ringB_Bottom, &ringB_Bottom_Screen, false);
+
+		/* Outlines the top seam ring. */
+		if (ringA_Top_Project && ringB_Top_Project)
+			drawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringB_Top_Screen.X, ringB_Top_Screen.Y), drawColor, drawThickness);
+
+		/* Outlines the bottom seam ring. */
+		if (ringA_Bottom_Project && ringB_Bottom_Project)
+			drawList->AddLine(ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), ImVec2(ringB_Bottom_Screen.X, ringB_Bottom_Screen.Y), drawColor, drawThickness);
+
+		/* Outlines side walls (cylindrical part). */
+		if (ringA_Top_Project && ringA_Bottom_Project)
+			drawList->AddLine(ImVec2(ringA_Top_Screen.X, ringA_Top_Screen.Y), ImVec2(ringA_Bottom_Screen.X, ringA_Bottom_Screen.Y), drawColor, drawThickness);
+
+		/* Draw spherical rounding for top and bottom by tracing meridian polylines from tip to seam. */
+		for (int32_t segment = 0; segment < hemisphereSegments; ++segment)
+		{
+			/*
+				phi goes from 0 (tip) to PI/2 (seam). We connect successive samples to approximate a meridian.
+				Top hemisphere position (for azimuth dirA): P(phi) = sphereTopCenter + capsuleRadius * ( dirA * sin(phi) + capsuleUpVector * cos(phi) )
+				Bottom hemisphere: P(phi) = sphereBottomCenter + capsuleRadius * ( dirA * sin(phi) - capsuleUpVector * cos(phi) )
+			*/
+			float phi0 = (Math::PI * 0.5f) * (float)segment / (float)hemisphereSegments;
+			float phi1 = (Math::PI * 0.5f) * (float)(segment + 1) / (float)hemisphereSegments;
+
+			SDK::FVector pointA_Top = sphereTopCenter + (unitDirectionA * sinf(phi0) + capsuleUpVector * cosf(phi0)) * capsuleRadius;
+			SDK::FVector pointB_Top = sphereTopCenter + (unitDirectionA * sinf(phi1) + capsuleUpVector * cosf(phi1)) * capsuleRadius;
+
+			SDK::FVector pointA_Bottom = sphereBottomCenter + (unitDirectionA * sinf(phi0) - capsuleUpVector * cosf(phi0)) * capsuleRadius;
+			SDK::FVector pointB_Bottom = sphereBottomCenter + (unitDirectionA * sinf(phi1) - capsuleUpVector * cosf(phi1)) * capsuleRadius;
+
+			SDK::FVector2D PointA_Top_Screen, PointB_Top_Screen, PointA_Bottom_Screen, PointB_Bottom_Screen;
+			bool pointA_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointA_Top, &PointA_Top_Screen, false);
+			bool pointB_Top_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointB_Top, &PointB_Top_Screen, false);
+			bool pointA_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointA_Bottom, &PointA_Bottom_Screen, false);
+			bool pointB_Bottom_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointB_Bottom, &PointB_Bottom_Screen, false);
+
+			if (pointA_Top_Project && pointB_Top_Project)
+				drawList->AddLine(ImVec2(PointA_Top_Screen.X, PointA_Top_Screen.Y), ImVec2(PointB_Top_Screen.X, PointB_Top_Screen.Y), drawColor, drawThickness);
+
+			if (pointA_Bottom_Project && pointB_Bottom_Project)
+				drawList->AddLine(ImVec2(PointA_Bottom_Screen.X, PointA_Bottom_Screen.Y), ImVec2(PointB_Bottom_Screen.X, PointB_Bottom_Screen.Y), drawColor, drawThickness);
+		}
+	}
+}
+
+
+void DebugDraw::DrawSphereComponent(SDK::USphereComponent* sphereComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (sphereComponent == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	/* Get sphere data. */
+	float sphereRadius = sphereComponent->GetScaledSphereRadius();
+	Unreal::Transform sphereTransform = Unreal::ActorComponent::GetTransform(sphereComponent);
+	SDK::FVector sphereCenter = sphereTransform.location;
+
+	/* Build local orthonormal frame from component rotation. */
+	SDK::FVector sphereForwardVector = SDK::UKismetMathLibrary::GetForwardVector(sphereTransform.rotation);
+	SDK::FVector sphereRightVector = SDK::UKismetMathLibrary::GetRightVector(sphereTransform.rotation);
+	SDK::FVector sphereUpVector = SDK::UKismetMathLibrary::GetUpVector(sphereTransform.rotation);
+
+	/* We draw three great circles: in planes (Right,Forward), (Up,Forward), (Up,Right). */
+	static const int32_t sphereSegments = 48;
+	for (int32_t ring = 0; ring < 3; ++ring)
+	{
+		/* Choose two perpendicular axes spanning the ring's plane. */
+		SDK::FVector U, V;
+		if (ring == 0) { U = sphereRightVector;  V = sphereForwardVector; }   // Equatorial ring (perpendicular to Up)
+		else if (ring == 1) { U = sphereUpVector; V = sphereForwardVector; }  // Ring perpendicular to Right
+		else { U = sphereUpVector; V = sphereRightVector; }                   // Ring perpendicular to Forward
+
+		for (int32_t segment = 0; segment < sphereSegments; ++segment)
+		{
+			/* Parametric angles for current and next segment. */
+			float angleA = (2.0f * Math::PI) * (float)segment / (float)sphereSegments;
+			float angleB = (2.0f * Math::PI) * (float)(segment + 1) / (float)sphereSegments;
+
+			/* Points on the ring in world space. */
+			SDK::FVector pointA = sphereCenter + (U * cosf(angleA) + V * sinf(angleA)) * sphereRadius;
+			SDK::FVector pointB = sphereCenter + (U * cosf(angleB) + V * sinf(angleB)) * sphereRadius;
+
+			/* Project and draw the segment if visible. */
+			SDK::FVector2D pointA_Screen, pointB_Screen;
+			bool pointA_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointA, &pointA_Screen, false);
+			bool pointB_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointB, &pointB_Screen, false);
+
+			if (pointA_Project && pointB_Project)
+				drawList->AddLine(ImVec2(pointA_Screen.X, pointA_Screen.Y), ImVec2(pointB_Screen.X, pointB_Screen.Y), drawColor, drawThickness);
+		}
+	}
+}
+
+void DebugDraw::DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (boxComponent == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	/* Get box transform and half extents in world units. */
+	Unreal::Transform boxTransform = Unreal::ActorComponent::GetTransform(boxComponent);
+	SDK::FVector boxLocation = boxTransform.location;
+	SDK::FVector boxExtent = boxComponent->GetScaledBoxExtent();
+
+	/* Local basis vectors from rotation (orthonormal). */
+	SDK::FVector boxForwardVector = SDK::UKismetMathLibrary::GetForwardVector(boxTransform.rotation);
+	SDK::FVector boxRightVector = SDK::UKismetMathLibrary::GetRightVector(boxTransform.rotation);
+	SDK::FVector boxUpVector = SDK::UKismetMathLibrary::GetUpVector(boxTransform.rotation);
+
+	/* Precompute axis-length vectors. */
+	SDK::FVector boxForwardExtent = boxForwardVector * boxExtent.X;
+	SDK::FVector boxRightExtent = boxRightVector * boxExtent.Y;
+	SDK::FVector boxUpExtent = boxUpVector * boxExtent.Z;
+
+	/* Compute the 8 corners of the oriented box. Indexing convention: XYZ, where X/Y/Z in {0, 1} mean -/+ along UpExtent/RightExtent/ForwardExtent. */
+	SDK::FVector boxCorners_Location[8];
+	boxCorners_Location[0] = boxLocation - boxForwardExtent - boxRightExtent - boxUpExtent; // c000
+	boxCorners_Location[1] = boxLocation - boxForwardExtent - boxRightExtent + boxUpExtent; // c001
+	boxCorners_Location[2] = boxLocation - boxForwardExtent + boxRightExtent - boxUpExtent; // c010
+	boxCorners_Location[3] = boxLocation - boxForwardExtent + boxRightExtent + boxUpExtent; // c011
+	boxCorners_Location[4] = boxLocation + boxForwardExtent - boxRightExtent - boxUpExtent; // c100
+	boxCorners_Location[5] = boxLocation + boxForwardExtent - boxRightExtent + boxUpExtent; // c101
+	boxCorners_Location[6] = boxLocation + boxForwardExtent + boxRightExtent - boxUpExtent; // c110
+	boxCorners_Location[7] = boxLocation + boxForwardExtent + boxRightExtent + boxUpExtent; // c111
+
+	/* Project all corners once. */
+	SDK::FVector2D boxCorners_Screen[8];
+	bool boxCorners_Project[8];
+	for (int32_t i = 0; i < 8; ++i)
+		boxCorners_Project[i] = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, boxCorners_Location[i], &boxCorners_Screen[i], false);
+
+	/* Box edges as index pairs (12 edges). */
+	static const int32_t boxEdges[12][2] = {
+		{0,1}, {0,2}, {0,4}, // from c000
+		{7,3}, {7,5}, {7,6}, // from c111
+		{1,3}, {1,5},        // edges on -F face
+		{2,3}, {2,6},        // edges on +R face
+		{4,5}, {4,6}         // edges on +F / -R faces
+	};
+
+	for (int32_t edge = 0; edge < 12; ++edge)
+	{
+		int32_t i0 = boxEdges[edge][0];
+		int32_t i1 = boxEdges[edge][1];
+		if (boxCorners_Project[i0] && boxCorners_Project[i1])
+		{
+			SDK::FVector2D p0 = boxCorners_Screen[i0];
+			SDK::FVector2D p1 = boxCorners_Screen[i1];
+			drawList->AddLine(ImVec2(p0.X, p0.Y), ImVec2(p1.X, p1.Y), drawColor, drawThickness);
+		}
+	}
+}
+
 
 
 

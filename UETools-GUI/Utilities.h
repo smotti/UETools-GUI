@@ -13,7 +13,8 @@ namespace Utilities
 	class Clipboard
 	{
 	public:
-		static bool Set(const std::string& str);
+		static std::string GetClipboardText();
+		static bool SetClipboardText(const std::string& str);
 	};
 
 

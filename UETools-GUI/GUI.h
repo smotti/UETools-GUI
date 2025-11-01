@@ -17,12 +17,17 @@
 
 namespace ImGui
 {
-	struct KeyBinding
+	struct Viewport
 	{
-		ImGuiKey key = ImGuiKey_None;
-		bool isDetermined = true;
-		bool isInUse = false;
+		ImGuiViewport* iViewport;
+		ImVec2 iViewportPosition;
+		ImVec2 iViewportSize;
 	};
+	Viewport GetViewport();
+
+
+	static ImDrawList* drawList;
+	ImDrawList* GetDrawList();
 
 
 	void TextBool(const char* label, const bool& inBool, const char* text_true, const char* text_false, const bool& useColoring, const ImU32& color_true, const ImU32& color_false);
@@ -82,6 +87,13 @@ namespace ImGui
 	*/
 	static const char* ImGuiKey_GetName(const ImGuiKey& key);
 
+
+	struct KeyBinding
+	{
+		ImGuiKey key = ImGuiKey_None;
+		bool isDetermined = true;
+		bool isInUse = false;
+	};
 	/*
 	* @brief Renders a key binding input control in ImGui.
 	* 
@@ -275,6 +287,24 @@ public:
 
 
 
+class DebugDraw
+{
+public:
+	static void DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transform& componentTransform, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawStaticMeshActor(SDK::AStaticMeshActor* staticMeshActor, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, const float& drawThickness);
+
+
+	static void DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawSphereComponent(SDK::USphereComponent* sphereComponent, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_t& drawColor, const float& drawThickness);
+};
+
+
+
+
+
+
 namespace Features
 {
 	class Menu
@@ -388,13 +418,18 @@ namespace Features
 	public:
 		static inline bool enabled = false;
 
-		static inline float color_Pawn[4] = { 0.0f, 1.0f, 0.3f, 0.5f };
 
-		static inline float color_TriggerVolume[4] = { 1.0f, 0.5f, 0.0f, 0.5f };
-		static inline float color_BlockingVolume[4] = { 1.0f, 0.0f, 0.0f, 0.5f };
-		static inline float color_UnknownVolume[4] = { 1.0f, 1.0f, 1.0f, 0.5f };
+		static inline float opacity = 0.5f;
 
-		static inline float color_StaticMesh[4] = { 0.0f, 0.5f, 1.0f, 0.5f };
+
+		static inline float color_StaticMesh[4] = { 0.0f, 0.5f, 1.0f, opacity };
+
+		static inline float color_BlockingVolume[4] = { 1.0f, 0.25f, 0.2f, opacity };
+		static inline float color_TriggerVolume[4] = { 1.0f, 0.5f, 0.0f, opacity };
+		static inline float color_OtherVolume[4] = { 0.5f, 0.4f, 0.8f, opacity };
+
+		static inline float color_Primitive[4] = { 0.25f, 1.0f, 0.13f, opacity }; // Capsule/Sphere/Box Collision.
+
 
 		static inline float thickness = 0.5f;
 	};
