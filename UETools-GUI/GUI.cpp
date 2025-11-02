@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.4b)");
+			ImGui::Text("UETools GUI (v2.5)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1795,7 +1795,7 @@ void GUI::Draw()
 #ifdef COLLISION_VISUALIZER
 						ImGui::Checkbox("Draw Collision##Actors", &Features::CollisionVisualizer::enabled);
 						ImGui::SameLine();
-						ImGui::TextHint("Draws polygonal wireframe color of which depends on collision type:\n\nBLUE: Static Mesh Actor.\n\nRED: Blocking Volume.\nORANGE: Trigger Volume.\nPURPLE: Other Volume.\n\nGREEN: Capsule/Sphere/Box Collision.");
+						ImGui::TextHint("Draws polygonal wireframe color of which depends on collision type:\n\nBlueish - Collision/Physics.\n* Static Mesh.\n* Primitive (Capsule/Sphere/Box/Spline).\n* Physics Volume.\n\nReddish - Damage/Restriction.\n* Blocking Volume.\n\nGreenish - Event.\n* Trigger Volume.\n\nPinkish - Post Processing.\n* Post Process Volume.\n\nWhite - Unknown/Other.");
 						ImGui::SameLine();
 						ImGui::Spacing();
 						ImGui::SameLine();
@@ -4049,38 +4049,94 @@ void GUI::Draw()
 				if (actor.reference == nullptr)
 					continue;
 
-				if (actor.reference->IsA(SDK::AStaticMeshActor::StaticClass()))
-					DebugDraw::DrawStaticMeshActor(static_cast<SDK::AStaticMeshActor*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh), Features::CollisionVisualizer::thickness);
-
-				else if (actor.reference->IsA(SDK::AVolume::StaticClass()))
+				if (actor.reference->IsA(SDK::AVolume::StaticClass()))
 				{
+					if (actor.reference->IsA(SDK::APhysicsVolume::StaticClass()))
+					{
+						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_PhysicsVolume), Features::CollisionVisualizer::thickness);
+						continue;
+					}
+
 					if (actor.reference->IsA(SDK::ABlockingVolume::StaticClass()))
+					{
 						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_BlockingVolume), Features::CollisionVisualizer::thickness);
-
-					else if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
+						continue;
+					}
+						
+					if (actor.reference->IsA(SDK::ATriggerVolume::StaticClass()))
+					{
 						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_TriggerVolume), Features::CollisionVisualizer::thickness);
+						continue;
+					}
 
-					else
-						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_OtherVolume), Features::CollisionVisualizer::thickness);
+					if (actor.reference->IsA(SDK::APostProcessVolume::StaticClass()))
+					{
+						DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_PostProcessVolume), Features::CollisionVisualizer::thickness);
+						continue;
+					}
+
+					DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_OtherVolume), Features::CollisionVisualizer::thickness);
+					continue;
 				}
-					
 
+
+				std::vector<SDK::UStaticMeshComponent*> staticMeshComponents;
+				std::vector<SDK::UInstancedStaticMeshComponent*> instancedStaticMeshComponents;
 				std::vector<SDK::UCapsuleComponent*> capsuleComponents;
 				std::vector<SDK::USphereComponent*> sphereComponents;
 				std::vector<SDK::UBoxComponent*> boxComponents;
+				std::vector<SDK::USplineComponent*> splineComponents;
 				for (Unreal::ActorComponent::DataStructure actorComponent : actor.components)
 				{
 					if (actorComponent.reference == nullptr)
 						continue;
 
+					if (actorComponent.reference->IsA(SDK::UStaticMeshComponent::StaticClass()))
+					{
+						staticMeshComponents.push_back(static_cast<SDK::UStaticMeshComponent*>(actorComponent.reference));
+						continue;
+					}
+						
+					if (actorComponent.reference->IsA(SDK::UInstancedStaticMeshComponent::StaticClass()))
+					{
+						instancedStaticMeshComponents.push_back(static_cast<SDK::UInstancedStaticMeshComponent*>(actorComponent.reference));
+						continue;
+					}
+						
 					if (actorComponent.reference->IsA(SDK::UCapsuleComponent::StaticClass()))
+					{
 						capsuleComponents.push_back(static_cast<SDK::UCapsuleComponent*>(actorComponent.reference));
-
-					else if (actorComponent.reference->IsA(SDK::USphereComponent::StaticClass()))
+						continue;
+					}
+						
+					if (actorComponent.reference->IsA(SDK::USphereComponent::StaticClass()))
+					{
 						sphereComponents.push_back(static_cast<SDK::USphereComponent*>(actorComponent.reference));
-
-					else if (actorComponent.reference->IsA(SDK::UBoxComponent::StaticClass()))
+						continue;
+					}
+						
+					if (actorComponent.reference->IsA(SDK::UBoxComponent::StaticClass()))
+					{
 						boxComponents.push_back(static_cast<SDK::UBoxComponent*>(actorComponent.reference));
+						continue;
+					}
+
+					if (actorComponent.reference->IsA(SDK::USplineComponent::StaticClass()))
+					{
+						splineComponents.push_back(static_cast<SDK::USplineComponent*>(actorComponent.reference));
+						continue;
+					}
+				}
+
+
+				for (SDK::UStaticMeshComponent* staticMeshComponent : staticMeshComponents)
+				{
+					DebugDraw::DrawStaticMeshComponent(staticMeshComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh), Features::CollisionVisualizer::thickness);
+				}
+
+				for (SDK::UInstancedStaticMeshComponent* instancedStaticMeshComponent : instancedStaticMeshComponents)
+				{
+					DebugDraw::DrawInstancedStaticMeshComponent(instancedStaticMeshComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh), Features::CollisionVisualizer::thickness);
 				}
 
 				for (SDK::UCapsuleComponent* capsuleComponent : capsuleComponents)
@@ -4096,6 +4152,11 @@ void GUI::Draw()
 				for (SDK::UBoxComponent* boxComponent : boxComponents)
 				{
 					DebugDraw::DrawBoxComponent(boxComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Primitive), Features::CollisionVisualizer::thickness);
+				}
+
+				for (SDK::USplineComponent* splineComponent : splineComponents)
+				{
+					DebugDraw::DrawSplineComponent(splineComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Primitive), Features::CollisionVisualizer::thickness);
 				}
 			}
 		}
@@ -4221,28 +4282,6 @@ void DebugDraw::DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transfor
 	}
 }
 
-void DebugDraw::DrawStaticMeshActor(SDK::AStaticMeshActor* staticMeshActor, const uint32_t& drawColor, const float& drawThickness)
-{
-	if (staticMeshActor == nullptr)
-		return;
-
-	if (staticMeshActor->StaticMeshComponent == nullptr)
-		return;
-
-	SDK::UStaticMeshComponent* staticMeshComponent = static_cast<SDK::UStaticMeshComponent*>(staticMeshActor->StaticMeshComponent);
-	if (staticMeshComponent->StaticMesh == nullptr)
-		return;
-
-	SDK::UStaticMesh* staticMesh = static_cast<SDK::UStaticMesh*>(staticMeshComponent->StaticMesh);
-	if (staticMesh->BodySetup == nullptr)
-		return;
-
-	SDK::UBodySetup* bodySetup = staticMesh->BodySetup;
-	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(staticMeshComponent);
-
-	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
-}
-
 void DebugDraw::DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, const float& drawThickness)
 {
 	if (volume == nullptr)
@@ -4257,6 +4296,45 @@ void DebugDraw::DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, cons
 
 	SDK::UBodySetup* bodySetup = brushComponent->BrushBodySetup;
 	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(brushComponent);
+
+	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
+}
+
+
+
+
+void DebugDraw::DrawStaticMeshComponent(SDK::UStaticMeshComponent* staticMeshComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (staticMeshComponent == nullptr)
+		return;
+
+	if (staticMeshComponent->StaticMesh == nullptr)
+		return;
+
+	SDK::UStaticMesh* staticMesh = static_cast<SDK::UStaticMesh*>(staticMeshComponent->StaticMesh);
+	if (staticMesh->BodySetup == nullptr)
+		return;
+
+	SDK::UBodySetup* bodySetup = staticMesh->BodySetup;
+	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(staticMeshComponent);
+
+	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
+}
+
+void DebugDraw::DrawInstancedStaticMeshComponent(SDK::UInstancedStaticMeshComponent* instancedStaticMeshComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (instancedStaticMeshComponent == nullptr)
+		return;
+
+	if (instancedStaticMeshComponent->StaticMesh == nullptr)
+		return;
+
+	SDK::UStaticMesh* staticMesh = static_cast<SDK::UStaticMesh*>(instancedStaticMeshComponent->StaticMesh);
+	if (staticMesh->BodySetup == nullptr)
+		return;
+
+	SDK::UBodySetup* bodySetup = staticMesh->BodySetup;
+	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(instancedStaticMeshComponent);
 
 	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
 }
@@ -4494,6 +4572,60 @@ void DebugDraw::DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_
 			SDK::FVector2D p0 = boxCorners_Screen[i0];
 			SDK::FVector2D p1 = boxCorners_Screen[i1];
 			drawList->AddLine(ImVec2(p0.X, p0.Y), ImVec2(p1.X, p1.Y), drawColor, drawThickness);
+		}
+	}
+}
+
+void DebugDraw::DrawSplineComponent(SDK::USplineComponent* splineComponent, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (splineComponent == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	/* Get spline data. */
+	int32_t splinePointsCount = splineComponent->GetNumberOfSplinePoints();
+	if (splinePointsCount < 2)
+		return;
+
+	/* Get spline world transform. */
+	Unreal::Transform splineTransform = Unreal::ActorComponent::GetTransform(splineComponent);
+
+	/* Number of segments per spline section for smoothness. */
+	static const int32_t splineSegments = 16;
+	for (int32_t pointIndex = 0; pointIndex < splinePointsCount - 1; ++pointIndex)
+	{
+		/* Get distances along the spline for this segment. */
+		float segmentStartDistance = splineComponent->GetDistanceAlongSplineAtSplinePoint(pointIndex);
+		float segmentEndDistance = splineComponent->GetDistanceAlongSplineAtSplinePoint(pointIndex + 1);
+		float segmentLength = segmentEndDistance - segmentStartDistance;
+
+		/* Subdivide spline segment for a smooth visual curve. */
+		for (int32_t segment = 0; segment < splineSegments; ++segment)
+		{
+			float tA = (float)segment / (float)splineSegments;
+			float tB = (float)(segment + 1) / (float)splineSegments;
+
+			float distanceA = segmentStartDistance + tA * segmentLength;
+			float distanceB = segmentStartDistance + tB * segmentLength;
+
+			/* Get world-space positions along the spline. */
+			SDK::FVector pointA = splineComponent->GetLocationAtDistanceAlongSpline(distanceA, SDK::ESplineCoordinateSpace::World);
+			SDK::FVector pointB = splineComponent->GetLocationAtDistanceAlongSpline(distanceB, SDK::ESplineCoordinateSpace::World);
+
+			/* Project and draw the segment if visible. */
+			SDK::FVector2D pointA_Screen, pointB_Screen;
+			bool pointA_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointA, &pointA_Screen, false);
+			bool pointB_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, pointB, &pointB_Screen, false);
+
+			if (pointA_Project && pointB_Project)
+				drawList->AddLine(ImVec2(pointA_Screen.X, pointA_Screen.Y), ImVec2(pointB_Screen.X, pointB_Screen.Y), drawColor, drawThickness);
 		}
 	}
 }

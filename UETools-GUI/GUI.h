@@ -292,13 +292,15 @@ class DebugDraw
 public:
 #ifdef COLLISION_VISUALIZER
 	static void DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transform& componentTransform, const uint32_t& drawColor, const float& drawThickness);
-	static void DrawStaticMeshActor(SDK::AStaticMeshActor* staticMeshActor, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawVolume(SDK::AVolume* volume, const uint32_t& drawColor, const float& drawThickness);
 
+	static void DrawStaticMeshComponent(SDK::UStaticMeshComponent* staticMeshComponent, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawInstancedStaticMeshComponent(SDK::UInstancedStaticMeshComponent* instancedStaticMeshComponent, const uint32_t& drawColor, const float& drawThickness);
 
 	static void DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawSphereComponent(SDK::USphereComponent* sphereComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_t& drawColor, const float& drawThickness);
+	static void DrawSplineComponent(SDK::USplineComponent* splineComponent, const uint32_t& drawColor, const float& drawThickness);
 #endif
 };
 
@@ -424,13 +426,22 @@ namespace Features
 		static inline float opacity = 0.5f;
 
 
+		/* Blueish - Collision/Physics related. */
 		static inline float color_StaticMesh[4] = { 0.0f, 0.5f, 1.0f, opacity };
+		static inline float color_Primitive[4] = { 0.0f, 0.8f, 1.0f, opacity };
+		static inline float color_PhysicsVolume[4] = { 0.3f, 0.25f, 0.85f, opacity };
 
+		/* Reddish - Damage/Restriction related. */
 		static inline float color_BlockingVolume[4] = { 1.0f, 0.25f, 0.2f, opacity };
-		static inline float color_TriggerVolume[4] = { 1.0f, 0.5f, 0.0f, opacity };
-		static inline float color_OtherVolume[4] = { 0.5f, 0.4f, 0.8f, opacity };
 
-		static inline float color_Primitive[4] = { 0.25f, 1.0f, 0.13f, opacity }; // Capsule/Sphere/Box Collision.
+		/* Greenish - Event related (e.g: trigger). */
+		static inline float color_TriggerVolume[4] = { 0.3f, 1.0f, 0.3f, opacity };
+
+		/* Pinkish - Post Processing. */
+		static inline float color_PostProcessVolume[4] = { 0.8f, 0.2f, 0.8f, opacity };
+
+		/* White - Unknown/Other. */
+		static inline float color_OtherVolume[4] = { 1.0f, 1.0f, 1.0f, opacity };
 
 
 		static inline float thickness = 0.5f;
@@ -521,7 +532,7 @@ namespace Features
 	class PlayLevelSequence
 	{
 	public:
-		/* Allocate large buffer to account for combined paths (e.g: "/Game/OpenWorld/Tile_X2Y8.Tile_X2Y8 | /Game/OpenWorld/Tile_X4Y6.Tile_X4Y6") */
+		/* Allocate large buffer to account for combined paths (e.g: "/Game/OpenWorld/Sequences/LS_TowerExplosion.LS_TowerExplosion | /Game/OpenWorld/Sequences/LS_CrowdRunning.LS_CrowdRunning") */
 		static inline const size_t levelSequencePathBufferSize = 2048;
 		static inline char levelSequencePathBuffer[levelSequencePathBufferSize] = {};
 
