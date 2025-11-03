@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.5)");
+			ImGui::Text("UETools GUI (v2.6)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -4075,11 +4075,12 @@ void GUI::Draw()
 						continue;
 					}
 
-					DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_OtherVolume), Features::CollisionVisualizer::thickness);
+					DebugDraw::DrawVolume(static_cast<SDK::AVolume*>(actor.reference), Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Other), Features::CollisionVisualizer::thickness);
 					continue;
 				}
 
 
+				std::vector<SDK::USkeletalMeshComponent*> skeletalMeshComponents;
 				std::vector<SDK::UStaticMeshComponent*> staticMeshComponents;
 				std::vector<SDK::UInstancedStaticMeshComponent*> instancedStaticMeshComponents;
 				std::vector<SDK::UCapsuleComponent*> capsuleComponents;
@@ -4102,6 +4103,14 @@ void GUI::Draw()
 						instancedStaticMeshComponents.push_back(static_cast<SDK::UInstancedStaticMeshComponent*>(actorComponent.reference));
 						continue;
 					}
+
+
+					if (actorComponent.reference->IsA(SDK::USkeletalMeshComponent::StaticClass()))
+					{
+						skeletalMeshComponents.push_back(static_cast<SDK::USkeletalMeshComponent*>(actorComponent.reference));
+						continue;
+					}
+
 						
 					if (actorComponent.reference->IsA(SDK::UCapsuleComponent::StaticClass()))
 					{
@@ -4138,6 +4147,13 @@ void GUI::Draw()
 				{
 					DebugDraw::DrawInstancedStaticMeshComponent(instancedStaticMeshComponent, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_StaticMesh), Features::CollisionVisualizer::thickness);
 				}
+
+
+				for (SDK::USkeletalMeshComponent* skeletalMeshComponent : skeletalMeshComponents)
+				{
+					DebugDraw::DrawSkeletalMeshComponent(skeletalMeshComponent, false, Math::ColorFloat4_ToU32(Features::CollisionVisualizer::color_Other), Features::CollisionVisualizer::thickness);
+				}
+
 
 				for (SDK::UCapsuleComponent* capsuleComponent : capsuleComponents)
 				{
@@ -4337,6 +4353,79 @@ void DebugDraw::DrawInstancedStaticMeshComponent(SDK::UInstancedStaticMeshCompon
 	Unreal::Transform componentTransform = Unreal::ActorComponent::GetTransform(instancedStaticMeshComponent);
 
 	DrawBodySetup(bodySetup, componentTransform, drawColor, drawThickness);
+}
+
+
+
+
+void DebugDraw::DrawSkeletalMeshComponent(SDK::USkeletalMeshComponent* skeletalMeshComponent, const bool& drawAllSockets, const uint32_t& drawColor, const float& drawThickness)
+{
+	if (skeletalMeshComponent == nullptr)
+		return;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return;
+
+	ImDrawList* drawList = ImGui::GetDrawList();
+	if (drawList == nullptr)
+		return;
+
+	static const std::vector<std::string> commonBoneNames = 
+	{
+		"root", "pelvis", "spine", "neck", "head",
+		"hand", "foot", "calf", "thigh", "arm",
+		"clavicle", "joint"
+	};
+
+	std::vector<SDK::FName> socketNamesToDraw;
+	std::vector<SDK::FName> spottedBonesNames;
+	SDK::TArray<SDK::FName> socketNamesCollection = skeletalMeshComponent->GetAllSocketNames();
+	for (SDK::FName socketName : socketNamesCollection)
+	{
+		SDK::FName boneName = skeletalMeshComponent->GetSocketBoneName(socketName);
+
+		bool isUniqueBone = true;
+		for (SDK::FName spottedBoneName : spottedBonesNames)
+		{
+			if (boneName == spottedBoneName)
+				isUniqueBone = false;
+		}
+
+		if (isUniqueBone == false)
+			continue;
+
+
+		if (drawAllSockets == false)
+		{
+			bool isCommonBone = false;
+			for (std::string commonBoneName : commonBoneNames)
+			{
+				std::string sBoneName = boneName.ToString();
+				if (Utilities::String::ToLowerCase(sBoneName).find(commonBoneName) != std::string::npos)
+					isCommonBone = true;
+			}
+
+			if (isCommonBone == false)
+				continue;
+		}
+
+
+		spottedBonesNames.push_back(boneName);
+		socketNamesToDraw.push_back(socketName);
+	}
+
+	for (SDK::FName socketName : socketNamesToDraw)
+	{
+		/* GetSocketLocation() returns world location out of the box. */
+		SDK::FVector socket_World = skeletalMeshComponent->GetSocketLocation(socketName);
+
+		SDK::FVector2D socket_Screen;
+		if (SDK::UGameplayStatics::ProjectWorldToScreen(playerController, socket_World, &socket_Screen, false))
+		{
+			drawList->AddCircleFilled(ImVec2(socket_Screen.X, socket_Screen.Y), drawThickness * 2, drawColor);
+		}
+	}
 }
 
 

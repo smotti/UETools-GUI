@@ -297,6 +297,8 @@ public:
 	static void DrawStaticMeshComponent(SDK::UStaticMeshComponent* staticMeshComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawInstancedStaticMeshComponent(SDK::UInstancedStaticMeshComponent* instancedStaticMeshComponent, const uint32_t& drawColor, const float& drawThickness);
 
+	static void DrawSkeletalMeshComponent(SDK::USkeletalMeshComponent* skeletalMeshComponent, const bool& drawAllSockets, const uint32_t& drawColor, const float& drawThickness);
+
 	static void DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawSphereComponent(SDK::USphereComponent* sphereComponent, const uint32_t& drawColor, const float& drawThickness);
 	static void DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_t& drawColor, const float& drawThickness);
@@ -441,7 +443,7 @@ namespace Features
 		static inline float color_PostProcessVolume[4] = { 0.8f, 0.2f, 0.8f, opacity };
 
 		/* White - Unknown/Other. */
-		static inline float color_OtherVolume[4] = { 1.0f, 1.0f, 1.0f, opacity };
+		static inline float color_Other[4] = { 1.0f, 1.0f, 1.0f, opacity };
 
 
 		static inline float thickness = 0.5f;
