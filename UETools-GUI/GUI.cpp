@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v2.6)");
+			ImGui::Text("UETools GUI (v3.0)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1819,6 +1819,16 @@ void GUI::Draw()
 						ImGui::SameLine();
 						ImGui::TextHint("Maximum Actor distance from Player in centimetres. Calculations doesn't update in background!\n\nThat allows to return to the game while keeping needed Actors filtered.");
 						
+						ImGui::KeyBindingInput("Update & Re-Filter Actors List:", &Keybindings::debug_ActorsListUpdate);
+						ImGui::SameLine();
+						ImGui::TextHint("Can be found useful when tracking/drawing while filtering Actors In Distance, allowing to update dataset w/o opening the menu.");
+#ifdef ACTORS_TRACKING
+						ImGui::KeyBindingInput("Toggle Actors Tracking:        ", &Keybindings::debug_ActorsListTracking);
+#endif
+#ifdef COLLISION_VISUALIZER
+						ImGui::KeyBindingInput("Toggle Collision Draw:         ", &Keybindings::debug_ActorsListCollisionDraw);
+#endif
+						
 						ImGui::NewLine();
 
 						if (ImGui::Button("Enable Collision (All)##Actors"))
@@ -1902,21 +1912,7 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
-						/* Filter Actors by "Search Filter" */
-						switch (Features::ActorsList::filterMode)
-						{
-							case ImGui::E_ObjectFilterMode::ClassName:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
-								break;
-
-							case ImGui::E_ObjectFilterMode::ObjectName:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
-								break;
-
-							case ImGui::E_ObjectFilterMode::All:
-								Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
-								break;
-						}
+						Features::ActorsList::Filter();
 						
 						/* Output to user interface Actors that are matching "Search Filter" */
 						for (Unreal::Actor::DataStructure& actor : Features::ActorsList::filteredActors) // <-- Reference!
@@ -3545,29 +3541,29 @@ void GUI::Draw()
 							SDK::EMovementMode movementMode = movementComponent->MovementMode;
 							switch (movementMode)
 							{
-							case SDK::EMovementMode::MOVE_Walking:
-								ImGui::Text("Character Is Walking");
-								break;
+								case SDK::EMovementMode::MOVE_Walking:
+									ImGui::Text("Character Is Walking");
+									break;
 
-							case SDK::EMovementMode::MOVE_NavWalking:
-								ImGui::Text("Character Is Nav Walking");
-								break;
+								case SDK::EMovementMode::MOVE_NavWalking:
+									ImGui::Text("Character Is Nav Walking");
+									break;
 
-							case SDK::EMovementMode::MOVE_Falling:
-								ImGui::Text("Character Is Falling");
-								break;
+								case SDK::EMovementMode::MOVE_Falling:
+									ImGui::Text("Character Is Falling");
+									break;
 
-							case SDK::EMovementMode::MOVE_Swimming:
-								ImGui::Text("Character Is Swimming");
-								break;
+								case SDK::EMovementMode::MOVE_Swimming:
+									ImGui::Text("Character Is Swimming");
+									break;
 
-							case SDK::EMovementMode::MOVE_Flying:
-								ImGui::Text("Character Is Flying");
-								break;
+								case SDK::EMovementMode::MOVE_Flying:
+									ImGui::Text("Character Is Flying");
+									break;
 
-							default:
-								ImGui::Text("Character Is In %d Mode", movementMode);
-								break;
+								default:
+									ImGui::Text("Character Is In %d Mode", movementMode);
+									break;
 							}
 						}
 						ImGui::Text("Custom Movement Mode: %d", movementComponent->CustomMovementMode);
@@ -3842,6 +3838,57 @@ void GUI::Draw()
 				ImGui::EndMenu();
 			}
 			ImGui::EndDisabled();
+
+
+
+
+#ifdef FREE_CAMERA
+			ImGui::BeginDisabled(playerController == nullptr);
+			if (ImGui::BeginMenu("FreeCamera"))
+			{
+				if (playerController)
+				{
+					ImGui::PushID("##FreeCamera");
+
+					ImGui::KeyBindingInput("Toggle:       ", &Keybindings::freeCamera_Toggle);
+
+					ImGui::NewLine();
+					
+					ImGui::Text("Movement Step:");
+					ImGui::SameLine();
+					ImGui::InputFloat("##MovementStep", &Features::FreeCamera::cameraMovementStep, 0.1f, 1.0f);
+					ImGui::KeyBindingInput("Move Forward: ", &Keybindings::freeCamera_MoveForward);
+					ImGui::KeyBindingInput("Move Backward:", &Keybindings::freeCamera_MoveBackward);
+					ImGui::KeyBindingInput("Move Left:    ", &Keybindings::freeCamera_MoveLeft);
+					ImGui::KeyBindingInput("Move Right:   ", &Keybindings::freeCamera_MoveRight);
+					ImGui::KeyBindingInput("Move Up:      ", &Keybindings::freeCamera_MoveUp);
+					ImGui::KeyBindingInput("Move Down:    ", &Keybindings::freeCamera_MoveDown);
+
+					ImGui::NewLine();
+
+					ImGui::Text("Rotation Step:");
+					ImGui::SameLine();
+					ImGui::InputFloat("##RotationStep", &Features::FreeCamera::cameraRotationStep, 0.1f, 1.0f);
+					ImGui::KeyBindingInput("Rotate Up:    ", &Keybindings::freeCamera_RotateUp);
+					ImGui::KeyBindingInput("Rotate Down:  ", &Keybindings::freeCamera_RotateDown);
+					ImGui::KeyBindingInput("Rotate Left:  ", &Keybindings::freeCamera_RotateLeft);
+					ImGui::KeyBindingInput("Rotate Right: ", &Keybindings::freeCamera_RotateRight);
+
+					ImGui::NewLine();
+
+					ImGui::KeyBindingInput("Teleport Camera To Player:", &Keybindings::freeCamera_TeleportCameraToPlayer);
+					ImGui::KeyBindingInput("Teleport Player To Camera:", &Keybindings::freeCamera_TeleportPlayerToCamera);
+
+					ImGui::PopID();
+					ImGui::MenuSpacer();
+				}
+				else
+					ImGui::Text("Player Controller Doesn't Exist!");
+				
+				ImGui::EndMenu();
+			}
+			ImGui::EndDisabled();
+#endif
 
 
 
@@ -4183,7 +4230,7 @@ void GUI::Draw()
 
 
 
-void GUI::PlaySound(const E_Sound& soundToPlay)
+void GUI::PlayUISound(const E_Sound& soundToPlay)
 {
 	if (Features::Menu::enableSound == false)
 		return;
@@ -4193,30 +4240,30 @@ void GUI::PlaySound(const E_Sound& soundToPlay)
 
 	switch (soundToPlay)
 	{
-	case E_Sound::BUTTON_PRESS:
-		soundFrequency = 245;
-		soundDuration = 50;
-		break;
+		case E_Sound::BUTTON_PRESS:
+			soundFrequency = 245;
+			soundDuration = 50;
+			break;
 
-	case E_Sound::BUTTON_CANCEL:
-		soundFrequency = 100;
-		soundDuration = 150;
-		break;
+		case E_Sound::BUTTON_CANCEL:
+			soundFrequency = 100;
+			soundDuration = 150;
+			break;
 
-	case E_Sound::ACTION_SUCCESS:
-		soundFrequency = 350;
-		soundDuration = 300;
-		break;
+		case E_Sound::ACTION_SUCCESS:
+			soundFrequency = 350;
+			soundDuration = 300;
+			break;
 
-	case E_Sound::ACTION_ERROR:
-		soundFrequency = 175;
-		soundDuration = 300;
-		break;
+		case E_Sound::ACTION_ERROR:
+			soundFrequency = 175;
+			soundDuration = 300;
+			break;
 
-	default:
-		soundFrequency = 500;
-		soundDuration = 1000;
-		break;
+		default:
+			soundFrequency = 500;
+			soundDuration = 1000;
+			break;
 	}
 
 	/*
@@ -4278,10 +4325,9 @@ void DebugDraw::DrawBodySetup(SDK::UBodySetup* bodySetup, const Unreal::Transfor
 			SDK::FVector B_Local = vertexData[B_Index];
 			SDK::FVector C_Local = vertexData[C_Index];
 
-			SDK::FTransform fTransform = Math::Unreal_ToFTransform(componentTransform);
-			SDK::FVector A_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, A_Local);
-			SDK::FVector B_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, B_Local);
-			SDK::FVector C_World = SDK::UKismetMathLibrary::TransformLocation(fTransform, C_Local);
+			SDK::FVector A_World = Math::Vector_LocalToWorld(componentTransform, A_Local);
+			SDK::FVector B_World = Math::Vector_LocalToWorld(componentTransform, B_Local);
+			SDK::FVector C_World = Math::Vector_LocalToWorld(componentTransform, C_Local);
 
 			SDK::FVector2D A_Screen, B_Screen, C_Screen;
 			bool A_Project = SDK::UGameplayStatics::ProjectWorldToScreen(playerController, A_World, &A_Screen, false);
@@ -4448,12 +4494,12 @@ void DebugDraw::DrawCapsuleComponent(SDK::UCapsuleComponent* capsuleComponent, c
 	float capsuleHalfHeight = capsuleComponent->GetScaledCapsuleHalfHeight();
 
 	Unreal::Transform capsuleTransform = Unreal::ActorComponent::GetTransform(capsuleComponent);
-	SDK::FVector capsuleUpVector = SDK::UKismetMathLibrary::GetUpVector(capsuleTransform.rotation);
+	SDK::FVector capsuleUpVector = Math::Rotator_UpVector(capsuleTransform.rotation);
 
 	/* Construct an orthonormal basis (axis, U, V) for building capsule rings. */
 	SDK::FVector ortho_Temp = (fabsf(capsuleUpVector.Z) < 0.99f) ? SDK::FVector(0.f, 0.f, 1.f) : SDK::FVector(0.f, 1.f, 0.f); // Choose a temporary vector that is not parallel to the capsule axis.
-	SDK::FVector ortho_U = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
-	SDK::FVector ortho_V = SDK::UKismetMathLibrary::Normal(SDK::UKismetMathLibrary::Cross_VectorVector(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
+	SDK::FVector ortho_U = Math::Vector_Normal(Math::Vector_Cross(capsuleUpVector, ortho_Temp), 0.01f); // Compute 'U' as a normalized vector perpendicular to 'axis'.
+	SDK::FVector ortho_V = Math::Vector_Normal(Math::Vector_Cross(capsuleUpVector, ortho_U), 0.01f); // Compute 'V' as a normalized vector perpendicular to both 'axis' and 'U'.
 
 	/* True top/bottom endpoints of the capsule (tips). */
 	const SDK::FVector capsuleTopTip = capsuleTransform.location + capsuleUpVector * capsuleHalfHeight;
@@ -4563,9 +4609,9 @@ void DebugDraw::DrawSphereComponent(SDK::USphereComponent* sphereComponent, cons
 	SDK::FVector sphereCenter = sphereTransform.location;
 
 	/* Build local orthonormal frame from component rotation. */
-	SDK::FVector sphereForwardVector = SDK::UKismetMathLibrary::GetForwardVector(sphereTransform.rotation);
-	SDK::FVector sphereRightVector = SDK::UKismetMathLibrary::GetRightVector(sphereTransform.rotation);
-	SDK::FVector sphereUpVector = SDK::UKismetMathLibrary::GetUpVector(sphereTransform.rotation);
+	SDK::FVector sphereForwardVector = Math::Rotator_ForwardVector(sphereTransform.rotation);
+	SDK::FVector sphereRightVector = Math::Rotator_RightVector(sphereTransform.rotation);
+	SDK::FVector sphereUpVector = Math::Rotator_UpVector(sphereTransform.rotation);
 
 	/* We draw three great circles: in planes (Right,Forward), (Up,Forward), (Up,Right). */
 	static const int32_t sphereSegments = 48;
@@ -4617,9 +4663,9 @@ void DebugDraw::DrawBoxComponent(SDK::UBoxComponent* boxComponent, const uint32_
 	SDK::FVector boxExtent = boxComponent->GetScaledBoxExtent();
 
 	/* Local basis vectors from rotation (orthonormal). */
-	SDK::FVector boxForwardVector = SDK::UKismetMathLibrary::GetForwardVector(boxTransform.rotation);
-	SDK::FVector boxRightVector = SDK::UKismetMathLibrary::GetRightVector(boxTransform.rotation);
-	SDK::FVector boxUpVector = SDK::UKismetMathLibrary::GetUpVector(boxTransform.rotation);
+	SDK::FVector boxForwardVector = Math::Rotator_ForwardVector(boxTransform.rotation);
+	SDK::FVector boxRightVector = Math::Rotator_RightVector(boxTransform.rotation);
+	SDK::FVector boxUpVector = Math::Rotator_UpVector(boxTransform.rotation);
 
 	/* Precompute axis-length vectors. */
 	SDK::FVector boxForwardExtent = boxForwardVector * boxExtent.X;
@@ -5104,6 +5150,25 @@ void Features::ActorsList::Update()
 	}
 }
 
+void Features::ActorsList::Filter()
+{
+	/* Filter Actors by "Search Filter" */
+	switch (Features::ActorsList::filterMode)
+	{
+		case ImGui::E_ObjectFilterMode::ClassName:
+			Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
+			break;
+
+		case ImGui::E_ObjectFilterMode::ObjectName:
+			Features::ActorsList::filteredActors = Unreal::Actor::FilterByObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
+			break;
+
+		case ImGui::E_ObjectFilterMode::All:
+			Features::ActorsList::filteredActors = Unreal::Actor::FilterByClassAndObjectName(Features::ActorsList::actors, Features::ActorsList::filterBuffer, Features::ActorsList::filterCaseSensitive, Features::ActorsList::filterDistance);
+			break;
+	}
+}
+
 
 
 
@@ -5214,53 +5279,6 @@ void Features::CharacterMovement::Dash()
 
 
 
-void Features::DirectionalMovement::Worker()
-{
-	while (GetThread())
-	{
-		/* See if we have a Player Controller alongside the Camera Manager. */
-		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
-		if (playerController == nullptr || playerController->PlayerCameraManager == nullptr)
-			continue;
-
-		/* See if we have a Character under control and verify that Character is cheat flying. */
-		SDK::ACharacter* character = playerController->Character;
-		if (character == nullptr || character->CharacterMovement == nullptr || character->CharacterMovement->bCheatFlying != true)
-			continue;
-
-		/* Get Character velocity and see if we have any horizontal movement. */
-		SDK::FVector characterVelocity = character->CharacterMovement->Velocity;
-		if (characterVelocity.X == 0.0 && characterVelocity.Y == 0.0)
-			continue;
-
-		/* Normalize Character velocity (-1.0 to 1.0) and get Camera forward vector. */
-		SDK::FVector characterVelocityNormalized = Math::Vector_Normalize(characterVelocity);
-		SDK::FVector cameraForwardVector = playerController->PlayerCameraManager->GetActorForwardVector();
-
-		/*
-			Compute the dot product of the normalized character velocity and the camera's forward vector.
-			Result interpretation:
-			  +1.0 -> character moves exactly forward,
-			  -1.0 -> character moves exactly backward,
-			   0.0 -> movement is perpendicular to the camera.
-		*/
-		double dotProduct = SDK::UKismetMathLibrary::Dot_VectorVector(characterVelocityNormalized, cameraForwardVector);
-		if (dotProduct > 0.5) // Character is mostly targeting forward direction.
-		{
-			SDK::FVector currentLocation = character->K2_GetActorLocation();
-			SDK::FVector finalLocation = SDK::UKismetMathLibrary::Add_VectorVector(currentLocation, cameraForwardVector * Features::DirectionalMovement::step);
-
-			SDK::FHitResult hitResult;
-			character->K2_SetActorLocation(finalLocation, true, &hitResult, false);
-		}
-
-		Sleep(Math::Seconds_ToMilliseconds(Features::DirectionalMovement::delay));
-	}
-}
-
-
-
-
 void Features::Camera::StartFade()
 {
 	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
@@ -5295,6 +5313,50 @@ void Features::Camera::StopFade()
 
 
 
+
+void Features::DirectionalMovement::Worker()
+{
+	while (GetThread())
+	{
+		/* See if we have a Player Controller alongside the Camera Manager. */
+		SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+		if (playerController == nullptr || playerController->PlayerCameraManager == nullptr)
+			continue;
+
+		/* See if we have a Character under control and verify that Character is cheat flying. */
+		SDK::ACharacter* character = playerController->Character;
+		if (character == nullptr || character->CharacterMovement == nullptr || character->CharacterMovement->bCheatFlying != true)
+			continue;
+
+		/* Get Character velocity and see if we have any horizontal movement. */
+		SDK::FVector characterVelocity = character->CharacterMovement->Velocity;
+		if (characterVelocity.X == 0.0 && characterVelocity.Y == 0.0)
+			continue;
+
+		/* Normalize Character velocity (-1.0 to 1.0) and get Camera forward vector. */
+		SDK::FVector characterVelocityNormalized = Math::Vector_Normal(characterVelocity);
+		SDK::FVector cameraForwardVector = playerController->PlayerCameraManager->GetActorForwardVector();
+
+		/*
+			Compute the dot product of the normalized character velocity and the camera's forward vector.
+			Result interpretation:
+			  +1.0 -> character moves exactly forward,
+			  -1.0 -> character moves exactly backward,
+			   0.0 -> movement is perpendicular to the camera.
+		*/
+		double dotProduct = Math::Vector_Dot(characterVelocityNormalized, cameraForwardVector);
+		if (dotProduct > 0.5) // Character is mostly targeting forward direction.
+		{
+			SDK::FVector currentLocation = character->K2_GetActorLocation();
+			SDK::FVector finalLocation = Math::Vector_Add(currentLocation, cameraForwardVector * Features::DirectionalMovement::step);
+
+			SDK::FHitResult hitResult;
+			character->K2_SetActorLocation(finalLocation, true, &hitResult, false);
+		}
+
+		Sleep(Math::Seconds_ToMilliseconds(Features::DirectionalMovement::delay));
+	}
+}
 
 bool Features::DirectionalMovement::StartThread()
 {
@@ -5399,6 +5461,175 @@ bool Features::ActorTrace::Trace()
 
 
 
+#ifdef FREE_CAMERA
+bool Features::FreeCamera::IsEnabled()
+{
+	if (Features::FreeCamera::cameraReference == nullptr)
+		return false;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	SDK::AActor* viewTarget = playerController->GetViewTarget();
+	if (viewTarget == nullptr)
+		return false;
+
+	return Features::FreeCamera::cameraReference == viewTarget;
+}
+
+bool Features::FreeCamera::Enable()
+{
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	if (Unreal::Actor::IsValid(Features::FreeCamera::cameraReference) == false)
+	{
+		SDK::AActor* actorReference = Unreal::Actor::Summon(SDK::ACameraActor::StaticClass());
+		if (actorReference == nullptr)
+			return false;
+
+		Features::FreeCamera::cameraReference = static_cast<SDK::ACameraActor*>(actorReference);
+	}
+
+	if (playerController->PlayerCameraManager)
+	{
+		SDK::APlayerCameraManager* playerCameraManager = playerController->PlayerCameraManager;
+		Unreal::Transform playerCameraTransform = Unreal::Actor::GetTransform(playerCameraManager);
+
+		Features::FreeCamera::cameraReference->SetActorEnableCollision(false);
+		Features::FreeCamera::cameraReference->FOVAngle = 83.0f;
+
+		SDK::FHitResult hitResult;
+		Features::FreeCamera::cameraReference->K2_SetActorLocationAndRotation(playerCameraTransform.location, playerCameraTransform.rotation, false, &hitResult, true);
+	}
+
+	Features::FreeCamera::lastViewTarget = playerController->GetViewTarget();
+	Unreal::PlayerController::SetViewTarget(Features::FreeCamera::cameraReference);
+	return true;
+}
+
+bool Features::FreeCamera::Disable()
+{
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	if (Features::FreeCamera::lastViewTarget != nullptr)
+	{
+		Unreal::PlayerController::SetViewTarget(Features::FreeCamera::lastViewTarget);
+		Features::FreeCamera::lastViewTarget = nullptr;
+		return true;
+	}
+	else if (playerController->Pawn != nullptr)
+	{
+		Unreal::PlayerController::SetViewTarget(playerController->Pawn);
+		return true;
+	}
+	else
+		return false;
+}
+
+void Features::FreeCamera::Toggle()
+{
+	if (IsEnabled() == false)
+	{
+		Enable();
+		GUI::PlayActionSound(true);
+	}
+	else
+	{
+		Disable();
+		GUI::PlayActionSound(false);
+	}
+}
+
+
+bool Features::FreeCamera::Move(const float& forwardStep, const float& rightStep, const float& upStep)
+{
+	if (IsEnabled() == false)
+		return false;
+
+	Unreal::Transform freeCameraTransform = Unreal::Actor::GetTransform(Features::FreeCamera::cameraReference);
+	SDK::FVector forwardVector = Math::Rotator_ForwardVector(freeCameraTransform.rotation);
+	SDK::FVector rightVector = Math::Rotator_RightVector(freeCameraTransform.rotation);
+	SDK::FVector upVector = Math::Rotator_UpVector(freeCameraTransform.rotation);
+
+	SDK::FVector locationOffset;
+	locationOffset = Math::Vector_Add(locationOffset, Math::Vector_Multiply(forwardVector, forwardStep));
+	locationOffset = Math::Vector_Add(locationOffset, Math::Vector_Multiply(rightVector, rightStep));
+	locationOffset = Math::Vector_Add(locationOffset, Math::Vector_Multiply(upVector, upStep));
+
+	SDK::FVector newLocation = Math::Vector_Add(freeCameraTransform.location, locationOffset);
+
+	SDK::FHitResult hitResult;
+	Features::FreeCamera::cameraReference->K2_SetActorLocation(newLocation, true, &hitResult, false);
+
+	return true;
+}
+
+bool Features::FreeCamera::Rotate(const float& horizontalStep, const float& verticalStep)
+{
+	if (IsEnabled() == false)
+		return false;
+
+	SDK::FRotator freeCameraRotation = Features::FreeCamera::cameraReference->K2_GetActorRotation();
+	freeCameraRotation.Yaw += horizontalStep;
+	freeCameraRotation.Pitch += verticalStep;
+	freeCameraRotation.Roll = 0.0f;
+
+	Features::FreeCamera::cameraReference->K2_SetActorRotation(freeCameraRotation, false);
+
+	return true;
+}
+
+
+bool Features::FreeCamera::TeleportCameraToPlayer()
+{
+	if (IsEnabled() == false)
+		return false;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	SDK::FVector playerLocation;
+	if (Features::FreeCamera::lastViewTarget != nullptr)
+		playerLocation = Features::FreeCamera::lastViewTarget->K2_GetActorLocation();
+	else if (playerController->Pawn != nullptr)
+		playerLocation = playerController->Pawn->K2_GetActorLocation();
+	else
+		return false;
+
+	SDK::FHitResult hitResult;
+	Features::FreeCamera::cameraReference->K2_SetActorLocation(playerLocation, false, &hitResult, true);
+
+	return true;
+}
+
+bool Features::FreeCamera::TeleportPlayerToCamera()
+{
+	if (IsEnabled() == false)
+		return false;
+
+	SDK::APlayerController* playerController = Unreal::PlayerController::Get();
+	if (playerController == nullptr)
+		return false;
+
+	if (playerController->Pawn == nullptr)
+		return false;
+
+	SDK::FHitResult hitResult;
+	playerController->Pawn->K2_SetActorLocation(Features::FreeCamera::cameraReference->K2_GetActorLocation(), false, &hitResult, true);
+
+	return true;
+}
+#endif
+
+
+
+
 
 
 void Keybindings::Process()
@@ -5416,6 +5647,56 @@ void Keybindings::Process()
 			{
 				GUI::PlayActionSound(Features::ActorTrace::Trace());
 			}
+		}
+#endif
+
+		if (ImGui::IsKeyBindingPressed(&Keybindings::debug_ActorsListUpdate))
+		{
+			Features::ActorsList::Update();
+			Features::ActorsList::Filter();
+
+			GUI::PlayActionSound(true);
+		}
+
+#ifdef ACTORS_TRACKING
+		if (ImGui::IsKeyBindingPressed(&Keybindings::debug_ActorsListTracking))
+		{
+			if (Features::ActorsTracker::enabled)
+				Features::ActorsTracker::enabled = false;
+			else
+			{
+				Features::ActorsList::Update();
+
+				if (Features::ActorsList::filterDistance == 0.0f)
+					Features::ActorsList::filterDistance = 2400.0f; // 24 meters.
+
+				Features::ActorsList::Filter();
+
+				Features::ActorsTracker::enabled = true;
+			}
+
+			GUI::PlayActionSound(true);
+		}
+#endif
+
+#ifdef COLLISION_VISUALIZER
+		if (ImGui::IsKeyBindingPressed(&Keybindings::debug_ActorsListCollisionDraw))
+		{
+			if (Features::CollisionVisualizer::enabled)
+				Features::CollisionVisualizer::enabled = false;
+			else
+			{
+				Features::ActorsList::Update();
+
+				if (Features::ActorsList::filterDistance == 0.0f)
+					Features::ActorsList::filterDistance = 2400.0f; // 24 meters.
+
+				Features::ActorsList::Filter();
+
+				Features::CollisionVisualizer::enabled = true;
+			}
+
+			GUI::PlayActionSound(true);
 		}
 #endif
 
@@ -5464,5 +5745,78 @@ void Keybindings::Process()
 		{
 			Features::Camera::StopFade();
 		}
+
+
+
+
+#ifdef FREE_CAMERA
+		if (ImGui::IsKeyBindingPressed(&Keybindings::freeCamera_TeleportCameraToPlayer))
+		{
+			GUI::PlayActionSound(Features::FreeCamera::TeleportCameraToPlayer());
+		}
+
+		if (ImGui::IsKeyBindingPressed(&Keybindings::freeCamera_Toggle))
+		{
+			Features::FreeCamera::Toggle();
+		}
+
+		if (ImGui::IsKeyBindingPressed(&Keybindings::freeCamera_TeleportPlayerToCamera))
+		{
+			GUI::PlayActionSound(Features::FreeCamera::TeleportPlayerToCamera());
+		}
+
+		if (Features::FreeCamera::cameraReference)
+		{
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveForward))
+			{
+				Features::FreeCamera::Move(Features::FreeCamera::cameraMovementStep, 0.0f, 0.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveBackward))
+			{
+				Features::FreeCamera::Move(Features::FreeCamera::cameraMovementStep * -1.0f, 0.0f, 0.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveLeft))
+			{
+				Features::FreeCamera::Move(0.0f, Features::FreeCamera::cameraMovementStep * -1.0f, 0.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveRight))
+			{
+				Features::FreeCamera::Move(0.0f, Features::FreeCamera::cameraMovementStep, 0.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveUp))
+			{
+				Features::FreeCamera::Move(0.0f, 0.0f, Features::FreeCamera::cameraMovementStep);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_MoveDown))
+			{
+				Features::FreeCamera::Move(0.0f, 0.0f, Features::FreeCamera::cameraMovementStep * -1.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_RotateUp))
+			{
+				Features::FreeCamera::Rotate(0.0f, Features::FreeCamera::cameraRotationStep);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_RotateDown))
+			{
+				Features::FreeCamera::Rotate(0.0f, Features::FreeCamera::cameraRotationStep * -1.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_RotateLeft))
+			{
+				Features::FreeCamera::Rotate(Features::FreeCamera::cameraRotationStep * -1.0f, 0.0f);
+			}
+
+			if (ImGui::IsKeyBindingDown(&Keybindings::freeCamera_RotateRight))
+			{
+				Features::FreeCamera::Rotate(Features::FreeCamera::cameraRotationStep, 0.0f);
+			}
+		}
+#endif
 	}
 }

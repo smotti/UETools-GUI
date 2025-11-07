@@ -24,6 +24,11 @@ namespace Unreal
 		SDK::FVector location;
 		SDK::FRotator rotation;
 		SDK::FVector scale;
+
+		SDK::FQuat Quat() const
+		{
+			return Math::Rotator_ToQuat(rotation);
+		}
 	};
 
 

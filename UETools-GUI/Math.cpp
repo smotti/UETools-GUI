@@ -6,16 +6,53 @@
 
 
 
-SDK::FVector Math::Vector_Normalize(const SDK::FVector& vector)
+SDK::FVector Math::Vector_Add(const SDK::FVector& A, const SDK::FVector& B)
+{
+    SDK::FVector outVector;
+    outVector.X = A.X + B.X;
+    outVector.Y = A.Y + B.Y;
+    outVector.Z = A.Z + B.Z;
+
+    return outVector;
+}
+
+SDK::FVector Math::Vector_Multiply(const SDK::FVector& A, const float& B)
+{
+    SDK::FVector outVector;
+    outVector.X = A.X * B;
+    outVector.Y = A.Y * B;
+    outVector.Z = A.Z * B;
+
+    return outVector;
+}
+
+SDK::FVector Math::Vector_Normal(const SDK::FVector& vector, const float& tolerance)
 {
     float vectorLengthSquared = (vector.X * vector.X) + (vector.Y * vector.Y) + (vector.Z * vector.Z);
-    if (vectorLengthSquared < 0.01f)
+    if (vectorLengthSquared < tolerance)
         return SDK::FVector();
 
     float vectorLengthInverted = 1.0f / sqrt(vectorLengthSquared);
     return vector * vectorLengthInverted;
 }
 
+SDK::FVector Math::Vector_Rotate(const SDK::FVector& vector, const SDK::FQuat& quat)
+{
+    SDK::FVector quatVector;
+    quatVector.X = quat.X;
+    quatVector.Y = quat.Y;
+    quatVector.Z = quat.Z;
+
+    SDK::FVector qXv = Vector_Cross(quatVector, vector); // q * v
+    SDK::FVector qXqXv = Vector_Cross(quatVector, qXv);  // q * (q * v)
+
+    SDK::FVector outVector;
+    outVector.X = vector.X + 2.0f * ((quat.W * qXv.X) + qXqXv.X);
+    outVector.Y = vector.Y + 2.0f * ((quat.W * qXv.Y) + qXqXv.Y);
+    outVector.Z = vector.Z + 2.0f * ((quat.W * qXv.Z) + qXqXv.Z);
+
+    return outVector;
+}
 
 float Math::Vector_Distance(const SDK::FVector& A, const SDK::FVector& B)
 {
@@ -23,7 +60,22 @@ float Math::Vector_Distance(const SDK::FVector& A, const SDK::FVector& B)
     const float Y_Distance = A.Y - B.Y;
     const float Z_Distance = A.Z - B.Z;
 
-    return std::sqrtf(X_Distance * X_Distance + Y_Distance * Y_Distance + Z_Distance * Z_Distance);
+    return std::sqrtf((X_Distance * X_Distance) + (Y_Distance * Y_Distance) + (Z_Distance * Z_Distance));
+}
+
+float Math::Vector_Dot(const SDK::FVector& A, const SDK::FVector& B)
+{
+    return A.X * B.X + A.Y * B.Y + A.Z * B.Z;
+}
+
+SDK::FVector Math::Vector_Cross(const SDK::FVector& A, const SDK::FVector& B)
+{
+    SDK::FVector outVector;
+    outVector.X = (A.Y * B.Z) - (A.Z * B.Y);
+    outVector.Y = (A.Z * B.X) - (A.X * B.Z);
+    outVector.Z = (A.X * B.Y) - (A.Y * B.X);
+
+    return outVector;
 }
 
 
@@ -33,7 +85,7 @@ SDK::FRotator Math::Quat_ToRotator(const SDK::FQuat& quat)
 {
     /* Ensure quaternion is normalized before conversion. */
     SDK::FQuat q = quat;
-    const float normSq = q.X * q.X + q.Y * q.Y + q.Z * q.Z + q.W * q.W;
+    const float normSq = (q.X * q.X) + (q.Y * q.Y) + (q.Z * q.Z) + (q.W * q.W);
     if (normSq > TINY)
     {
         const float invLen = 1.0f / std::sqrt(normSq);
@@ -52,12 +104,12 @@ SDK::FRotator Math::Quat_ToRotator(const SDK::FQuat& quat)
     SDK::FRotator rotator;
 
     /* Compute roll (X) using standard quaternion-to-Euler formulas. */
-    const float sinr_cosp = 2.0f * (q.W * q.X + q.Y * q.Z);
-    const float cosr_cosp = 1.0f - 2.0f * (q.X * q.X + q.Y * q.Y);
+    const float sinr_cosp = 2.0f * ((q.W * q.X) + (q.Y * q.Z));
+    const float cosr_cosp = 1.0f - 2.0f * ((q.X * q.X) + (q.Y * q.Y));
     rotator.Roll = std::atan2(sinr_cosp, cosr_cosp);
 
     /* Compute sin(pitch) value; clamp to [-1,1] to avoid invalid asin() results due to precision errors. */
-    const float sinp = 2.0f * (q.W * q.Y - q.Z * q.X);
+    const float sinp = 2.0f * ((q.W * q.Y) - (q.Z * q.X));
     if (std::fabs(sinp) >= 1.0f)
     {
         /* Use 90 degrees if out of range (gimbal lock). */
@@ -69,8 +121,8 @@ SDK::FRotator Math::Quat_ToRotator(const SDK::FQuat& quat)
     }
 
     /* Compute yaw (Z) using standard quaternion-to-Euler formulas. */
-    const float siny_cosp = 2.0f * (q.W * q.Z + q.X * q.Y);
-    const float cosy_cosp = 1.0f - 2.0f * (q.Y * q.Y + q.Z * q.Z);
+    const float siny_cosp = 2.0f * ((q.W * q.Z) + (q.X * q.Y));
+    const float cosy_cosp = 1.0f - 2.0f * ((q.Y * q.Y) + (q.Z * q.Z));
     rotator.Yaw = std::atan2(siny_cosp, cosy_cosp);
 
     /* Convert radians back to degrees. */
@@ -106,7 +158,7 @@ SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
     quat.Z = cr * cp * sy - sr * sp * cy; // Z corresponds to Yaw contribution
 
     /* Normalize to ensure a unit quaternion (important for downstream use like rotation / matrix). */
-    const float normSq = quat.X * quat.X + quat.Y * quat.Y + quat.Z * quat.Z + quat.W * quat.W;
+    const float normSq = (quat.X * quat.X) + (quat.Y * quat.Y) + (quat.Z * quat.Z) + (quat.W * quat.W);
     if (normSq > TINY) // Check for nonsense input.
     {
         const float invLen = 1.0f / std::sqrt(normSq);
@@ -124,8 +176,52 @@ SDK::FQuat Math::Rotator_ToQuat(const SDK::FRotator& rotator)
     return quat;
 }
 
+SDK::FVector Math::Rotator_ForwardVector(const SDK::FRotator& rotator)
+{
+    SDK::FQuat quat = Rotator_ToQuat(rotator);
+    SDK::FVector vector;
+    vector.X = 1.0f;
+
+    return Vector_Rotate(vector, quat);
+}
+
+SDK::FVector Math::Rotator_RightVector(const SDK::FRotator& rotator)
+{
+    SDK::FQuat quat = Rotator_ToQuat(rotator);
+    SDK::FVector vector;
+    vector.Y = 1.0f;
+
+    return Vector_Rotate(vector, quat);
+}
+
+SDK::FVector Math::Rotator_UpVector(const SDK::FRotator& rotator)
+{
+    SDK::FQuat quat = Rotator_ToQuat(rotator);
+    SDK::FVector vector;
+    vector.Z = 1.0f;
+
+    return Vector_Rotate(vector, quat);
+}
 
 
+
+
+SDK::FVector Math::Vector_LocalToWorld(const Unreal::Transform& unrealTransform, const SDK::FVector& vector)
+{
+    SDK::FVector locationScaled;
+    locationScaled.X = vector.X * unrealTransform.scale.X;
+    locationScaled.Y = vector.Y * unrealTransform.scale.Y;
+    locationScaled.Z = vector.Z * unrealTransform.scale.Z;
+
+    SDK::FVector rotatedVector = Vector_Rotate(locationScaled, unrealTransform.Quat());
+    
+    SDK::FVector outVector;
+    outVector.X = rotatedVector.X + unrealTransform.location.X;
+    outVector.Y = rotatedVector.Y + unrealTransform.location.Y;
+    outVector.Z = rotatedVector.Z + unrealTransform.location.Z;
+
+    return outVector;
+}
 
 Unreal::Transform Math::F_ToUnrealTransform(const SDK::FTransform& fTransform)
 {
@@ -141,7 +237,7 @@ SDK::FTransform Math::Unreal_ToFTransform(const Unreal::Transform& unrealTransfo
 {
     SDK::FTransform fTransform;
     fTransform.Translation = unrealTransform.location;
-    fTransform.Rotation = Math::Rotator_ToQuat(unrealTransform.rotation);
+    fTransform.Rotation = unrealTransform.Quat();
     fTransform.Scale3D = unrealTransform.scale;
 
     return fTransform;

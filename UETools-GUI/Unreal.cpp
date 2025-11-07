@@ -1035,7 +1035,7 @@ SDK::AActor* Unreal::Actor::Summon(const SDK::TSubclassOf<SDK::AActor>& actorCla
 
 	static SDK::FTransform spawnTransform;
 	spawnTransform.Translation = transform.location;
-	spawnTransform.Rotation = Math::Rotator_ToQuat(transform.rotation);
+	spawnTransform.Rotation = transform.Quat();
 	spawnTransform.Scale3D = transform.scale;
 #ifdef UE5
 	SDK::AActor* actorReference = SDK::UGameplayStatics::BeginDeferredActorSpawnFromClass(world, actorClass, spawnTransform, SDK::ESpawnActorCollisionHandlingMethod::AlwaysSpawn, nullptr, SDK::ESpawnActorScaleMethod::SelectDefaultAtRuntime);

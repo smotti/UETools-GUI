@@ -19,12 +19,21 @@ namespace Unreal { struct Transform; }
 class Math
 {
 public:
-	static SDK::FVector Vector_Normalize(const SDK::FVector& vector);
+	static SDK::FVector Vector_Add(const SDK::FVector& A, const SDK::FVector& B);
+	static SDK::FVector Vector_Multiply(const SDK::FVector& A, const float& B);
+	static SDK::FVector Vector_Normal(const SDK::FVector& vector, const float& tolerance = 1.0E-8F); // sqrt(1e-8) = 1e-4 = 0.0001f.
+	static SDK::FVector Vector_Rotate(const SDK::FVector& vector, const SDK::FQuat& quat);
 	static float Vector_Distance(const SDK::FVector& A, const SDK::FVector& B);
+	static float Vector_Dot(const SDK::FVector& A, const SDK::FVector& B);
+	static SDK::FVector Vector_Cross(const SDK::FVector& A, const SDK::FVector& B);
+	static SDK::FVector Vector_LocalToWorld(const Unreal::Transform& unrealTransform, const SDK::FVector& vector);
 
 
 	static SDK::FRotator Quat_ToRotator(const SDK::FQuat& quat);
 	static SDK::FQuat Rotator_ToQuat(const SDK::FRotator& rotator);
+	static SDK::FVector Rotator_ForwardVector(const SDK::FRotator& rotator);
+	static SDK::FVector Rotator_RightVector(const SDK::FRotator& rotator);
+	static SDK::FVector Rotator_UpVector(const SDK::FRotator& rotator);
 
 
 	static Unreal::Transform F_ToUnrealTransform(const SDK::FTransform& fTransform);

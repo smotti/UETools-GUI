@@ -253,10 +253,10 @@ public:
 		ACTION_SUCCESS,
 		ACTION_ERROR
 	};
-	static void PlaySound(const E_Sound& soundToPlay);
+	static void PlayUISound(const E_Sound& soundToPlay);
 	static void PlayActionSound(const bool& wasSuccessfull)
 	{
-		PlaySound(wasSuccessfull ? E_Sound::ACTION_SUCCESS : E_Sound::ACTION_ERROR);
+		PlayUISound(wasSuccessfull ? E_Sound::ACTION_SUCCESS : E_Sound::ACTION_ERROR);
 	}
 
 
@@ -413,7 +413,50 @@ namespace Features
 
 
 		static void Update();
+		static void Filter();
 	};
+
+
+
+
+#ifdef ACTOR_TRACE
+	class ActorTrace
+	{
+	public:
+		static inline bool enabled = false;
+		static inline bool showOnScreen = true;
+		static inline bool showLineTrace = true;
+
+		static inline SDK::FVector traceStartLocation;
+		static inline SDK::FVector traceEndLocation;
+		static inline float traceColor[4] = { 0.118f, 1.0f, 0.0f, 0.5f };
+		static inline float traceThickness = 3.5f;
+		static inline float traceLength = 2048.0f;
+
+		static inline bool traceCast; // When set to 'True', indicates that user have casted a ray; would render a dummy { 0.0, 0.0 } - { 0.0, 0.0 } line otherwise.
+		static inline bool traceHit;
+
+#ifdef UE5
+		static inline Unreal::Object::DataStructure object;
+#else
+		static inline Unreal::Actor::DataStructure actor;
+#endif
+
+
+		static bool Trace();
+	};
+#endif
+
+
+
+
+#ifdef ACTORS_TRACKING
+	class ActorsTracker
+	{
+	public:
+		static inline bool enabled = false;
+	};
+#endif
 
 
 
@@ -447,17 +490,6 @@ namespace Features
 
 
 		static inline float thickness = 0.5f;
-	};
-#endif
-
-
-
-
-#ifdef ACTORS_TRACKING
-	class ActorsTracker
-	{
-	public:
-		static inline bool enabled = false;
 	};
 #endif
 
@@ -612,31 +644,27 @@ namespace Features
 
 
 
-#ifdef ACTOR_TRACE
-	class ActorTrace
+#ifdef FREE_CAMERA
+	class FreeCamera
 	{
 	public:
-		static inline bool enabled = false;
-		static inline bool showOnScreen = true;
-		static inline bool showLineTrace = true;
+		static inline SDK::ACameraActor* cameraReference;
+		static inline SDK::AActor* lastViewTarget;
 
-		static inline SDK::FVector traceStartLocation;
-		static inline SDK::FVector traceEndLocation;
-		static inline float traceColor[4] = { 0.118f, 1.0f, 0.0f, 0.5f };
-		static inline float traceThickness = 3.5f;
-		static inline float traceLength = 2048.0f;
-
-		static inline bool traceCast; // When set to 'True', indicates that user have casted a ray; would render a dummy { 0.0, 0.0 } - { 0.0, 0.0 } line otherwise.
-		static inline bool traceHit;
-
-#ifdef UE5
-		static inline Unreal::Object::DataStructure object;
-#else
-		static inline Unreal::Actor::DataStructure actor;
-#endif
+		static inline float cameraMovementStep = 3.0f;
+		static inline float cameraRotationStep = 0.25f;
 
 
-		static bool Trace();
+		static bool IsEnabled();
+		static bool Enable();
+		static bool Disable();
+		static void Toggle();
+
+		static bool Move(const float& forwardStep, const float& rightStep, const float& upStep);
+		static bool Rotate(const float& horizontalStep, const float& verticalStep);
+
+		static bool TeleportCameraToPlayer();
+		static bool TeleportPlayerToCamera();
 	};
 #endif
 
@@ -662,7 +690,16 @@ class Keybindings
 public:
 	static inline ImGui::KeyBinding general_MenuOpenClose = ImGui::KeyBinding(ImGuiKey_Insert);
 
+#ifdef ACTOR_TRACE
 	static inline ImGui::KeyBinding debug_ActorTrace = ImGui::KeyBinding(ImGuiKey_T);
+#endif
+	static inline ImGui::KeyBinding debug_ActorsListUpdate = ImGui::KeyBinding(ImGuiKey_Keypad1);
+#ifdef ACTORS_TRACKING
+	static inline ImGui::KeyBinding debug_ActorsListTracking = ImGui::KeyBinding(ImGuiKey_Keypad2);
+#endif
+#ifdef COLLISION_VISUALIZER
+	static inline ImGui::KeyBinding debug_ActorsListCollisionDraw = ImGui::KeyBinding(ImGuiKey_Keypad3);
+#endif
 
 	static inline ImGui::KeyBinding characterMovement_Ghost = ImGui::KeyBinding(ImGuiKey_Keypad7);
 	static inline ImGui::KeyBinding characterMovement_Fly = ImGui::KeyBinding(ImGuiKey_Keypad8);
@@ -673,6 +710,22 @@ public:
 
 	static inline ImGui::KeyBinding characterCamera_StartFade;
 	static inline ImGui::KeyBinding characterCamera_StopFade;
+
+#ifdef FREE_CAMERA
+	static inline ImGui::KeyBinding freeCamera_TeleportCameraToPlayer = ImGui::KeyBinding(ImGuiKey_Keypad4);
+	static inline ImGui::KeyBinding freeCamera_Toggle = ImGui::KeyBinding(ImGuiKey_Keypad5);
+	static inline ImGui::KeyBinding freeCamera_TeleportPlayerToCamera = ImGui::KeyBinding(ImGuiKey_Keypad6);
+	static inline ImGui::KeyBinding freeCamera_MoveForward = ImGui::KeyBinding(ImGuiKey_W);
+	static inline ImGui::KeyBinding freeCamera_MoveBackward = ImGui::KeyBinding(ImGuiKey_S);
+	static inline ImGui::KeyBinding freeCamera_MoveLeft = ImGui::KeyBinding(ImGuiKey_A);
+	static inline ImGui::KeyBinding freeCamera_MoveRight = ImGui::KeyBinding(ImGuiKey_D);
+	static inline ImGui::KeyBinding freeCamera_MoveUp = ImGui::KeyBinding(ImGuiKey_E);
+	static inline ImGui::KeyBinding freeCamera_MoveDown = ImGui::KeyBinding(ImGuiKey_Q);
+	static inline ImGui::KeyBinding freeCamera_RotateUp = ImGui::KeyBinding(ImGuiKey_UpArrow);
+	static inline ImGui::KeyBinding freeCamera_RotateDown = ImGui::KeyBinding(ImGuiKey_DownArrow);
+	static inline ImGui::KeyBinding freeCamera_RotateLeft = ImGui::KeyBinding(ImGuiKey_LeftArrow);
+	static inline ImGui::KeyBinding freeCamera_RotateRight = ImGui::KeyBinding(ImGuiKey_RightArrow);
+#endif
 
 
 	static void Process();

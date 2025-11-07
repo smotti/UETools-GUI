@@ -159,10 +159,14 @@
   <ItemGroup>
     <ClInclude Include="definitions.h" />
     <ClInclude Include="DirectWindow.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Unreal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UETools-GUI.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
