@@ -1,13 +1,10 @@
 #pragma once
 #include "FileManager.h"
-#include "Unreal.h"
+#include "SDK\Engine_classes.hpp"
 
-#include <string>
 #include <unordered_map>
 #include <optional>
 #include <variant>
-#include <vector>
-#include <sstream>
 #include <iomanip>
 #include <charconv>
 #include <cctype>
