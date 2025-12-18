@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.0)");
+			ImGui::Text("UETools GUI (v3.1)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -768,6 +768,87 @@ void GUI::Draw()
 
 
 			ImGui::Text(" | ");
+
+
+#ifdef _DEBUG
+			if (ImGui::BeginMenu("Config Test"))
+			{
+				const bool default_bool = false;
+				const  int default_int = -1;
+				const float default_float = -1.0f;
+				const SDK::FVector default_fvector = SDK::FVector(-1.0f, -1.0f, -1.0f);
+				const std::string default_string = "ABCDEFG";
+
+				static bool test_bool = default_bool;
+				static int test_int = default_int;
+				static float test_float = default_float;
+				static SDK::FVector test_fvector = default_fvector;
+				static std::string test_string = default_string;
+
+				static std::string config_path = "NONE";
+				static bool config_exist = false;
+
+				static bool config_savetofile = true;
+				ImGui::Checkbox("Save Config To File", &config_savetofile);
+
+				static bool config_forceloadfail = false;
+				ImGui::Checkbox("Config Force Failed To Load", &config_forceloadfail);
+
+				if (ImGui::Button("Load Config & Update Displayed Data"))
+				{
+					Config testConfig("config_test.cfg");
+					if (testConfig.Load() == false || config_forceloadfail)
+					{
+						testConfig.Set("Bool", true);
+						testConfig.Set("Int", 100);
+						testConfig.Set("Float", 376.814f);
+						testConfig.Set("FVector", SDK::FVector(54112.67f, 91433.12f, 86.09f));
+						testConfig.Set("String", "Hello, world!");
+
+						if(config_savetofile)
+							testConfig.Save();
+					}
+
+					test_bool = testConfig.Get<bool>("Bool").value_or(default_bool);
+					test_int = testConfig.Get<int>("Int").value_or(default_int);
+					test_float = testConfig.Get<float>("Float").value_or(default_float);
+					test_fvector = testConfig.Get<SDK::FVector>("FVector").value_or(default_fvector);
+					test_string = testConfig.Get<std::string>("String").value_or(default_string);
+					config_path = testConfig.GetFilePath();
+					config_exist = testConfig.DoesFileExist();
+
+					PlayActionSound(true);
+				}
+
+				ImGui::NewLine();
+
+				ImGui::TextBoolColored("Bool: ", test_bool);
+				ImGui::TextIntColored("Int: ", test_int);
+				ImGui::TextFloatColored("Float: ", test_float);
+				ImGui::TextVectorColored("FVector: ", test_fvector);
+				ImGui::Text("String: ");
+				ImGui::SameLine();
+				ImGui::Text(test_string.c_str());
+				ImGui::Text("Config Path: ");
+				ImGui::SameLine();
+				ImGui::Text(config_path.c_str());
+				ImGui::TextBoolColored("Config Exist: ", config_exist);
+
+				ImGui::NewLine();
+
+				if (ImGui::Button("Open Config"))
+				{
+					if (config_exist == false)
+						PlayActionSound(false);
+					else
+					{
+						PlayActionSound(reinterpret_cast<std::intptr_t>(ShellExecuteA(nullptr, "open", config_path.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) > 32);
+					}
+				}
+
+				ImGui::EndMenu();
+			}
+#endif
 
 
 			if (ImGui::BeginMenu("Debug"))

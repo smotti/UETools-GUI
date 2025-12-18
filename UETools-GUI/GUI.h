@@ -1,6 +1,7 @@
 #pragma once
 #include "DirectWindow.h"
 #include "imgui.h"
+#include "Config.h"
 
 #include "definitions.h"
 #include "Unreal.h"
