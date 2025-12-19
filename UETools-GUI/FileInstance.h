@@ -10,15 +10,15 @@
 
 
 
-class FileManager
+class FileInstance
 {
 public:
-	explicit FileManager(const std::filesystem::path& filePath);
-	virtual ~FileManager() = default;
+	explicit FileInstance(const std::filesystem::path& filePath);
+	virtual ~FileInstance() = default;
 
-	std::string GetFilePath();
+	std::string GetAbsoluteFilePath();
+	bool DoesFileDirectoryExist();
 	bool DoesFileExist();
-	bool DoesDirectoryExist();
 
 	bool LoadText(std::string* outText);
 	bool SaveText(const std::string& text);

@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.1b)");
+			ImGui::Text("UETools GUI (v3.1c)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -771,6 +771,13 @@ void GUI::Draw()
 
 
 #ifdef _DEBUG
+			ImGui::ShowDebugLogWindow();
+			ImGui::ShowDemoWindow();
+			ImGui::ShowAboutWindow();
+
+
+
+
 			if (ImGui::BeginMenu("Config Test"))
 			{
 				const bool default_bool = false;
@@ -785,8 +792,9 @@ void GUI::Draw()
 				static SDK::FVector test_fvector = default_fvector;
 				static std::string test_string = default_string;
 
-				static std::string config_path = "NONE";
-				static bool config_exist = false;
+				static std::string config_absolutepath = "NONE";
+				static bool config_directoryexist = false;
+				static bool config_fileexist = false;
 
 				static bool config_savetofile = true;
 				ImGui::Checkbox("Save Config To File", &config_savetofile);
@@ -796,7 +804,7 @@ void GUI::Draw()
 
 				if (ImGui::Button("Load Config & Update Displayed Data"))
 				{
-					Config testConfig("config_test.cfg");
+					ConfigInstance testConfig("config_test.cfg");
 					if (testConfig.Load() == false || config_forceloadfail)
 					{
 						testConfig.Set("Bool", true);
@@ -814,8 +822,9 @@ void GUI::Draw()
 					test_float = testConfig.Get<float>("Float").value_or(default_float);
 					test_fvector = testConfig.Get<SDK::FVector>("FVector").value_or(default_fvector);
 					test_string = testConfig.Get<std::string>("String").value_or(default_string);
-					config_path = testConfig.GetFilePath();
-					config_exist = testConfig.DoesFileExist();
+					config_absolutepath = testConfig.GetAbsoluteFilePath();
+					config_directoryexist = testConfig.DoesFileDirectoryExist();
+					config_fileexist = testConfig.DoesFileExist();
 
 					PlayActionSound(true);
 				}
@@ -831,24 +840,27 @@ void GUI::Draw()
 				ImGui::Text(test_string.c_str());
 				ImGui::Text("Config Path: ");
 				ImGui::SameLine();
-				ImGui::Text(config_path.c_str());
-				ImGui::TextBoolColored("Config Exist: ", config_exist);
+				ImGui::Text(config_absolutepath.c_str());
+				ImGui::TextBoolColored("Config Directory Exist: ", config_directoryexist);
+				ImGui::TextBoolColored("Config File Exist: ", config_fileexist);
 
 				ImGui::NewLine();
 
 				if (ImGui::Button("Open Config"))
 				{
-					if (config_exist == false)
+					if (config_fileexist == false)
 						PlayActionSound(false);
 					else
 					{
-						PlayActionSound(reinterpret_cast<std::intptr_t>(ShellExecuteA(nullptr, "open", config_path.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) > 32);
+						PlayActionSound(reinterpret_cast<std::intptr_t>(ShellExecuteA(nullptr, "open", config_absolutepath.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) > 32);
 					}
 				}
 
 				ImGui::EndMenu();
 			}
 #endif
+
+
 
 
 			if (ImGui::BeginMenu("Debug"))

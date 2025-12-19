@@ -1,11 +1,11 @@
-#include "FileManager.h"
+#include "FileInstance.h"
 
 
 
 
 
 
-FileManager::FileManager(const std::filesystem::path& filePath)
+FileInstance::FileInstance(const std::filesystem::path& filePath)
     : _filePath(filePath)
 {
 }
@@ -13,22 +13,12 @@ FileManager::FileManager(const std::filesystem::path& filePath)
 
 
 
-std::string FileManager::GetFilePath()
+std::string FileInstance::GetAbsoluteFilePath()
 {
     return std::filesystem::absolute(_filePath).string();
 }
 
-bool FileManager::DoesFileExist()
-{
-    if (_filePath.empty() == true)
-        return false;
-
-    std::error_code errorCode;
-    return std::filesystem::exists(_filePath, errorCode) == true
-           && std::filesystem::is_regular_file(_filePath, errorCode) == true;
-}
-
-bool FileManager::DoesDirectoryExist()
+bool FileInstance::DoesFileDirectoryExist()
 {
     const std::filesystem::path parentPath = _filePath.parent_path();
 
@@ -43,10 +33,20 @@ bool FileManager::DoesDirectoryExist()
     return std::filesystem::create_directories(parentPath, errorCode);
 }
 
+bool FileInstance::DoesFileExist()
+{
+    if (_filePath.empty() == true)
+        return false;
+
+    std::error_code errorCode;
+    return std::filesystem::exists(_filePath, errorCode) == true
+           && std::filesystem::is_regular_file(_filePath, errorCode) == true;
+}
 
 
 
-bool FileManager::LoadText(std::string* outText)
+
+bool FileInstance::LoadText(std::string* outText)
 {
     if (outText == nullptr)
         return false;
@@ -64,9 +64,9 @@ bool FileManager::LoadText(std::string* outText)
     return true;
 }
 
-bool FileManager::SaveText(const std::string& text)
+bool FileInstance::SaveText(const std::string& text)
 {
-    if (DoesDirectoryExist() == false)
+    if (DoesFileDirectoryExist() == false)
         return false;
 
     std::ofstream file(_filePath, std::ios::out | std::ios::binary | std::ios::trunc);
@@ -80,7 +80,7 @@ bool FileManager::SaveText(const std::string& text)
 
 
 
-bool FileManager::LoadLines(std::vector<std::string>* outLines)
+bool FileInstance::LoadLines(std::vector<std::string>* outLines)
 {
     if (outLines == nullptr)
         return false;
@@ -103,9 +103,9 @@ bool FileManager::LoadLines(std::vector<std::string>* outLines)
     return true;
 }
 
-bool FileManager::SaveLines(const std::vector<std::string>& lines)
+bool FileInstance::SaveLines(const std::vector<std::string>& lines)
 {
-    if (DoesDirectoryExist() == false)
+    if (DoesFileDirectoryExist() == false)
         return false;
 
     std::ofstream file(_filePath, std::ios::out | std::ios::trunc);

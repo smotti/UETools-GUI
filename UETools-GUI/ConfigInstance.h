@@ -1,5 +1,5 @@
 #pragma once
-#include "FileManager.h"
+#include "FileInstance.h"
 #include "SDK\Engine_classes.hpp"
 
 #include <unordered_map>
@@ -14,10 +14,10 @@
 
 
 
-class Config : public FileManager
+class ConfigInstance : public FileInstance
 {
 public:
-	explicit Config(const std::filesystem::path& filePath);
+	explicit ConfigInstance(const std::filesystem::path& filePath);
 
     bool Load();
     bool Save();
@@ -42,12 +42,14 @@ private:
     static std::string Trim(const std::string& text);
     static bool IsLineCommentOrEmpty(const std::string& line);
 
-    static bool ConsumeFloat(const std::string& text, size_t& inOutPos, float& outValue);
+    static bool ReadFloat(const std::string& text, const size_t& inPos, size_t* outPos, float* outValue);
 
     static std::optional<std::pair<std::string, std::string>> SplitKeyValue(const std::string& line);
     static std::optional<Value> ParseValueWithOptionalType(const std::string& rawValue);
 
-    static std::string ValueToLine(const std::string& key, const Value& value);
+    static std::string String_ToLower(const std::string& text);
+    static std::string Float_ToString(const float& value);
+    static std::string Value_ToLine(const std::string& key, const Value& value);
 
     static std::optional<bool> TryParseBool(const std::string& text);
     static std::optional<int> TryParseInt(const std::string& text);

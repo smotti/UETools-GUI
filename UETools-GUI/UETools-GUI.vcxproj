@@ -149,9 +149,9 @@
     <ClCompile Include="..\SDKs\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\SDKs\ImGui\imgui_tables.cpp" />
     <ClCompile Include="..\SDKs\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="ConfigInstance.cpp" />
     <ClCompile Include="DirectWindow.cpp" />
-    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="FileInstance.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="main.cpp" />
@@ -159,10 +159,10 @@
     <ClCompile Include="Unreal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="ConfigInstance.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="DirectWindow.h" />
-    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FileInstance.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="GUI.h" />
