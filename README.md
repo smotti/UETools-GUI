@@ -40,6 +40,8 @@ While in the title, press Insert (INS) to toggle the menu.
 
 # Great First Experience Games
 ## [Lies of P (Unreal Engine 4.27.2)](https://store.steampowered.com/app/1627720)
+**[Lies of P DEMO (Unreal Engine 4.27.2)](https://archive.org/details/lies-of-p-demo)**
+
 <img width="460" height="215" alt="FirstEXP_LiesOfP" src="https://github.com/user-attachments/assets/7d21d212-92db-49ac-91eb-977991939129" />
 
 ## [Project Borealis Prologue (Unreal Engine 5.4.4)](https://store.steampowered.com/app/2215490)
