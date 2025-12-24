@@ -237,6 +237,17 @@ BOOL DirectWindow::IsWindowAlive()
 
 void DirectWindow::Create()
 {
+    /* 
+        Swap default font with new "ProggyVector-minimal.ttf". 
+        imgui_draw.cpp -> ImFontAtlas::AddFontDefault(...)
+        {
+            return AddFontDefaultVector(font_cfg);
+        }
+
+        Runtime alternative being:
+        ImGui::GetIO().FontDefault = ImGui::GetIO().Fonts->AddFontDefaultVector();
+    */
+
     /* Enable per - monitor DPI awareness so ImGui scales appropriately on HiDPI displays. */
     ImGui_ImplWin32_EnableDpiAwareness();
 

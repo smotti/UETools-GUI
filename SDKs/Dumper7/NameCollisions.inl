@@ -8,3 +8,8 @@
 
 // FORWARD DECLARATIONS
 
+
+namespace BP_Action_Guard_Break_0 { class UBP_Action_Guard_Break_C; }
+
+namespace BP_Action_Guard_Break { class UBP_Action_Guard_Break_C; }
+

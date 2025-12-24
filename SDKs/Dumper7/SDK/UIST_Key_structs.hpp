@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "UIEN_InputAction_structs.hpp"
-#include "Engine_structs.hpp"
 #include "UIEN_Controller_structs.hpp"
+#include "Engine_structs.hpp"
 
 
 namespace SDK

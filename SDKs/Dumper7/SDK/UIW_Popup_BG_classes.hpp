@@ -18,7 +18,7 @@ namespace SDK
 
 // WidgetBlueprintGeneratedClass UIW_Popup_BG.UIW_Popup_BG_C
 // 0x0000 (0x02A0 - 0x02A0)
-class UUIW_Popup_BG_C final : public ULWidget
+class UUIW_Popup_BG_C : public ULWidget
 {
 public:
 	void RequestCloseWindow();

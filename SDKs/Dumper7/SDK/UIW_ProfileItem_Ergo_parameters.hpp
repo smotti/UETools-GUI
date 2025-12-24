@@ -11,10 +11,10 @@
 #include "Basic.hpp"
 
 #include "SlateCore_structs.hpp"
+#include "UIST_Color_structs.hpp"
 #include "ProjectP_structs.hpp"
 #include "Engine_structs.hpp"
 #include "CoreUObject_structs.hpp"
-#include "UIST_Color_structs.hpp"
 
 
 namespace SDK::Params

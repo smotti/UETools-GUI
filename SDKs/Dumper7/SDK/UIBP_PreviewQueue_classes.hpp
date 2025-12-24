@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "UIEN_PreviewType_structs.hpp"
 #include "CoreUObject_classes.hpp"
+#include "UIEN_PreviewType_structs.hpp"
 
 
 namespace SDK

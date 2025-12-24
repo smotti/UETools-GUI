@@ -10,13 +10,13 @@
 
 #include "Basic.hpp"
 
-#include "UIEN_Controller_structs.hpp"
+#include "UIEN_InputAction_structs.hpp"
 #include "SlateCore_structs.hpp"
+#include "UIEN_Controller_structs.hpp"
 #include "Engine_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "InputCore_structs.hpp"
 #include "ProjectPContentInfo_structs.hpp"
-#include "UIEN_InputAction_structs.hpp"
 
 
 namespace SDK::Params

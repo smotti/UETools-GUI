@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "UIW_Slot_Pouch_classes.hpp"
 #include "Engine_structs.hpp"
+#include "UIW_Slot_Pouch_classes.hpp"
 
 
 namespace SDK

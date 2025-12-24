@@ -1848,7 +1848,7 @@ DUMPER7_ASSERTS_ULAnimNotifyState_Projectile;
 
 // Class ProjectP.LAction_HitAnim
 // 0x0198 (0x0378 - 0x01E0)
-class ULAction_HitAnim final : public ULAction_LoopAnim
+class ULAction_HitAnim : public ULAction_LoopAnim
 {
 public:
 	class ULActPayload_HitAnim*                   Cached_Payload_HitAnim;                            // 0x01E0(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1896,7 +1896,7 @@ DUMPER7_ASSERTS_ULAction_HitAnim;
 
 // Class ProjectP.LAction_MultiAnim
 // 0x0018 (0x01F8 - 0x01E0)
-class ULAction_MultiAnim final : public ULAction_LoopAnim
+class ULAction_MultiAnim : public ULAction_LoopAnim
 {
 public:
 	TArray<class UAnimSequenceBase*>              TargetAnimArray;                                   // 0x01E0(0x0010)(Edit, BlueprintVisible, ZeroConstructor, NativeAccessSpecifierPublic)
@@ -1961,7 +1961,7 @@ DUMPER7_ASSERTS_ULAnimNotifyState_TimedNiagaraEffect;
 
 // Class ProjectP.LAction_SlaveArmVisual
 // 0x0000 (0x01E0 - 0x01E0)
-class ULAction_SlaveArmVisual final : public ULAction_LoopAnim
+class ULAction_SlaveArmVisual : public ULAction_LoopAnim
 {
 public:
 	float GetSlaveArmAdditiveAlpha();
@@ -1985,7 +1985,7 @@ DUMPER7_ASSERTS_ULAction_SlaveArmVisual;
 
 // Class ProjectP.LAction_Dialoging
 // 0x0008 (0x01E8 - 0x01E0)
-class ULAction_Dialoging final : public ULAction_LoopAnim
+class ULAction_Dialoging : public ULAction_LoopAnim
 {
 public:
 	class FName                                   CommonActionCodeName;                              // 0x01E0(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2689,7 +2689,7 @@ DUMPER7_ASSERTS_ULActionUtilFuncLibrary;
 
 // Class ProjectP.LActMgrComponent
 // 0x0AE8 (0x0B98 - 0x00B0)
-class ULActMgrComponent final : public UActorComponent
+class ULActMgrComponent : public UActorComponent
 {
 public:
 	uint8                                         Pad_B0[0x4];                                       // 0x00B0(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
@@ -16847,7 +16847,7 @@ DUMPER7_ASSERTS_ULProjectileMovementComponent;
 
 // Class ProjectP.LProjectile_NonTypical
 // 0x0000 (0x0320 - 0x0320)
-class ALProjectile_NonTypical final : public ALProjectile
+class ALProjectile_NonTypical : public ALProjectile
 {
 public:
 	static class UClass* StaticClass()
@@ -17079,7 +17079,7 @@ DUMPER7_ASSERTS_ULPropComponent;
 
 // Class ProjectP.LPropDestructionSpot
 // 0x0028 (0x0380 - 0x0358)
-class ALPropDestructionSpot final : public ALPropSpot
+class ALPropDestructionSpot : public ALPropSpot
 {
 public:
 	float                                         OverrideMassScale;                                 // 0x0358(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -18696,7 +18696,7 @@ DUMPER7_ASSERTS_ULWetBodyAreaComponent;
 
 // Class ProjectP.LLoadingWidget
 // 0x0008 (0x02A8 - 0x02A0)
-class ULLoadingWidget final : public ULWidget
+class ULLoadingWidget : public ULWidget
 {
 public:
 	bool                                          bMainLoading;                                      // 0x02A0(0x0001)(Edit, BlueprintVisible, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -18779,7 +18779,7 @@ DUMPER7_ASSERTS_ALWindSourceVolume;
 
 // Class ProjectP.LWireActor
 // 0x0048 (0x0268 - 0x0220)
-class ALWireActor final : public AActor
+class ALWireActor : public AActor
 {
 public:
 	class FName                                   SpawnSocketName;                                   // 0x0220(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
