@@ -689,8 +689,8 @@ bool ImGui::IsKeyBindingDown(KeyBinding* binding)
 	if (binding->isDetermined == false)
 		return false;
 
-	if (binding->isInUse) // <-- !
-		return true;
+	if (binding->isInUse)
+		return true; // <-- !
 
 	if (binding->key == ImGuiKey_None)
 		return false;
@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.2)");
+			ImGui::Text("UETools GUI (v3.3)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -765,6 +765,9 @@ void GUI::Draw()
 			{
 				ShellExecuteA(NULL, "open", "https://github.com/Cranch-fur/UETools-GUI", NULL, NULL, SW_SHOWNORMAL);
 			}
+#ifdef _DEBUG
+			ImGui::Text("[D] | %.1f FPS (%.3f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+#endif
 
 
 			ImGui::Text(" | ");
@@ -878,10 +881,6 @@ void GUI::Draw()
 				}
 				else
 				{
-					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0 / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-					ImGui::NewLine();
-
 					if (Features::Debug::autoUpdate)
 					{
 						float updatesPerSecond = 1.0f / Features::Debug::autoUpdateDelay;
@@ -3289,20 +3288,7 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
-						switch (Features::WidgetsList::filterMode)
-						{
-							case ImGui::E_ObjectFilterMode::ClassName:
-								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
-								break;
-
-							case ImGui::E_ObjectFilterMode::ObjectName:
-								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
-								break;
-
-							case ImGui::E_ObjectFilterMode::All:
-								Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassAndObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
-								break;
-						}
+						Features::WidgetsList::Filter();
 
 						for (Unreal::UserWidget::DataStructure& widget : Features::WidgetsList::filteredWidgets) // <-- Reference!
 						{
@@ -3310,7 +3296,7 @@ void GUI::Draw()
 							{
 								ImGui::PushID(widget.objectName.c_str());
 
-								ImGui::BeginDisabled(std::strcmp(Features::ActorsList::filterBuffer, widget.objectName.c_str()) == 0);
+								ImGui::BeginDisabled(std::strcmp(Features::WidgetsList::filterBuffer, widget.objectName.c_str()) == 0);
 								if (ImGui::Button("Focus On"))
 								{
 									std::snprintf(Features::WidgetsList::filterBuffer, sizeof(Features::WidgetsList::filterBuffer), widget.objectName.c_str());
@@ -3372,6 +3358,72 @@ void GUI::Draw()
 									else
 										PlayActionSound(false);
 								}
+
+								ImGui::PopID();
+								ImGui::TreePop();
+							}
+						}
+					}
+
+					ImGui::CategorySeparator();
+
+					ImGui::SetFontTitle();
+					ImGui::Text("Objects");
+					ImGui::SetFontRegular();
+					if (ImGui::CollapsingHeader("Details##Objects"))
+					{
+						if (ImGui::Button("Update##Objects"))
+						{
+							Features::ObjectsList::Update();
+							PlayActionSound(true);
+						}
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::InputText("Search Filter##Objects", Features::ObjectsList::filterBuffer, Features::ObjectsList::filterBufferSize);
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::Checkbox("Case Sensitive##Objects", &Features::ObjectsList::filterCaseSensitive);
+						ImGui::SameLine();
+						ImGui::Spacing();
+						ImGui::SameLine();
+						ImGui::ObjectFilterModeComboBox("##Objects", &Features::ObjectsList::filterMode);
+
+						ImGui::NewLine();
+
+						Features::ObjectsList::Filter();
+
+						for (Unreal::Object::DataStructure& object : Features::ObjectsList::filteredObjects) // <-- Reference!
+						{
+							if (ImGui::TreeNode(object.objectName.c_str()))
+							{
+								ImGui::PushID(object.objectName.c_str());
+
+								ImGui::BeginDisabled(std::strcmp(Features::ObjectsList::filterBuffer, object.objectName.c_str()) == 0);
+								if (ImGui::Button("Focus On"))
+								{
+									std::snprintf(Features::ObjectsList::filterBuffer, sizeof(Features::ObjectsList::filterBuffer), object.objectName.c_str());
+									Features::ObjectsList::filterMode = ImGui::E_ObjectFilterMode::ObjectName;
+
+									PlayActionSound(true);
+								}
+								ImGui::EndDisabled();
+
+								ImGui::NewLine();
+
+								ImGui::Text("Class: %s", object.className.c_str());
+								if (ImGui::TreeNode("Class Hierarchy"))
+								{
+									for (std::string className : object.superClassesNames)
+									{
+										ImGui::Text(("- " + className).c_str());
+									}
+
+									ImGui::TreePop();
+								}
+
+								ImGui::Text("Object: %s", object.objectName.c_str());
 
 								ImGui::PopID();
 								ImGui::TreePop();
@@ -5184,62 +5236,53 @@ void Features::ActorsList::Update()
 {
 	Features::ActorsList::actors.clear();
 
-	int32_t objectsNum = SDK::UObject::GObjects->Num();
-	for (int i = 0; i < objectsNum; i++)
+	std::vector<SDK::AActor*> foundActors = Unreal::Actor::GetAll();
+	for (SDK::AActor* actor : foundActors)
 	{
-		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+		Unreal::Actor::DataStructure actorData = {};
 
-		if (objectReference == nullptr || objectReference->IsDefaultObject())
-			continue;
+		actorData.reference = actor;
 
-		if (objectReference->IsA(SDK::AActor::StaticClass()))
+		Unreal::Class::Hierarchy classHierarchy = Unreal::Class::GetClassHierarchy(actor);
+		actorData.className = classHierarchy.derivedClass->GetFullName();
+		for (SDK::UClass* superClass : classHierarchy.superClasses)
 		{
-			Unreal::Actor::DataStructure actorData = {};
+			actorData.superClassesNames.push_back(superClass->GetFullName());
+		}
 
-			SDK::AActor* actor = static_cast<SDK::AActor*>(objectReference);
-			actorData.reference = actor;
-			
-			Unreal::Class::Hierarchy classHierarchy = Unreal::Class::GetClassHierarchy(actor);
-			actorData.className = classHierarchy.derivedClass->GetFullName();
-			for (SDK::UClass* superClass : classHierarchy.superClasses)
-			{
-				actorData.superClassesNames.push_back(superClass->GetFullName());
-			}
-
-			actorData.objectName = actor->GetFullName();
+		actorData.objectName = actor->GetFullName();
 
 #ifdef ACTOR_KIND
-			actorData.kind = Unreal::Actor::GetActorKind(actor);
+		actorData.kind = Unreal::Actor::GetActorKind(actor);
 #endif
 
-			Unreal::Transform actorTransform = Unreal::Actor::GetTransform(actor);
-			actorData.location = actorTransform.location;
-			actorData.rotation = actorTransform.rotation;
-			actorData.scale = actorTransform.scale;
+		Unreal::Transform actorTransform = Unreal::Actor::GetTransform(actor);
+		actorData.location = actorTransform.location;
+		actorData.rotation = actorTransform.rotation;
+		actorData.scale = actorTransform.scale;
 
-			SDK::TArray<SDK::UActorComponent*> actorComponents = actor->K2_GetComponentsByClass(SDK::UActorComponent::StaticClass());
-			for (SDK::UActorComponent* component : actorComponents)
-			{
-				Unreal::ActorComponent::DataStructure componentData = {};
+		std::vector<SDK::UActorComponent*> foundComponents = Unreal::ActorComponent::GetAll(actor);
+		for (SDK::UActorComponent* component : foundComponents)
+		{
+			Unreal::ActorComponent::DataStructure componentData = {};
 
-				componentData.reference = component;
-				componentData.className = component->Class->GetFullName();
-				componentData.objectName = component->GetFullName();
+			componentData.reference = component;
+			componentData.className = component->Class->GetFullName();
+			componentData.objectName = component->GetFullName();
 
-				componentData.isActive = component->bIsActive;
-				componentData.autoActivate = component->bAutoActivate;
-				componentData.editorOnly = component->bIsEditorOnly;
+			componentData.isActive = component->bIsActive;
+			componentData.autoActivate = component->bAutoActivate;
+			componentData.editorOnly = component->bIsEditorOnly;
 
-				componentData.netAddressible = component->bNetAddressable;
-				componentData.replicates = component->bReplicates;
+			componentData.netAddressible = component->bNetAddressable;
+			componentData.replicates = component->bReplicates;
 
-				componentData.creationMethod = component->CreationMethod;
+			componentData.creationMethod = component->CreationMethod;
 
-				actorData.components.push_back(componentData);
-			}
-
-			Features::ActorsList::actors.push_back(actorData);
+			actorData.components.push_back(componentData);
 		}
+
+		Features::ActorsList::actors.push_back(actorData);
 	}
 }
 
@@ -5269,30 +5312,92 @@ void Features::WidgetsList::Update()
 {
 	Features::WidgetsList::widgets.clear();
 
-	int32_t objectsNum = SDK::UObject::GObjects->Num();
-	for (int i = 0; i < objectsNum; i++)
+	std::vector<SDK::UUserWidget*> foundWidgets = Unreal::UserWidget::GetAll();
+	for (SDK::UUserWidget* widget : foundWidgets)
 	{
-		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+		Unreal::UserWidget::DataStructure widgetData = {};
 
-		if (objectReference == nullptr || objectReference->IsDefaultObject())
-			continue;
+		widgetData.reference = widget;
+		widgetData.className = widget->Class->GetFullName();
+		widgetData.objectName = widget->GetFullName();
 
-		if (objectReference->IsA(SDK::UUserWidget::StaticClass()))
+		widgetData.parent = widget->GetParent();
+
+		widgetData.isInViewport = widget->IsInViewport();
+		widgetData.visibility = widget->Visibility;
+
+		Features::WidgetsList::widgets.push_back(widgetData);
+	}
+}
+
+void Features::WidgetsList::Filter()
+{
+	/* Filter User Widgets by "Search Filter" */
+	switch (Features::WidgetsList::filterMode)
+	{
+		case ImGui::E_ObjectFilterMode::ClassName:
+			Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+			break;
+
+		case ImGui::E_ObjectFilterMode::ObjectName:
+			Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+			break;
+
+		case ImGui::E_ObjectFilterMode::All:
+			Features::WidgetsList::filteredWidgets = Unreal::UserWidget::FilterByClassAndObjectName(Features::WidgetsList::widgets, Features::WidgetsList::filterBuffer, Features::WidgetsList::filterCaseSensitive, Features::WidgetsList::filterTopLevelOnly);
+			break;
+	}
+}
+
+
+
+
+void Features::ObjectsList::Update()
+{
+	Features::ObjectsList::objects.clear();
+
+	static const std::vector<SDK::TSubclassOf<SDK::UObject>> excludeClasses =
+	{
+		SDK::AActor::StaticClass(), // Actors List.
+		SDK::UActorComponent::StaticClass(), // Actors List -> Actor -> Components.
+		SDK::UUserWidget::StaticClass() // Widgets List.
+	};
+	std::vector<SDK::UObject*> foundObjects = Unreal::Object::GetAll(excludeClasses);
+	for (SDK::UObject* object : foundObjects)
+	{
+		Unreal::Object::DataStructure objectData = {};
+
+		objectData.reference = object;
+
+		Unreal::Class::Hierarchy classHierarchy = Unreal::Class::GetClassHierarchy(object);
+		objectData.className = classHierarchy.derivedClass->GetFullName();
+		for (SDK::UClass* superClass : classHierarchy.superClasses)
 		{
-			Unreal::UserWidget::DataStructure widgetData = {};
-
-			SDK::UUserWidget* widget = static_cast<SDK::UUserWidget*>(objectReference);
-			widgetData.reference = widget;
-			widgetData.className = widget->Class->GetFullName();
-			widgetData.objectName = widget->GetFullName();
-
-			widgetData.parent = widget->GetParent();
-
-			widgetData.isInViewport = widget->IsInViewport();
-			widgetData.visibility = widget->Visibility;
-
-			Features::WidgetsList::widgets.push_back(widgetData);
+			objectData.superClassesNames.push_back(superClass->GetFullName());
 		}
+
+		objectData.objectName = object->GetFullName();
+
+		Features::ObjectsList::objects.push_back(objectData);
+	}
+}
+
+void Features::ObjectsList::Filter()
+{
+	/* Filter Objects by "Search Filter" */
+	switch (Features::ObjectsList::filterMode)
+	{
+		case ImGui::E_ObjectFilterMode::ClassName:
+			Features::ObjectsList::filteredObjects = Unreal::Object::FilterByClassName(Features::ObjectsList::objects, Features::ObjectsList::filterBuffer, Features::ObjectsList::filterCaseSensitive);
+			break;
+
+		case ImGui::E_ObjectFilterMode::ObjectName:
+			Features::ObjectsList::filteredObjects = Unreal::Object::FilterByObjectName(Features::ObjectsList::objects, Features::ObjectsList::filterBuffer, Features::ObjectsList::filterCaseSensitive);
+			break;
+
+		case ImGui::E_ObjectFilterMode::All:
+			Features::ObjectsList::filteredObjects = Unreal::Object::FilterByClassAndObjectName(Features::ObjectsList::objects, Features::ObjectsList::filterBuffer, Features::ObjectsList::filterCaseSensitive);
+			break;
 	}
 }
 

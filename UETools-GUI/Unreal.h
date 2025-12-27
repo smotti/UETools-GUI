@@ -31,6 +31,17 @@ namespace Unreal
 		}
 	};
 
+	struct DataStructureBase
+	{
+		std::string className;
+		std::string objectName;
+	};
+
+	struct DataStructureBaseWithClassHierarchy : DataStructureBase
+	{
+		std::vector<std::string> superClassesNames;
+	};
+
 
 
 
@@ -39,11 +50,9 @@ namespace Unreal
 	class Console
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UConsole* reference;
-			std::string className;
-			std::string objectName;
 		};
 
 
@@ -102,11 +111,9 @@ namespace Unreal
 	class InputSettings
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UGameViewportClient* reference;
-			std::string className;
-			std::string objectName;
 		};
 
 
@@ -129,11 +136,9 @@ namespace Unreal
 	class GameViewportClient
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UGameViewportClient* reference;
-			std::string className;
-			std::string objectName;
 
 			Console::DataStructure console;
 		};
@@ -151,11 +156,9 @@ namespace Unreal
 	class Engine
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UEngine* reference;
-			std::string className;
-			std::string objectName;
 
 			GameViewportClient::DataStructure gameViewportClient;
 
@@ -188,11 +191,9 @@ namespace Unreal
 	class OnlineSession
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UOnlineSession* reference;
-			std::string className;
-			std::string objectName;
 		};
 	};
 
@@ -200,11 +201,9 @@ namespace Unreal
 	class GameInstance
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UGameInstance* reference;
-			std::string className;
-			std::string objectName;
 
 			OnlineSession::DataStructure onlineSession;
 		};
@@ -226,11 +225,9 @@ namespace Unreal
 	class GameSession
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::AGameSession* reference;
-			std::string className;
-			std::string objectName;
 
 			int32_t maxPlayers;
 			int32_t maxSpectators;
@@ -245,11 +242,9 @@ namespace Unreal
 	class GameMode
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::AGameModeBase* reference;
-			std::string className;
-			std::string objectName;
 
 			GameSession::DataStructure gameSession;
 
@@ -282,11 +277,9 @@ namespace Unreal
 	class GameState
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::AGameStateBase* reference;
-			std::string className;
-			std::string objectName;
 		};
 
 
@@ -302,11 +295,9 @@ namespace Unreal
 	class NetDriver
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UNetDriver* reference;
-			std::string className;
-			std::string objectName;
 		};
 	};
 
@@ -314,11 +305,9 @@ namespace Unreal
 	class DemoNetDriver
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UNetDriver* reference;
-			std::string className;
-			std::string objectName;
 		};
 	};
 
@@ -330,11 +319,9 @@ namespace Unreal
 	class WorldSettings
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::AWorldSettings* reference;
-			std::string className;
-			std::string objectName;
 
 			bool highPriorityLoading;
 			bool localHighPriorityLoading;
@@ -347,11 +334,9 @@ namespace Unreal
 	class Level
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::ULevel* reference;
-			std::string className;
-			std::string objectName;
 
 			bool isVisible;
 
@@ -371,11 +356,9 @@ namespace Unreal
 	class LevelStreaming
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::ULevelStreaming* reference;
-			std::string className;
-			std::string objectName;
 
 			std::string levelPath;
 			SDK::FLinearColor levelColor;
@@ -384,7 +367,7 @@ namespace Unreal
 		};
 
 
-		static std::vector<LevelStreaming::DataStructure> FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<LevelStreaming::DataStructure> FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsCollection, const std::string& filter, const bool& caseSensitive);
 
 
 #ifdef SOFT_PATH
@@ -396,11 +379,9 @@ namespace Unreal
 	class World
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UWorld* reference;
-			std::string className;
-			std::string objectName;
 
 			GameState::DataStructure gameState;
 
@@ -436,11 +417,9 @@ namespace Unreal
 	class Player
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UPlayer* reference;
-			std::string className;
-			std::string objectName;
 		};
 	};
 
@@ -448,11 +427,9 @@ namespace Unreal
 	class Pawn
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::APawn* reference;
-			std::string className;
-			std::string objectName;
 
 			SDK::FVector location;
 			SDK::FRotator rotation;
@@ -491,11 +468,9 @@ namespace Unreal
 	class CameraManager
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::APlayerCameraManager* reference;
-			std::string className;
-			std::string objectName;
 
 			SDK::FVector location;
 			SDK::FRotator rotation;
@@ -507,11 +482,9 @@ namespace Unreal
 	class CheatManager
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UCheatManager* reference;
-			std::string className;
-			std::string objectName;
 		};
 
 
@@ -567,11 +540,9 @@ namespace Unreal
 	class PlayerController
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::APlayerController* reference;
-			std::string className;
-			std::string objectName;
 
 			Player::DataStructure player;
 
@@ -639,11 +610,9 @@ namespace Unreal
 	class ActorComponent
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UActorComponent* reference;
-			std::string className;
-			std::string objectName;
 
 			bool isActive;
 			bool autoActivate;
@@ -656,12 +625,30 @@ namespace Unreal
 		};
 
 
+		/*
+		* @brief Retrieves all Actor Components that are instances of specific Actor and of the specified class.
+		* @param actorReference - Pointer to Actor to search for Actor Components within.
+		* @param componentClass - Class used as a filter when searching for Components.
+		* @return A collection of pointers to Components;
+		*		  otherwise returns an empty vector if no Components are found.
+		*/
+		static std::vector<SDK::UActorComponent*> GetAllOfClass(SDK::AActor* actorReference, const SDK::TSubclassOf<SDK::UActorComponent>& componentClass);
+
+
+		/*
+		* @brief Retrieves all Actor Components that are instances of specific Actor and of the specified class.
+		* @param actorReference - Pointer to Actor to search for Actor Components within.
+		* @return A collection of pointers to Components; otherwise returns an empty vector if no Components are found.
+		*/
+		static std::vector<SDK::UActorComponent*> GetAll(SDK::AActor* actorReference);
+
+
 		static Unreal::Transform GetTransform(SDK::USceneComponent* sceneComponentReference);
 
 
-		static std::vector<ActorComponent::DataStructure> FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
-		static std::vector<ActorComponent::DataStructure> FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
-		static std::vector<ActorComponent::DataStructure> FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive);
+		static std::vector<ActorComponent::DataStructure> FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive);
+		static std::vector<ActorComponent::DataStructure> FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive);
+		static std::vector<ActorComponent::DataStructure> FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive);
 	};
 
 
@@ -681,12 +668,9 @@ namespace Unreal
 #endif
 
 
-		struct DataStructure
+		struct DataStructure : DataStructureBaseWithClassHierarchy
 		{
 			SDK::AActor* reference;
-			std::string className;
-			std::vector<std::string> superClassesNames;
-			std::string objectName;
 
 #ifdef ACTOR_KIND
 			E_ActorKind kind;
@@ -702,23 +686,35 @@ namespace Unreal
 
 		/*
 		* @brief Retrieves all existing Actors that are default instances of the specified class.
-		* @param objectClass - Class used as a filter when searching for Actors.
+		* @param actorClass - Class used as a filter when searching for Actors.
 		* @return A collection of pointers to all matching Actors;
 		*		  otherwise returns an empty vector if no Actors are found.
 		*/
 		static std::vector<SDK::AActor*> GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass);
 		/*
 		* @brief Retrieves all existing Actors that are instances of the specified class.
-		* @param objectClass - Class used as a filter when searching for Actors.
+		* @param actorClass - Class used as a filter when searching for Actors.
 		* @return A collection of pointers to all matching Actors;
 		*		  otherwise returns an empty vector if no Actors are found.
 		*/
 		static std::vector<SDK::AActor*> GetAllOfClass(const SDK::TSubclassOf<SDK::AActor>& actorClass);
 
 
-		static std::vector<Actor::DataStructure> FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
-		static std::vector<Actor::DataStructure> FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
-		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
+		/*
+		* @brief Retrieves all existing Actors that are default instances.
+		* @return A collection of pointers to Actors; otherwise returns an empty vector if no Actors are found.
+		*/
+		static std::vector<SDK::AActor*> GetAllDefault();
+		/*
+		* @brief Retrieves all existing Actors.
+		* @return A collection of pointers to Actors; otherwise returns an empty vector if no Actors are found.
+		*/
+		static std::vector<SDK::AActor*> GetAll();
+
+
+		static std::vector<Actor::DataStructure> FilterByClassName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
+		static std::vector<Actor::DataStructure> FilterByObjectName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
+		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
 
 
 		static void SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents = false);
@@ -747,11 +743,9 @@ namespace Unreal
 	class UserWidget
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBase
 		{
 			SDK::UUserWidget* reference;
-			std::string className;
-			std::string objectName;
 
 			SDK::UPanelWidget* parent;
 
@@ -760,12 +754,25 @@ namespace Unreal
 		};
 
 
+		/*
+		* @brief Retrieves all existing User Widgets that are instances of the specified class.
+		* @param widgetClass - Class used as a filter when searching for Widgets.
+		* @return A collection of pointers to User Widgets;
+		*		  otherwise returns an empty vector if no Widgets are found.
+		*/
 		static std::vector<SDK::UUserWidget*> GetAllOfClass(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
 
 
-		static std::vector<UserWidget::DataStructure> FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
-		static std::vector<UserWidget::DataStructure> FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
-		static std::vector<UserWidget::DataStructure> FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
+		/*
+		* @brief Retrieves all existing User Widgets.
+		* @return A collection of pointers to User Widgets; otherwise returns an empty vector if no Widgets are found.
+		*/
+		static std::vector<SDK::UUserWidget*> GetAll();
+
+
+		static std::vector<UserWidget::DataStructure> FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
+		static std::vector<UserWidget::DataStructure> FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
+		static std::vector<UserWidget::DataStructure> FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly);
 
 
 		static SDK::UUserWidget* Construct(const SDK::TSubclassOf<SDK::UUserWidget>& widgetClass);
@@ -784,28 +791,51 @@ namespace Unreal
 	class Object
 	{
 	public:
-		struct DataStructure
+		struct DataStructure : DataStructureBaseWithClassHierarchy
 		{
 			SDK::UObject* reference;
-			std::string className;
-			std::string objectName;
 		};
 
 
 		/*
 		* @brief Retrieves all existing Objects that are default instances of the specified class.
 		* @param objectClass - Class used as a filter when searching for Objects.
+		* @param excludeClasses - Collection of Classes to exclude from matching.
 		* @return A collection of pointers to all matching Objects;
 		*		  otherwise returns an empty vector if no Objects are found.
 		*/
+		static std::vector<SDK::UObject*> GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass, const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses);
 		static std::vector<SDK::UObject*> GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass);
 		/*
 		* @brief Retrieves all existing Objects that are instances of the specified class.
 		* @param objectClass - Class used as a filter when searching for Objects.
+		* @param excludeClasses - Collection of Classes to exclude from matching.
 		* @return A collection of pointers to all matching Objects;
 		*		  otherwise returns an empty vector if no Objects are found.
 		*/
+		static std::vector<SDK::UObject*> GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass, const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses);
 		static std::vector<SDK::UObject*> GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass);
+
+
+		/*
+		* @brief Retrieves all existing Objects that are default instances.
+		* @param excludeClasses - Collection of Classes to exclude from matching.
+		* @return A collection of pointers; otherwise returns an empty vector if no Objects are found.
+		*/
+		static std::vector<SDK::UObject*> GetAllDefault(const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses);
+		static std::vector<SDK::UObject*> GetAllDefault();
+		/*
+		* @brief Retrieves all existing Objects.
+		* @param excludeClasses - Collection of Classes to exclude from matching.
+		* @return A collection of pointers; otherwise returns an empty vector if no Objects are found.
+		*/
+		static std::vector<SDK::UObject*> GetAll(const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses);
+		static std::vector<SDK::UObject*> GetAll();
+
+
+		static std::vector<Object::DataStructure> FilterByClassName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive);
+		static std::vector<Object::DataStructure> FilterByObjectName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive);
+		static std::vector<Object::DataStructure> FilterByClassAndObjectName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive);
 
 
 #ifdef SOFT_PATH

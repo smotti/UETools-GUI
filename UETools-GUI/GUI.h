@@ -189,7 +189,7 @@ namespace ImGui
 	static void MenuSpacer()
 	{
 		static const char* menuSpacer = "                                                                                               ";
-		ImGui::TextUnformatted(menuSpacer, menuSpacer + 96);
+		ImGui::TextUnformatted(menuSpacer, menuSpacer + 95);
 	}
 };
 
@@ -420,6 +420,47 @@ namespace Features
 
 
 
+	class WidgetsList
+	{
+	public:
+		static inline const size_t filterBufferSize = 255;
+		static inline char filterBuffer[filterBufferSize] = {};
+		static inline bool filterCaseSensitive = true;
+		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
+		static inline bool filterTopLevelOnly = true;
+
+		static inline std::vector<Unreal::UserWidget::DataStructure> widgets;
+		static inline std::vector<Unreal::UserWidget::DataStructure> filteredWidgets;
+
+		static inline std::vector<std::pair<SDK::UUserWidget*, SDK::ESlateVisibility>> storedWidgetsVisibility;
+
+
+		static void Update();
+		static void Filter();
+	};
+
+
+
+
+	class ObjectsList
+	{
+	public:
+		static inline const size_t filterBufferSize = 255;
+		static inline char filterBuffer[filterBufferSize] = {};
+		static inline bool filterCaseSensitive = true;
+		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
+
+		static inline std::vector<Unreal::Object::DataStructure> objects;
+		static inline std::vector<Unreal::Object::DataStructure> filteredObjects;
+
+
+		static void Update();
+		static void Filter();
+	};
+
+
+
+
 #ifdef ACTOR_TRACE
 	class ActorTrace
 	{
@@ -525,27 +566,6 @@ namespace Features
 		static inline int32_t zOrder = 0;
 	};
 #endif
-
-
-
-
-	class WidgetsList
-	{
-	public:
-		static inline const size_t filterBufferSize = 255;
-		static inline char filterBuffer[filterBufferSize] = {};
-		static inline bool filterCaseSensitive = true;
-		static inline ImGui::E_ObjectFilterMode filterMode = ImGui::E_ObjectFilterMode::All;
-		static inline bool filterTopLevelOnly = true;
-
-		static inline std::vector<Unreal::UserWidget::DataStructure> widgets;
-		static inline std::vector<Unreal::UserWidget::DataStructure> filteredWidgets;
-
-		static inline std::vector<std::pair<SDK::UUserWidget*, SDK::ESlateVisibility>> storedWidgetsVisibility;
-
-
-		static void Update();
-	};
 
 
 

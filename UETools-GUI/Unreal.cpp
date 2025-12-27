@@ -262,13 +262,13 @@ bool Unreal::Level::CreateLevelSequence(const SDK::FString& levelSequencePath, c
 
 
 
-std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::LevelStreaming::DataStructure> Unreal::LevelStreaming::FilterByLevelPath(const std::vector<LevelStreaming::DataStructure>& levelStreamingsCollection, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<LevelStreaming::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Level Streamings by "Search Filter" */
-	for (Unreal::LevelStreaming::DataStructure levelStreaming : levelStreamingsArray)
+	for (Unreal::LevelStreaming::DataStructure levelStreaming : levelStreamingsCollection)
 	{
 		/* "Search Filter" is empty - Actor considered a match automatically. */
 		bool matchFilters = filterLength == 0;
@@ -693,6 +693,33 @@ bool Unreal::Character::Ghost(const int32_t& playerIndex)
 
 
 
+std::vector<SDK::UActorComponent*> Unreal::ActorComponent::GetAllOfClass(SDK::AActor* actorReference, const SDK::TSubclassOf<SDK::UActorComponent>& componentClass)
+{
+	std::vector<SDK::UActorComponent*> outCollection;
+
+	if (actorReference == nullptr)
+		return outCollection;
+
+	SDK::TArray<SDK::UActorComponent*> foundComponents = actorReference->K2_GetComponentsByClass(SDK::UActorComponent::StaticClass());
+	for (SDK::UActorComponent* actorComponent : foundComponents)
+	{
+		if (actorComponent == nullptr)
+			continue;
+
+		if (actorComponent->IsA(componentClass))
+			outCollection.push_back(actorComponent);
+	}
+
+	return outCollection;
+}
+
+
+std::vector<SDK::UActorComponent*> Unreal::ActorComponent::GetAll(SDK::AActor* actorReference)
+{
+	return GetAllOfClass(actorReference, SDK::UActorComponent::StaticClass());
+}
+
+
 Unreal::Transform Unreal::ActorComponent::GetTransform(SDK::USceneComponent* sceneComponentReference)
 {
 	if (sceneComponentReference == nullptr)
@@ -702,13 +729,13 @@ Unreal::Transform Unreal::ActorComponent::GetTransform(SDK::USceneComponent* sce
 }
 
 
-std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<ActorComponent::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Components by "Search Filter" */
-	for (ActorComponent::DataStructure component : componentsArray)
+	for (ActorComponent::DataStructure component : componentsCollection)
 	{
 		/* "Search Filter" is empty - Component considered a match automatically. */
 		bool matchFilters = filterLength == 0;
@@ -731,13 +758,13 @@ std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::Filte
 	return outCollection;
 }
 
-std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByObjectName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<ActorComponent::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Components by "Search Filter" */
-	for (ActorComponent::DataStructure component : componentsArray)
+	for (ActorComponent::DataStructure component : componentsCollection)
 	{
 		/* "Search Filter" is empty - Component considered a match automatically. */
 		bool matchFilters = filterLength == 0;
@@ -760,13 +787,13 @@ std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::Filte
 	return outCollection;
 }
 
-std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsArray, const std::string& filter, const bool& caseSensitive)
+std::vector<Unreal::ActorComponent::DataStructure> Unreal::ActorComponent::FilterByClassAndObjectName(const std::vector<ActorComponent::DataStructure>& componentsCollection, const std::string& filter, const bool& caseSensitive)
 {
 	std::vector<ActorComponent::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Components by "Search Filter" */
-	for (ActorComponent::DataStructure component : componentsArray)
+	for (ActorComponent::DataStructure component : componentsCollection)
 	{
 		/* "Search Filter" is empty - Component considered a match automatically. */
 		bool matchFilters = filterLength == 0;
@@ -863,7 +890,17 @@ std::vector<SDK::AActor*> Unreal::Actor::GetAllOfClass(const SDK::TSubclassOf<SD
 }
 
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
+std::vector<SDK::AActor*> Unreal::Actor::GetAllDefault()
+{
+	return GetAllDefaultOfClass(SDK::AActor::StaticClass());
+}
+std::vector<SDK::AActor*> Unreal::Actor::GetAll()
+{
+	return GetAllOfClass(SDK::AActor::StaticClass());
+}
+
+
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
@@ -874,7 +911,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const
 		playerLocation = Unreal::PlayerController::GetLocation(0);
 
 	/* Filter Actors by "Search Filter" */
-	for (Unreal::Actor::DataStructure actor : actorsArray)
+	for (Unreal::Actor::DataStructure actor : actorsCollection)
 	{
 		if (filterByDistance)
 		{
@@ -918,7 +955,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const
 	return outCollection;
 }
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
@@ -929,7 +966,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 		playerLocation = Unreal::PlayerController::GetLocation(0);
 
 	/* Filter Actors by "Search Filter" */
-	for (Unreal::Actor::DataStructure actor : actorsArray)
+	for (Unreal::Actor::DataStructure actor : actorsCollection)
 	{
 		if (filterByDistance)
 		{
@@ -958,7 +995,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 	return outCollection;
 }
 
-std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsArray, const std::string& filter, const bool& caseSensitive, const float& inDistance)
+std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance)
 {
 	std::vector<Actor::DataStructure> outCollection;
 	size_t filterLength = filter.length();
@@ -969,7 +1006,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectN
 		playerLocation = Unreal::PlayerController::GetLocation(0);
 
 	/* Filter Actors by "Search Filter" */
-	for (Unreal::Actor::DataStructure actor : actorsArray)
+	for (Unreal::Actor::DataStructure actor : actorsCollection)
 	{
 		if (filterByDistance)
 		{
@@ -1186,13 +1223,19 @@ std::vector<SDK::UUserWidget*> Unreal::UserWidget::GetAllOfClass(const SDK::TSub
 }
 
 
-std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+std::vector<SDK::UUserWidget*> Unreal::UserWidget::GetAll()
+{
+	return GetAllOfClass(SDK::UUserWidget::StaticClass());
+}
+
+
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
 {
 	std::vector<UserWidget::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Widgets by "Search Filter" */
-	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	for (Unreal::UserWidget::DataStructure widget : widgetsCollection)
 	{
 		if (topLevelOnly && widget.isInViewport == false)
 			continue;
@@ -1218,13 +1261,13 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClass
 	return outCollection;
 }
 
-std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjectName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
 {
 	std::vector<UserWidget::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Widgets by "Search Filter" */
-	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	for (Unreal::UserWidget::DataStructure widget : widgetsCollection)
 	{
 		if (topLevelOnly && widget.isInViewport == false)
 			continue;
@@ -1250,13 +1293,13 @@ std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByObjec
 	return outCollection;
 }
 
-std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsArray, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
+std::vector<Unreal::UserWidget::DataStructure> Unreal::UserWidget::FilterByClassAndObjectName(const std::vector<UserWidget::DataStructure>& widgetsCollection, const std::string& filter, const bool& caseSensitive, const bool& topLevelOnly)
 {
 	std::vector<UserWidget::DataStructure> outCollection;
 	size_t filterLength = filter.length();
 
 	/* Filter Widgets by "Search Filter" */
-	for (Unreal::UserWidget::DataStructure widget : widgetsArray)
+	for (Unreal::UserWidget::DataStructure widget : widgetsCollection)
 	{
 		if (topLevelOnly && widget.isInViewport == false)
 			continue;
@@ -1317,7 +1360,7 @@ SDK::UUserWidget* Unreal::UserWidget::SoftConstruct(const SDK::FString& widgetPa
 
 
 
-std::vector<SDK::UObject*> Unreal::Object::GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass)
+std::vector<SDK::UObject*> Unreal::Object::GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass, const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses)
 {
 	std::vector<SDK::UObject*> outCollection;
 
@@ -1329,13 +1372,34 @@ std::vector<SDK::UObject*> Unreal::Object::GetAllDefaultOfClass(const SDK::TSubc
 		if (objectReference == nullptr || objectReference->IsDefaultObject() == false)
 			continue;
 
+		if (excludeClasses.size() > 0)
+		{
+			bool shouldBeExcluded = false;
+			for (SDK::TSubclassOf<SDK::UObject> subClass : excludeClasses)
+			{
+				if (objectReference->IsA(subClass))
+				{
+					shouldBeExcluded = true;
+					break;
+				}
+			}
+
+			if (shouldBeExcluded)
+				continue;
+		}
+
 		if (objectReference->IsA(objectClass))
 			outCollection.push_back(objectReference);
 	}
 
 	return outCollection;
 }
-std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass)
+std::vector<SDK::UObject*> Unreal::Object::GetAllDefaultOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass)
+{
+	static const std::vector<SDK::TSubclassOf<SDK::UObject>> excludeClasses = {};
+	return GetAllDefaultOfClass(objectClass, excludeClasses);
+}
+std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass, const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses)
 {
 	std::vector<SDK::UObject*> outCollection;
 
@@ -1347,8 +1411,226 @@ std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<
 		if (objectReference == nullptr || objectReference->IsDefaultObject())
 			continue;
 
+		if (excludeClasses.size() > 0)
+		{
+			bool shouldBeExcluded = false;
+			for (SDK::TSubclassOf<SDK::UObject> subClass : excludeClasses)
+			{
+				if (objectReference->IsA(subClass))
+				{
+					shouldBeExcluded = true;
+					break;
+				}
+			}
+
+			if (shouldBeExcluded)
+				continue;
+		}
+
 		if (objectReference->IsA(objectClass))
 			outCollection.push_back(objectReference);
+	}
+
+	return outCollection;
+}
+std::vector<SDK::UObject*> Unreal::Object::GetAllOfClass(const SDK::TSubclassOf<SDK::UObject>& objectClass)
+{
+	static const std::vector<SDK::TSubclassOf<SDK::UObject>> excludeClasses = {};
+	return GetAllOfClass(objectClass, excludeClasses);
+}
+
+
+std::vector<SDK::UObject*> Unreal::Object::GetAllDefault(const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses)
+{
+	std::vector<SDK::UObject*> outCollection;
+
+	int32_t objectsNum = SDK::UObject::GObjects->Num();
+	for (int i = 0; i < objectsNum; i++)
+	{
+		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+
+		if (objectReference == nullptr || objectReference->IsDefaultObject() == false)
+			continue;
+
+		if (excludeClasses.size() > 0)
+		{
+			bool shouldBeExcluded = false;
+			for (SDK::TSubclassOf<SDK::UObject> subClass : excludeClasses)
+			{
+				if (objectReference->IsA(subClass))
+				{
+					shouldBeExcluded = true;
+					break;
+				}
+			}
+
+			if (shouldBeExcluded)
+				continue;
+		}
+
+		outCollection.push_back(objectReference);
+	}
+
+	return outCollection;
+}
+std::vector<SDK::UObject*> Unreal::Object::GetAllDefault()
+{
+	static const std::vector<SDK::TSubclassOf<SDK::UObject>> excludeClasses = {};
+	return GetAllDefault(excludeClasses);
+}
+std::vector<SDK::UObject*> Unreal::Object::GetAll(const std::vector<SDK::TSubclassOf<SDK::UObject>>& excludeClasses)
+{
+	std::vector<SDK::UObject*> outCollection;
+
+	int32_t objectsNum = SDK::UObject::GObjects->Num();
+	for (int i = 0; i < objectsNum; i++)
+	{
+		SDK::UObject* objectReference = SDK::UObject::GObjects->GetByIndex(i);
+
+		if (objectReference == nullptr || objectReference->IsDefaultObject())
+			continue;
+
+		if (excludeClasses.size() > 0)
+		{
+			bool shouldBeExcluded = false;
+			for (SDK::TSubclassOf<SDK::UObject> subClass : excludeClasses)
+			{
+				if (objectReference->IsA(subClass))
+				{
+					shouldBeExcluded = true;
+					break;
+				}
+			}
+
+			if (shouldBeExcluded)
+				continue;
+		}
+
+		outCollection.push_back(objectReference);
+	}
+
+	return outCollection;
+}
+std::vector<SDK::UObject*> Unreal::Object::GetAll()
+{
+	static const std::vector<SDK::TSubclassOf<SDK::UObject>> excludeClasses = {};
+	return GetAll(excludeClasses);
+}
+
+
+std::vector<Unreal::Object::DataStructure> Unreal::Object::FilterByClassName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Object::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Objects by "Search Filter" */
+	for (Unreal::Object::DataStructure object : objectsCollection)
+	{
+		/* "Search Filter" is empty - Object considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+			{
+				bool inClass = object.className.find(filter) != std::string::npos;
+				bool inSuperClass = std::any_of(object.superClassesNames.begin(), object.superClassesNames.end(), [&](const std::string& className)
+					{
+						return className.find(filter) != std::string::npos;
+					});
+
+				matchFilters = inClass || inSuperClass;
+			}
+
+			else
+			{
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(object.className).find(filterLowerCase) != std::string::npos;
+				bool inSuperClass = std::any_of(object.superClassesNames.begin(), object.superClassesNames.end(), [&](const std::string& className)
+					{
+						return Utilities::String::ToLowerCase(className).find(filterLowerCase) != std::string::npos;
+					});
+
+				matchFilters = inClass || inSuperClass;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(object); // Object is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+std::vector<Unreal::Object::DataStructure> Unreal::Object::FilterByObjectName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Object::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Objects by "Search Filter" */
+	for (Object::DataStructure object : objectsCollection)
+	{
+		/* "Search Filter" is empty - Object considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+				matchFilters = object.objectName.find(filter) != std::string::npos;
+			else
+			{
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				matchFilters = Utilities::String::ToLowerCase(object.objectName).find(filterLowerCase) != std::string::npos;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(object); // Object is good to go, can be considered "filtered".
+	}
+
+	return outCollection;
+}
+
+std::vector<Unreal::Object::DataStructure> Unreal::Object::FilterByClassAndObjectName(const std::vector<Object::DataStructure>& objectsCollection, const std::string& filter, const bool& caseSensitive)
+{
+	std::vector<Object::DataStructure> outCollection;
+	size_t filterLength = filter.length();
+
+	/* Filter Objects by "Search Filter" */
+	for (Unreal::Object::DataStructure object : objectsCollection)
+	{
+		/* "Search Filter" is empty - Object considered a match automatically. */
+		bool matchFilters = filterLength == 0;
+
+		if (matchFilters == false)
+		{
+			if (caseSensitive)
+			{
+				bool inClass = object.className.find(filter) != std::string::npos;
+				bool inSuperClass = std::any_of(object.superClassesNames.begin(), object.superClassesNames.end(), [&](const std::string& className)
+					{
+						return className.find(filter) != std::string::npos;
+					});
+				bool inObject = object.objectName.find(filter) != std::string::npos;
+
+				matchFilters = inClass || inSuperClass || inObject;
+			}
+			else
+			{
+				std::string filterLowerCase = Utilities::String::ToLowerCase(filter);
+				bool inClass = Utilities::String::ToLowerCase(object.className).find(filterLowerCase) != std::string::npos;
+				bool inSuperClass = std::any_of(object.superClassesNames.begin(), object.superClassesNames.end(), [&](const std::string& className)
+					{
+						return Utilities::String::ToLowerCase(className).find(filterLowerCase) != std::string::npos;
+					});
+				bool inObject = Utilities::String::ToLowerCase(object.objectName).find(filterLowerCase) != std::string::npos;
+
+				matchFilters = inClass || inSuperClass || inObject;
+			}
+		}
+
+		if (matchFilters)
+			outCollection.push_back(object); // Object is good to go, can be considered "filtered".
 	}
 
 	return outCollection;
