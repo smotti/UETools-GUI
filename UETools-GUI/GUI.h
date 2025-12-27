@@ -227,6 +227,37 @@ public:
 	static bool StartDirectWindowThread();
 
 
+#ifdef _DEBUG
+private:
+	static inline int8_t menuDebugLevel = 0;
+public:
+	static int8_t GetMenuDebugLevel()
+	{
+		return menuDebugLevel;
+	}
+	static bool GetIsMenuDebugEnabled()
+	{
+		return menuDebugLevel > 0;
+	}
+	static bool GetIsMenuDebugDetailed()
+	{
+		return menuDebugLevel == 2;
+	}
+	static void SetMenuDebugLevel(const int8_t& newMenuDebugLevel)
+	{
+		menuDebugLevel = newMenuDebugLevel;
+	}
+	static void SwitchMenuDebugLevel()
+	{
+		int8_t newMenuDebugLevel = menuDebugLevel + 1;
+		if (newMenuDebugLevel > 2)
+			menuDebugLevel = 0;
+		else
+			menuDebugLevel = newMenuDebugLevel;
+	}
+#endif
+
+
 
 
 public:

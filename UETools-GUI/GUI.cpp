@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.3)");
+			ImGui::Text("UETools GUI (v3.4)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -766,7 +766,36 @@ void GUI::Draw()
 				ShellExecuteA(NULL, "open", "https://github.com/Cranch-fur/UETools-GUI", NULL, NULL, SW_SHOWNORMAL);
 			}
 #ifdef _DEBUG
-			ImGui::Text("[D] | %.1f FPS (%.3f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+			ImGui::Text(GetIsMenuDebugEnabled() ? "[D]" : "[%d]", GetMenuDebugLevel());
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+			}
+			if (ImGui::IsItemClicked())
+			{
+				SwitchMenuDebugLevel();
+			}
+			if (GetIsMenuDebugEnabled())
+			{
+				ImGui::ShowDemoWindow();
+
+				if (GetIsMenuDebugDetailed())
+				{
+					ImGui::ShowDebugLogWindow();
+					ImGui::ShowIDStackToolWindow();
+				}
+			}
+
+			ImGui::Text(" | ");
+			ImGui::Text("%.1f FPS (%.3f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+				ImGui::BeginTooltip();
+				ImGui::Text("%d visible windows", ImGui::GetIO().MetricsRenderWindows);
+				ImGui::Text("%d vertices, %d indices (%d triangles)", ImGui::GetIO().MetricsRenderVertices, ImGui::GetIO().MetricsRenderIndices, ImGui::GetIO().MetricsRenderIndices / 3);
+				ImGui::EndTooltip();
+			}
 #endif
 
 
@@ -774,92 +803,88 @@ void GUI::Draw()
 
 
 #ifdef _DEBUG
-			ImGui::ShowDebugLogWindow();
-			ImGui::ShowDemoWindow();
-			ImGui::ShowAboutWindow();
-
-
-
-
-			if (ImGui::BeginMenu("Config Test"))
+			if (GetIsMenuDebugEnabled())
 			{
-				const bool default_bool = false;
-				const  int default_int = -1;
-				const float default_float = -1.0f;
-				const SDK::FVector default_fvector = SDK::FVector(-1.0f, -1.0f, -1.0f);
-				const std::string default_string = "ABCDEFG";
-
-				static bool test_bool = default_bool;
-				static int test_int = default_int;
-				static float test_float = default_float;
-				static SDK::FVector test_fvector = default_fvector;
-				static std::string test_string = default_string;
-
-				static std::string config_absolutepath = "NONE";
-				static bool config_directoryexist = false;
-				static bool config_fileexist = false;
-
-				static bool config_savetofile = true;
-				ImGui::Checkbox("Save Config To File", &config_savetofile);
-
-				static bool config_forceloadfail = false;
-				ImGui::Checkbox("Config Force Failed To Load", &config_forceloadfail);
-
-				if (ImGui::Button("Load Config & Update Displayed Data"))
+				if (ImGui::BeginMenu("Config Test"))
 				{
-					ConfigInstance testConfig("config_test.cfg");
-					if (testConfig.Load() == false || config_forceloadfail)
-					{
-						testConfig.Set("Bool", true);
-						testConfig.Set("Int", 100);
-						testConfig.Set("Float", 376.814f);
-						testConfig.Set("FVector", SDK::FVector(54112.67f, 91433.12f, 86.09f));
-						testConfig.Set("String", "Hello, world!");
+					const bool default_bool = false;
+					const  int default_int = -1;
+					const float default_float = -1.0f;
+					const SDK::FVector default_fvector = SDK::FVector(-1.0f, -1.0f, -1.0f);
+					const std::string default_string = "ABCDEFG";
 
-						if(config_savetofile)
-							testConfig.Save();
+					static bool test_bool = default_bool;
+					static int test_int = default_int;
+					static float test_float = default_float;
+					static SDK::FVector test_fvector = default_fvector;
+					static std::string test_string = default_string;
+
+					static std::string config_absolutepath = "NONE";
+					static bool config_directoryexist = false;
+					static bool config_fileexist = false;
+
+					static bool config_savetofile = true;
+					ImGui::Checkbox("Save Config To File", &config_savetofile);
+
+					static bool config_forceloadfail = false;
+					ImGui::Checkbox("Config Force Failed To Load", &config_forceloadfail);
+
+					if (ImGui::Button("Load Config & Update Displayed Data"))
+					{
+						ConfigInstance testConfig("config_test.cfg");
+						if (testConfig.Load() == false || config_forceloadfail)
+						{
+							testConfig.Set("Bool", true);
+							testConfig.Set("Int", 100);
+							testConfig.Set("Float", 376.814f);
+							testConfig.Set("FVector", SDK::FVector(54112.67f, 91433.12f, 86.09f));
+							testConfig.Set("String", "Hello, world!");
+
+							if (config_savetofile)
+								testConfig.Save();
+						}
+
+						test_bool = testConfig.Get<bool>("Bool").value_or(default_bool);
+						test_int = testConfig.Get<int>("Int").value_or(default_int);
+						test_float = testConfig.Get<float>("Float").value_or(default_float);
+						test_fvector = testConfig.Get<SDK::FVector>("FVector").value_or(default_fvector);
+						test_string = testConfig.Get<std::string>("String").value_or(default_string);
+						config_absolutepath = testConfig.GetAbsoluteFilePath();
+						config_directoryexist = testConfig.DoesFileDirectoryExist();
+						config_fileexist = testConfig.DoesFileExist();
+
+						PlayActionSound(true);
 					}
 
-					test_bool = testConfig.Get<bool>("Bool").value_or(default_bool);
-					test_int = testConfig.Get<int>("Int").value_or(default_int);
-					test_float = testConfig.Get<float>("Float").value_or(default_float);
-					test_fvector = testConfig.Get<SDK::FVector>("FVector").value_or(default_fvector);
-					test_string = testConfig.Get<std::string>("String").value_or(default_string);
-					config_absolutepath = testConfig.GetAbsoluteFilePath();
-					config_directoryexist = testConfig.DoesFileDirectoryExist();
-					config_fileexist = testConfig.DoesFileExist();
+					ImGui::NewLine();
 
-					PlayActionSound(true);
-				}
+					ImGui::TextBoolColored("Bool: ", test_bool);
+					ImGui::TextIntColored("Int: ", test_int);
+					ImGui::TextFloatColored("Float: ", test_float);
+					ImGui::TextVectorColored("FVector: ", test_fvector);
+					ImGui::Text("String: ");
+					ImGui::SameLine();
+					ImGui::Text(test_string.c_str());
+					ImGui::Text("Config Path: ");
+					ImGui::SameLine();
+					ImGui::Text(config_absolutepath.c_str());
+					ImGui::TextBoolColored("Config Directory Exist: ", config_directoryexist);
+					ImGui::TextBoolColored("Config File Exist: ", config_fileexist);
 
-				ImGui::NewLine();
+					ImGui::NewLine();
 
-				ImGui::TextBoolColored("Bool: ", test_bool);
-				ImGui::TextIntColored("Int: ", test_int);
-				ImGui::TextFloatColored("Float: ", test_float);
-				ImGui::TextVectorColored("FVector: ", test_fvector);
-				ImGui::Text("String: ");
-				ImGui::SameLine();
-				ImGui::Text(test_string.c_str());
-				ImGui::Text("Config Path: ");
-				ImGui::SameLine();
-				ImGui::Text(config_absolutepath.c_str());
-				ImGui::TextBoolColored("Config Directory Exist: ", config_directoryexist);
-				ImGui::TextBoolColored("Config File Exist: ", config_fileexist);
-
-				ImGui::NewLine();
-
-				if (ImGui::Button("Open Config"))
-				{
-					if (config_fileexist == false)
-						PlayActionSound(false);
-					else
+					if (ImGui::Button("Open Config"))
 					{
-						PlayActionSound(reinterpret_cast<std::intptr_t>(ShellExecuteA(nullptr, "open", config_absolutepath.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) > 32);
+						if (config_fileexist == false)
+							PlayActionSound(false);
+						else
+						{
+							PlayActionSound(reinterpret_cast<std::intptr_t>(ShellExecuteA(nullptr, "open", config_absolutepath.c_str(), nullptr, nullptr, SW_SHOWNORMAL)) > 32);
+						}
 					}
-				}
 
-				ImGui::EndMenu();
+					ImGui::EndMenu();
+				}
 			}
 #endif
 
