@@ -431,9 +431,7 @@ namespace Unreal
 		{
 			SDK::APawn* reference;
 
-			SDK::FVector location;
-			SDK::FRotator rotation;
-			SDK::FVector scale;
+			Transform transform;
 
 			bool isControlled;
 			bool isPawnControlled;
@@ -472,9 +470,7 @@ namespace Unreal
 		{
 			SDK::APlayerCameraManager* reference;
 
-			SDK::FVector location;
-			SDK::FRotator rotation;
-			SDK::FVector scale;
+			Transform transform;
 		};
 	};
 
@@ -676,9 +672,7 @@ namespace Unreal
 			E_ActorKind kind;
 #endif
 
-			SDK::FVector location;
-			SDK::FRotator rotation;
-			SDK::FVector scale;
+			Transform transform;
 
 			std::vector<ActorComponent::DataStructure> components;
 		};

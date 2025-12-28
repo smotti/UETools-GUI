@@ -915,7 +915,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassName(const
 	{
 		if (filterByDistance)
 		{
-			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+			if (Math::Vector_Distance(actor.transform.location, playerLocation) > inDistance)
 				continue;
 		}
 
@@ -970,7 +970,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByObjectName(cons
 	{
 		if (filterByDistance)
 		{
-			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+			if (Math::Vector_Distance(actor.transform.location, playerLocation) > inDistance)
 				continue;
 		}
 
@@ -1010,7 +1010,7 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectN
 	{
 		if (filterByDistance)
 		{
-			if (Math::Vector_Distance(actor.location, playerLocation) > inDistance)
+			if (Math::Vector_Distance(actor.transform.location, playerLocation) > inDistance)
 				continue;
 		}
 

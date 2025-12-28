@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.4)");
+			ImGui::Text("UETools GUI (v3.4b)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -766,7 +766,11 @@ void GUI::Draw()
 				ShellExecuteA(NULL, "open", "https://github.com/Cranch-fur/UETools-GUI", NULL, NULL, SW_SHOWNORMAL);
 			}
 #ifdef _DEBUG
-			ImGui::Text(GetIsMenuDebugEnabled() ? "[D]" : "[%d]", GetMenuDebugLevel());
+			if (GetIsMenuDebugEnabled())
+				ImGui::Text("[%d]", GetMenuDebugLevel());
+			else 
+				ImGui::Text("[D]");
+
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -775,6 +779,7 @@ void GUI::Draw()
 			{
 				SwitchMenuDebugLevel();
 			}
+
 			if (GetIsMenuDebugEnabled())
 			{
 				ImGui::ShowDemoWindow();
@@ -1430,9 +1435,9 @@ void GUI::Draw()
 								{
 									ImGui::Text("Pawn Class: %s", Features::Debug::playerController.pawn.className.c_str());
 									ImGui::Text("Pawn Object: %s", Features::Debug::playerController.pawn.objectName.c_str());
-									ImGui::TextVectorColored("Location:", Features::Debug::playerController.pawn.location);
-									ImGui::TextRotatorColored("Rotation:", Features::Debug::playerController.pawn.rotation);
-									ImGui::TextVectorColored("Scale:", Features::Debug::playerController.pawn.scale);
+									ImGui::TextVectorColored("Location:", Features::Debug::playerController.pawn.transform.location);
+									ImGui::TextRotatorColored("Rotation:", Features::Debug::playerController.pawn.transform.rotation);
+									ImGui::TextVectorColored("Scale:", Features::Debug::playerController.pawn.transform.scale);
 
 									ImGui::NewLine();
 
@@ -1457,9 +1462,9 @@ void GUI::Draw()
 								{
 									ImGui::Text("Camera Manager Class: %s", Features::Debug::playerController.cameraManager.className.c_str());
 									ImGui::Text("Camera Manager Object: %s", Features::Debug::playerController.cameraManager.objectName.c_str());
-									ImGui::TextVectorColored("Location:", Features::Debug::playerController.cameraManager.location);
-									ImGui::TextRotatorColored("Rotation:", Features::Debug::playerController.cameraManager.rotation);
-									ImGui::TextVectorColored("Scale:", Features::Debug::playerController.cameraManager.scale);
+									ImGui::TextVectorColored("Location:", Features::Debug::playerController.cameraManager.transform.location);
+									ImGui::TextRotatorColored("Rotation:", Features::Debug::playerController.cameraManager.transform.rotation);
+									ImGui::TextVectorColored("Scale:", Features::Debug::playerController.cameraManager.transform.scale);
 
 									ImGui::TreePop();
 								}
@@ -2076,13 +2081,13 @@ void GUI::Draw()
 
 								ImGui::NewLine();
 
-								ImGui::TextVectorColored("Location:", actor.location);
+								ImGui::TextVectorColored("Location:", actor.transform.location);
 								static float customLocation[3];
 								if (ImGui::Button("Copy##Location"))
 								{
-									customLocation[0] = actor.location.X;
-									customLocation[1] = actor.location.Y;
-									customLocation[2] = actor.location.Z;
+									customLocation[0] = actor.transform.location.X;
+									customLocation[1] = actor.transform.location.Y;
+									customLocation[2] = actor.transform.location.Z;
 									PlayActionSound(true);
 								}
 								ImGui::SameLine();
@@ -2101,13 +2106,13 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
-								ImGui::TextRotatorColored("Rotation:", actor.rotation);
+								ImGui::TextRotatorColored("Rotation:", actor.transform.rotation);
 								static float customRotation[3];
 								if (ImGui::Button("Copy##Rotation"))
 								{
-									customRotation[0] = actor.rotation.Pitch;
-									customRotation[1] = actor.rotation.Yaw;
-									customRotation[2] = actor.rotation.Roll;
+									customRotation[0] = actor.transform.rotation.Pitch;
+									customRotation[1] = actor.transform.rotation.Yaw;
+									customRotation[2] = actor.transform.rotation.Roll;
 									PlayActionSound(true);
 								}
 								ImGui::SameLine();
@@ -2126,13 +2131,13 @@ void GUI::Draw()
 										PlayActionSound(false);
 								}
 
-								ImGui::TextVectorColored("Scale:", actor.scale);
+								ImGui::TextVectorColored("Scale:", actor.transform.scale);
 								static float customScale[3];
 								if (ImGui::Button("Copy##Scale"))
 								{
-									customScale[0] = actor.scale.X;
-									customScale[1] = actor.scale.Y;
-									customScale[2] = actor.scale.Z;
+									customScale[0] = actor.transform.scale.X;
+									customScale[1] = actor.transform.scale.Y;
+									customScale[2] = actor.transform.scale.Z;
 									PlayActionSound(true);
 								}
 								ImGui::SameLine();
@@ -2142,7 +2147,7 @@ void GUI::Draw()
 								{
 									if (actor.reference)
 									{
-										actor.reference->SetActorScale3D(actor.scale);
+										actor.reference->SetActorScale3D(SDK::FVector(customScale[0], customScale[1], customScale[2]));
 										PlayActionSound(true);
 
 										Features::ActorsList::Update();
@@ -2241,7 +2246,7 @@ void GUI::Draw()
 									if (character)
 									{
 										SDK::FHitResult hitResult;
-										PlayActionSound(character->K2_SetActorLocation(actor.location, false, &hitResult, true));
+										PlayActionSound(character->K2_SetActorLocation(actor.transform.location, false, &hitResult, true));
 									}
 									else
 										PlayActionSound(false);
@@ -5048,10 +5053,7 @@ void Features::Debug::Update()
 			Features::Debug::playerController.pawn.className = pawn->Class->GetFullName();
 			Features::Debug::playerController.pawn.objectName = pawn->GetFullName();
 
-			Unreal::Transform pawnTransform = Unreal::Actor::GetTransform(pawn);
-			Features::Debug::playerController.pawn.location = pawnTransform.location;
-			Features::Debug::playerController.pawn.rotation = pawnTransform.rotation;
-			Features::Debug::playerController.pawn.scale = pawnTransform.scale;
+			Features::Debug::playerController.pawn.transform = Unreal::Actor::GetTransform(pawn);
 
 			Features::Debug::playerController.pawn.isControlled = pawn->IsControlled();
 			Features::Debug::playerController.pawn.isPawnControlled = pawn->IsPawnControlled();
@@ -5067,10 +5069,7 @@ void Features::Debug::Update()
 			Features::Debug::playerController.cameraManager.className = cameraManager->Class->GetFullName();
 			Features::Debug::playerController.cameraManager.objectName = cameraManager->GetFullName();
 
-			Unreal::Transform cameraManagerTransform = Unreal::Actor::GetTransform(cameraManager);
-			Features::Debug::playerController.cameraManager.location = cameraManagerTransform.location;
-			Features::Debug::playerController.cameraManager.rotation = cameraManagerTransform.rotation;
-			Features::Debug::playerController.cameraManager.scale = cameraManagerTransform.scale;
+			Features::Debug::playerController.cameraManager.transform = Unreal::Actor::GetTransform(cameraManager);
 		}
 
 
@@ -5281,10 +5280,7 @@ void Features::ActorsList::Update()
 		actorData.kind = Unreal::Actor::GetActorKind(actor);
 #endif
 
-		Unreal::Transform actorTransform = Unreal::Actor::GetTransform(actor);
-		actorData.location = actorTransform.location;
-		actorData.rotation = actorTransform.rotation;
-		actorData.scale = actorTransform.scale;
+		actorData.transform = Unreal::Actor::GetTransform(actor);
 
 		std::vector<SDK::UActorComponent*> foundComponents = Unreal::ActorComponent::GetAll(actor);
 		for (SDK::UActorComponent* component : foundComponents)
