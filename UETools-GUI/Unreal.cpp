@@ -1052,15 +1052,15 @@ std::vector<Unreal::Actor::DataStructure> Unreal::Actor::FilterByClassAndObjectN
 }
 
 
-void Unreal::Actor::SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents)
+void Unreal::Actor::SetIsVisible(SDK::AActor* actorReference, const bool& newIsVisible, const bool& propagateToComponents)
 {
 	if (actorReference == nullptr)
 		return;
 
-	actorReference->SetActorHiddenInGame(!newVisibility);
+	actorReference->SetActorHiddenInGame(!newIsVisible);
 	
 	if (propagateToComponents && actorReference->RootComponent)
-		actorReference->RootComponent->SetVisibility(newVisibility, true);
+		actorReference->RootComponent->SetVisibility(newIsVisible, true);
 }
 
 

@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "DirectWindow.h"
+#include "GUI.h"
 
 
 

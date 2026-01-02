@@ -711,7 +711,7 @@ namespace Unreal
 		static std::vector<Actor::DataStructure> FilterByClassAndObjectName(const std::vector<Actor::DataStructure>& actorsCollection, const std::string& filter, const bool& caseSensitive, const float& inDistance = 0.0f);
 
 
-		static void SetVisibility(SDK::AActor* actorReference, const bool& newVisibility, const bool& propagateToComponents = false);
+		static void SetIsVisible(SDK::AActor* actorReference, const bool& newIsVisible, const bool& propagateToComponents = false);
 
 
 		static SDK::AActor* Summon(const SDK::TSubclassOf<SDK::AActor>& actorClass, const Unreal::Transform& transform);

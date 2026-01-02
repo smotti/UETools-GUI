@@ -728,13 +728,13 @@ bool ImGui::IsKeyBindingReleased(KeyBinding* binding)
 // ========================================================
 // |                #GUI #UI #USERINTERFACE               |
 // ========================================================
-bool GUI::StartDirectWindowThread()
+bool GUI::StartWindowThread()
 {
-	if (directWindowThread)
+	if (windowThread)
 		return false;
 
-	directWindowThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)DirectWindow::Create, 0, 0, 0);
-	return directWindowThread;
+	windowThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)DirectWindow11::Create, 0, 0, 0);
+	return windowThread;
 }
 
 
@@ -743,8 +743,8 @@ bool GUI::StartDirectWindowThread()
 void GUI::Init(const HMODULE& applicationModule)
 {
 	/* Before creating a DirectWindow, we need to make it aware of our DLL HMODULE. */
-	DirectWindow::SetApplicationModule(applicationModule);
-	StartDirectWindowThread();
+	DirectWindow11::SetApplicationModule(applicationModule);
+	StartWindowThread();
 }
 
 
@@ -756,7 +756,7 @@ void GUI::Draw()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			ImGui::Text("UETools GUI (v3.4b)");
+			ImGui::Text("UETools GUI (v3.5)");
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -1992,7 +1992,7 @@ void GUI::Draw()
 							{
 								if (actor.reference)
 								{
-									Unreal::Actor::SetVisibility(actor.reference, true);
+									Unreal::Actor::SetIsVisible(actor.reference, true);
 									anyActorShown = true;
 								}
 							}
@@ -2009,7 +2009,7 @@ void GUI::Draw()
 							{
 								if (actor.reference)
 								{
-									Unreal::Actor::SetVisibility(actor.reference, false);
+									Unreal::Actor::SetIsVisible(actor.reference, false);
 									anyActorHidden = true;
 								}
 							}
@@ -2220,7 +2220,7 @@ void GUI::Draw()
 								{
 									if (actor.reference)
 									{
-										Unreal::Actor::SetVisibility(actor.reference, true, visibilityPropagateToComponents);
+										Unreal::Actor::SetIsVisible(actor.reference, true, visibilityPropagateToComponents);
 										PlayActionSound(true);
 									}
 									else
@@ -2231,7 +2231,7 @@ void GUI::Draw()
 								{
 									if (actor.reference)
 									{
-										Unreal::Actor::SetVisibility(actor.reference, false, visibilityPropagateToComponents);
+										Unreal::Actor::SetIsVisible(actor.reference, false, visibilityPropagateToComponents);
 										PlayActionSound(true);
 									}
 									else
@@ -3605,7 +3605,7 @@ void GUI::Draw()
 						worldSettings->bGlobalGravitySet = globalGravitySet ? 1 : 0;
 
 						ImGui::BeginDisabled(globalGravitySet == false);
-						ImGui::InputFloat("Global Gravity", &worldSettings->GlobalGravityZ, 0.1, 1.0);
+						ImGui::InputFloat("Global Gravity", &worldSettings->GlobalGravityZ, 0.1f, 1.0f);
 						ImGui::EndDisabled();
 
 						bool worldGravitySet = worldSettings->bWorldGravitySet == 1;
@@ -3613,7 +3613,7 @@ void GUI::Draw()
 						worldSettings->bWorldGravitySet = worldGravitySet ? 1 : 0;
 
 						ImGui::BeginDisabled(worldGravitySet == false);
-						ImGui::InputFloat("World Gravity", &worldSettings->WorldGravityZ, 0.1, 1.0);
+						ImGui::InputFloat("World Gravity", &worldSettings->WorldGravityZ, 0.1f, 1.0f);
 						ImGui::EndDisabled();
 
 						ImGui::TreePop();
@@ -3638,15 +3638,15 @@ void GUI::Draw()
 
 						ImGui::NewLine();
 
-						ImGui::InputFloat("Minimum Time Dilation", &worldSettings->MinGlobalTimeDilation, 0.1, 1.0);
-						ImGui::InputFloat("Maximum Time Dilation", &worldSettings->MaxGlobalTimeDilation, 0.1, 1.0);
+						ImGui::InputFloat("Minimum Time Dilation", &worldSettings->MinGlobalTimeDilation, 0.1f, 1.0f);
+						ImGui::InputFloat("Maximum Time Dilation", &worldSettings->MaxGlobalTimeDilation, 0.1f, 1.0f);
 						double timeDilation = worldSettings->TimeDilation;
 						ImGui::InputDouble("Time Dilation", &timeDilation, 0.1, 1.0);
 						worldSettings->TimeDilation = std::clamp(timeDilation, (double)worldSettings->MinGlobalTimeDilation, (double)worldSettings->MaxGlobalTimeDilation);
 
 						ImGui::NewLine();
 
-						ImGui::InputFloat("Demo Time Dilation", &worldSettings->DemoPlayTimeDilation, 0.1, 1.0);
+						ImGui::InputFloat("Demo Time Dilation", &worldSettings->DemoPlayTimeDilation, 0.1f, 1.0f);
 
 						ImGui::TreePop();
 					}
@@ -3663,7 +3663,7 @@ void GUI::Draw()
 
 					ImGui::NewLine();
 
-					ImGui::InputFloat("Kill Volume Z", &worldSettings->KillZ, 0.1, 1.0);
+					ImGui::InputFloat("Kill Volume Z", &worldSettings->KillZ, 0.1f, 1.0f);
 				}
 				else
 				{
@@ -3910,7 +3910,7 @@ void GUI::Draw()
 							Features::CharacterMovement::Jump();
 						}
 						ImGui::InputInt("Jump Limit", &character->JumpMaxCount, 1, 1);
-						ImGui::InputFloat("Jump Height", &movementComponent->JumpZVelocity, 0.1, 1.0);
+						ImGui::InputFloat("Jump Height", &movementComponent->JumpZVelocity, 0.1f, 1.0f);
 						ImGui::KeyBindingInput("Jump Key Binding:##Jump", &Keybindings::characterMovement_Jump);
 
 						ImGui::NewLine();
@@ -3928,7 +3928,7 @@ void GUI::Draw()
 						{
 							Features::CharacterMovement::Dash();
 						}
-						ImGui::InputDouble("Dash Strength", &Features::CharacterMovement::dashStrength, 0.1, 1.0);
+						ImGui::InputDouble("Dash Strength", &Features::CharacterMovement::dashStrength, 0.1f, 1.0f);
 						ImGui::KeyBindingInput("Dash Key Binding:##Dash", &Keybindings::characterMovement_Dash);
 
 						ImGui::TreePop();

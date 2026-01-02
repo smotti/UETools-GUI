@@ -1,13 +1,15 @@
 #pragma once
 #include "GUI.h"
-
 #include "definitions.h"
 
 #include "dwmapi.h"
 #include "d3d11.h"
 
-#include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+
+#pragma comment(lib, "d3d11.lib")
+// #pragma comment(lib, "dxgi.lib")
 
 
 
@@ -16,12 +18,7 @@
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-
-
-
-
-
-class DirectWindow
+class DirectWindow11
 {
 private:
 	/* @brief
@@ -211,6 +208,7 @@ private:
 	static BOOL IsWindowAlive();
 
 	
+
 
 public:
 	/**

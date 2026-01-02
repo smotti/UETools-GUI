@@ -1,11 +1,11 @@
-#include "DirectWindow.h"
+#include "DirectWindow11.h"
 
 
 
 
 
 
-LRESULT WINAPI DirectWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT WINAPI DirectWindow11::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
         return true;
@@ -40,7 +40,7 @@ LRESULT WINAPI DirectWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 
 
 
-bool DirectWindow::CreateDevice(HWND hWnd, const bool& HDR)
+bool DirectWindow11::CreateDevice(HWND hWnd, const bool& HDR)
 {
     DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
     swapChainDesc.BufferDesc.Width = 0;
@@ -80,7 +80,7 @@ bool DirectWindow::CreateDevice(HWND hWnd, const bool& HDR)
     return true;
 }
 
-void DirectWindow::CleanupDevice()
+void DirectWindow11::CleanupDevice()
 {
     if (GetRenderTargetView())
         InvalidateRenderTargetView();
@@ -98,7 +98,7 @@ void DirectWindow::CleanupDevice()
 
 
 
-bool DirectWindow::CreateRenderTargetView()
+bool DirectWindow11::CreateRenderTargetView()
 {
     ID3D11Texture2D* backBuffer = nullptr;
     HRESULT backBufferResult = GetSwapChain()->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
@@ -116,12 +116,12 @@ bool DirectWindow::CreateRenderTargetView()
 
 
 
-void DirectWindow::GetWindow()
+void DirectWindow11::GetWindow()
 {
     EnumWindows(EnumWind, NULL);
 }
 
-BOOL CALLBACK DirectWindow::EnumWind(HWND hWindow, LPARAM lParam)
+BOOL CALLBACK DirectWindow11::EnumWind(HWND hWindow, LPARAM lParam)
 {
     DWORD procID;
     GetWindowThreadProcessId(hWindow, &procID);
@@ -135,7 +135,7 @@ BOOL CALLBACK DirectWindow::EnumWind(HWND hWindow, LPARAM lParam)
     return FALSE;  // Stop enumeration after finding the first match.
 }
 
-void DirectWindow::MoveWindow(const HWND& hWindow, const bool& forceInvalidSize)
+void DirectWindow11::MoveWindow(const HWND& hWindow, const bool& forceInvalidSize)
 {
     RECT rect;
     if (hTargetWindow == nullptr)
@@ -149,7 +149,7 @@ void DirectWindow::MoveWindow(const HWND& hWindow, const bool& forceInvalidSize)
     SetWindowPos(hWindow, nullptr, rect.left, rect.top, lWindowWidth, lWindowHeight, SWP_SHOWWINDOW);
 }
 
-BOOL DirectWindow::IsWindowFocus(const HWND& hWindow)
+BOOL DirectWindow11::IsWindowFocus(const HWND& hWindow)
 {
     char lpCurrentWindowUsedClass[125];
     char lpCurrentWindowClass[125];
@@ -175,7 +175,7 @@ BOOL DirectWindow::IsWindowFocus(const HWND& hWindow)
     return TRUE;
 }
 
-BOOL DirectWindow::IsWindowValid(const HWND& hWindow)
+BOOL DirectWindow11::IsWindowValid(const HWND& hWindow)
 {
     DWORD styles, ex_styles;
     RECT rect;
@@ -198,7 +198,7 @@ BOOL DirectWindow::IsWindowValid(const HWND& hWindow)
     return TRUE;
 }
 
-BOOL DirectWindow::IsWindowCloaked(const HWND& hWindow)
+BOOL DirectWindow11::IsWindowCloaked(const HWND& hWindow)
 {
     DWORD cloaked;
     const HRESULT hr = DwmGetWindowAttribute(hWindow, DWMWA_CLOAKED, &cloaked,
@@ -206,7 +206,7 @@ BOOL DirectWindow::IsWindowCloaked(const HWND& hWindow)
     return SUCCEEDED(hr) && cloaked;
 }
 
-void DirectWindow::SetTargetWindow(const HWND& hWindow)
+void DirectWindow11::SetTargetWindow(const HWND& hWindow)
 {
     hTargetWindow = hWindow;
     SetForegroundWindow(hTargetWindow);
@@ -214,7 +214,7 @@ void DirectWindow::SetTargetWindow(const HWND& hWindow)
     bTargetSet = TRUE;
 }
 
-BOOL DirectWindow::IsWindowAlive()
+BOOL DirectWindow11::IsWindowAlive()
 {
     DWORD dCurrentPID;
 
@@ -235,7 +235,7 @@ BOOL DirectWindow::IsWindowAlive()
 
 
 
-void DirectWindow::Create()
+void DirectWindow11::Create()
 {
     /* 
         Swap default font with new "ProggyVector-minimal.ttf". 

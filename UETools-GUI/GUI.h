@@ -1,5 +1,5 @@
 #pragma once
-#include "DirectWindow.h"
+#include "DirectWindow11.h"
 #include "imgui.h"
 
 #include "definitions.h"
@@ -218,13 +218,13 @@ public:
 
 
 private:
-	static inline HANDLE directWindowThread = nullptr;
+	static inline HANDLE windowThread = nullptr;
 public:
-	static HANDLE GetDirectWindowThread()
+	static HANDLE GetWindowThread()
 	{
-		return directWindowThread;
+		return windowThread;
 	}
-	static bool StartDirectWindowThread();
+	static bool StartWindowThread();
 
 
 #ifdef _DEBUG
