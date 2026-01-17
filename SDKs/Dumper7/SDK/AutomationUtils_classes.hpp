@@ -37,7 +37,6 @@ public:
 		return GetDefaultObjImpl<UAutomationUtilsBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UAutomationUtilsBlueprintLibrary;
 
 }
 

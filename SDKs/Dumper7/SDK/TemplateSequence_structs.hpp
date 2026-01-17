@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "CoreUObject_structs.hpp"
 #include "MovieScene_structs.hpp"
+#include "CoreUObject_structs.hpp"
 
 
 namespace SDK
@@ -27,6 +27,17 @@ enum class ETemplateSectionPropertyScaleType : uint32
 	ETemplateSectionPropertyScaleType_MAX    = 3,
 };
 
+// ScriptStruct TemplateSequence.TemplateSectionPropertyScale
+// 0x0138 (0x0138 - 0x0000)
+struct FTemplateSectionPropertyScale final
+{
+public:
+	struct FGuid                                  ObjectBinding;                                     // 0x0000(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieScenePropertyBinding             PropertyBinding;                                   // 0x0010(0x0014)(NoDestructor, NativeAccessSpecifierPublic)
+	ETemplateSectionPropertyScaleType             PropertyScaleType;                                 // 0x0024(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneFloatChannel                FloatChannel;                                      // 0x0028(0x0110)(NativeAccessSpecifierPublic)
+};
+
 // ScriptStruct TemplateSequence.TemplateSequenceBindingOverrideData
 // 0x000C (0x000C - 0x0000)
 struct FTemplateSequenceBindingOverrideData final
@@ -36,19 +47,6 @@ public:
 	bool                                          bOverridesDefault;                                 // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FTemplateSequenceBindingOverrideData;
-
-// ScriptStruct TemplateSequence.TemplateSectionPropertyScale
-// 0x00C8 (0x00C8 - 0x0000)
-struct FTemplateSectionPropertyScale final
-{
-public:
-	struct FGuid                                  ObjectBinding;                                     // 0x0000(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieScenePropertyBinding             PropertyBinding;                                   // 0x0010(0x0014)(NoDestructor, NativeAccessSpecifierPublic)
-	ETemplateSectionPropertyScaleType             PropertyScaleType;                                 // 0x0024(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneFloatChannel                FloatChannel;                                      // 0x0028(0x00A0)(NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTemplateSectionPropertyScale;
 
 }
 

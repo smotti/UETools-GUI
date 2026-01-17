@@ -15,13 +15,20 @@ namespace SDK
 {
 
 // Enum MovieRenderPipelineRenderPasses.EEXRCompressionFormat
-// NumValues: 0x0004
+// NumValues: 0x000B
 enum class EEXRCompressionFormat : uint8
 {
 	None                                     = 0,
-	PIZ                                      = 1,
-	ZIP                                      = 2,
-	EEXRCompressionFormat_MAX                = 3,
+	RLE                                      = 1,
+	ZIPS                                     = 2,
+	ZIP                                      = 3,
+	PIZ                                      = 4,
+	PXR24                                    = 5,
+	B44                                      = 6,
+	B44A                                     = 7,
+	DWAA                                     = 8,
+	DWAB                                     = 9,
+	Max                                      = 10,
 };
 
 // ScriptStruct MovieRenderPipelineRenderPasses.MoviePipelinePostProcessPass
@@ -33,7 +40,6 @@ public:
 	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
 	TSoftObjectPtr<class UMaterialInterface>      Material;                                          // 0x0008(0x0028)(Edit, BlueprintVisible, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FMoviePipelinePostProcessPass;
 
 }
 

@@ -35,7 +35,6 @@ public:
 		return GetDefaultObjImpl<UOverlays>();
 	}
 };
-DUMPER7_ASSERTS_UOverlays;
 
 // Class Overlay.BasicOverlays
 // 0x0010 (0x0038 - 0x0028)
@@ -58,15 +57,14 @@ public:
 		return GetDefaultObjImpl<UBasicOverlays>();
 	}
 };
-DUMPER7_ASSERTS_UBasicOverlays;
 
 // Class Overlay.LocalizedOverlays
 // 0x0058 (0x0080 - 0x0028)
 class ULocalizedOverlays final : public UOverlays
 {
 public:
-	class UBasicOverlays*                         DefaultOverlays;                                   // 0x0028(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<class FString, class UBasicOverlays*>    LocaleToOverlaysMap;                               // 0x0030(0x0050)(Edit, NativeAccessSpecifierPublic)
+	class UBasicOverlays*                         DefaultOverlays;                                   // 0x0028(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<class FString, class UBasicOverlays*>    LocaleToOverlaysMap;                               // 0x0030(0x0050)(Edit, UObjectWrapper, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -82,7 +80,6 @@ public:
 		return GetDefaultObjImpl<ULocalizedOverlays>();
 	}
 };
-DUMPER7_ASSERTS_ULocalizedOverlays;
 
 }
 

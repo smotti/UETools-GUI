@@ -14,6 +14,80 @@
 namespace SDK::Params
 {
 
+// Function AudioSynesthesia.ConstantQAnalyzer.GetCenterFrequencies
+// 0x0010 (0x0010 - 0x0000)
+struct ConstantQAnalyzer_GetCenterFrequencies final
+{
+public:
+	TArray<float>                                 OutCenterFrequencies;                              // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.ConstantQAnalyzer.GetNumCenterFrequencies
+// 0x0004 (0x0004 - 0x0000)
+struct ConstantQAnalyzer_GetNumCenterFrequencies final
+{
+public:
+	int32                                         ReturnValue;                                       // 0x0000(0x0004)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.ConstantQNRT.GetChannelConstantQAtTime
+// 0x0018 (0x0018 - 0x0000)
+struct ConstantQNRT_GetChannelConstantQAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<float>                                 OutConstantQ;                                      // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.ConstantQNRT.GetNormalizedChannelConstantQAtTime
+// 0x0018 (0x0018 - 0x0000)
+struct ConstantQNRT_GetNormalizedChannelConstantQAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<float>                                 OutConstantQ;                                      // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.LoudnessNRT.GetChannelLoudnessAtTime
+// 0x000C (0x000C - 0x0000)
+struct LoudnessNRT_GetChannelLoudnessAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutLoudness;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.LoudnessNRT.GetLoudnessAtTime
+// 0x0008 (0x0008 - 0x0000)
+struct LoudnessNRT_GetLoudnessAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutLoudness;                                       // 0x0004(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.LoudnessNRT.GetNormalizedChannelLoudnessAtTime
+// 0x000C (0x000C - 0x0000)
+struct LoudnessNRT_GetNormalizedChannelLoudnessAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutLoudness;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+
+// Function AudioSynesthesia.LoudnessNRT.GetNormalizedLoudnessAtTime
+// 0x0008 (0x0008 - 0x0000)
+struct LoudnessNRT_GetNormalizedLoudnessAtTime final
+{
+public:
+	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutLoudness;                                       // 0x0004(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+
 // Function AudioSynesthesia.OnsetNRT.GetChannelOnsetsBetweenTimes
 // 0x0030 (0x0030 - 0x0000)
 struct OnsetNRT_GetChannelOnsetsBetweenTimes final
@@ -26,7 +100,6 @@ public:
 	TArray<float>                                 OutOnsetTimestamps;                                // 0x0010(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<float>                                 OutOnsetStrengths;                                 // 0x0020(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_OnsetNRT_GetChannelOnsetsBetweenTimes;
 
 // Function AudioSynesthesia.OnsetNRT.GetNormalizedChannelOnsetsBetweenTimes
 // 0x0030 (0x0030 - 0x0000)
@@ -40,71 +113,24 @@ public:
 	TArray<float>                                 OutOnsetTimestamps;                                // 0x0010(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<float>                                 OutOnsetStrengths;                                 // 0x0020(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_OnsetNRT_GetNormalizedChannelOnsetsBetweenTimes;
 
-// Function AudioSynesthesia.ConstantQNRT.GetChannelConstantQAtTime
+// Function AudioSynesthesia.SynesthesiaSpectrumAnalyzer.GetCenterFrequencies
 // 0x0018 (0x0018 - 0x0000)
-struct ConstantQNRT_GetChannelConstantQAtTime final
+struct SynesthesiaSpectrumAnalyzer_GetCenterFrequencies final
 {
 public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<float>                                 OutConstantQ;                                      // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+	float                                         InSampleRate;                                      // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<float>                                 OutCenterFrequencies;                              // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ConstantQNRT_GetChannelConstantQAtTime;
 
-// Function AudioSynesthesia.ConstantQNRT.GetNormalizedChannelConstantQAtTime
-// 0x0018 (0x0018 - 0x0000)
-struct ConstantQNRT_GetNormalizedChannelConstantQAtTime final
+// Function AudioSynesthesia.SynesthesiaSpectrumAnalyzer.GetNumCenterFrequencies
+// 0x0004 (0x0004 - 0x0000)
+struct SynesthesiaSpectrumAnalyzer_GetNumCenterFrequencies final
 {
 public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<float>                                 OutConstantQ;                                      // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0000(0x0004)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ConstantQNRT_GetNormalizedChannelConstantQAtTime;
-
-// Function AudioSynesthesia.LoudnessNRT.GetChannelLoudnessAtTime
-// 0x000C (0x000C - 0x0000)
-struct LoudnessNRT_GetChannelLoudnessAtTime final
-{
-public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutLoudness;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LoudnessNRT_GetChannelLoudnessAtTime;
-
-// Function AudioSynesthesia.LoudnessNRT.GetLoudnessAtTime
-// 0x0008 (0x0008 - 0x0000)
-struct LoudnessNRT_GetLoudnessAtTime final
-{
-public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutLoudness;                                       // 0x0004(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LoudnessNRT_GetLoudnessAtTime;
-
-// Function AudioSynesthesia.LoudnessNRT.GetNormalizedChannelLoudnessAtTime
-// 0x000C (0x000C - 0x0000)
-struct LoudnessNRT_GetNormalizedChannelLoudnessAtTime final
-{
-public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InChannel;                                         // 0x0004(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutLoudness;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LoudnessNRT_GetNormalizedChannelLoudnessAtTime;
-
-// Function AudioSynesthesia.LoudnessNRT.GetNormalizedLoudnessAtTime
-// 0x0008 (0x0008 - 0x0000)
-struct LoudnessNRT_GetNormalizedLoudnessAtTime final
-{
-public:
-	float                                         InSeconds;                                         // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutLoudness;                                       // 0x0004(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LoudnessNRT_GetNormalizedLoudnessAtTime;
 
 }
 

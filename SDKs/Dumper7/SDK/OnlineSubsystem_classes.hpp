@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "OnlineSubsystem_structs.hpp"
 #include "CoreUObject_classes.hpp"
+#include "OnlineSubsystem_structs.hpp"
 
 
 namespace SDK
@@ -40,7 +40,6 @@ public:
 		return GetDefaultObjImpl<UNamedInterfaces>();
 	}
 };
-DUMPER7_ASSERTS_UNamedInterfaces;
 
 // Class OnlineSubsystem.TurnBasedMatchInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -73,7 +72,6 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_ITurnBasedMatchInterface;
 
 }
 

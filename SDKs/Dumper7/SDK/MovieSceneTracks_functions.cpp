@@ -17,371 +17,23 @@
 namespace SDK
 {
 
-// Function MovieSceneTracks.MovieSceneParameterSection.AddBoolParameterKey
-// (Final, Native, Public, HasDefaults, BlueprintCallable)
+// Function MovieSceneTracks.MovieSceneTransformOrigin.BP_GetTransformOrigin
+// (RequiredAPI, Event, Protected, HasDefaults, BlueprintCallable, BlueprintEvent, BlueprintPure, Const)
 // Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// struct FTransform                       ReturnValue                                            (Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UMovieSceneParameterSection::AddBoolParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, bool InValue)
+struct FTransform IMovieSceneTransformOrigin::BP_GetTransformOrigin() const
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddBoolParameterKey");
+		Func = AsUObject()->Class->GetFunction("MovieSceneTransformOrigin", "BP_GetTransformOrigin");
 
-	Params::MovieSceneParameterSection_AddBoolParameterKey Parms{};
+	Params::MovieSceneTransformOrigin_BP_GetTransformOrigin Parms{};
 
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = InValue;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.AddColorParameterKey
-// (Final, Native, Public, HasDefaults, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FLinearColor&              InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::AddColorParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FLinearColor& InValue)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddColorParameterKey");
-
-	Params::MovieSceneParameterSection_AddColorParameterKey Parms{};
-
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = std::move(InValue);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.AddScalarParameterKey
-// (Final, Native, Public, HasDefaults, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// float                                   InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::AddScalarParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, float InValue)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddScalarParameterKey");
-
-	Params::MovieSceneParameterSection_AddScalarParameterKey Parms{};
-
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = InValue;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.AddTransformParameterKey
-// (Final, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FTransform&                InValue                                                (ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::AddTransformParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FTransform& InValue)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddTransformParameterKey");
-
-	Params::MovieSceneParameterSection_AddTransformParameterKey Parms{};
-
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = std::move(InValue);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.AddVector2DParameterKey
-// (Final, Native, Public, HasDefaults, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FVector2D&                 InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::AddVector2DParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FVector2D& InValue)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddVector2DParameterKey");
-
-	Params::MovieSceneParameterSection_AddVector2DParameterKey Parms{};
-
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = std::move(InValue);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.AddVectorParameterKey
-// (Final, Native, Public, HasDefaults, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FVector&                   InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::AddVectorParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FVector& InValue)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "AddVectorParameterKey");
-
-	Params::MovieSceneParameterSection_AddVectorParameterKey Parms{};
-
-	Parms.InParameterName = InParameterName;
-	Parms.InTime = std::move(InTime);
-	Parms.InValue = std::move(InValue);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveBoolParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveBoolParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveBoolParameter");
-
-	Params::MovieSceneParameterSection_RemoveBoolParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
+	AsUObject()->ProcessEvent(Func, &Parms);
 
 	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveColorParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveColorParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveColorParameter");
-
-	Params::MovieSceneParameterSection_RemoveColorParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveScalarParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveScalarParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveScalarParameter");
-
-	Params::MovieSceneParameterSection_RemoveScalarParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveTransformParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveTransformParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveTransformParameter");
-
-	Params::MovieSceneParameterSection_RemoveTransformParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveVector2DParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveVector2DParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveVector2DParameter");
-
-	Params::MovieSceneParameterSection_RemoveVector2DParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.RemoveVectorParameter
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-bool UMovieSceneParameterSection::RemoveVectorParameter(class FName InParameterName)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveVectorParameter");
-
-	Params::MovieSceneParameterSection_RemoveVectorParameter Parms{};
-
-	Parms.InParameterName = InParameterName;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function MovieSceneTracks.MovieSceneParameterSection.GetParameterNames
-// (Final, Native, Public, HasOutParams, BlueprintCallable, BlueprintPure, Const)
-// Parameters:
-// TSet<class FName>*                      ParameterNames                                         (Parm, OutParm, NativeAccessSpecifierPublic)
-
-void UMovieSceneParameterSection::GetParameterNames(TSet<class FName>* ParameterNames) const
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MovieSceneParameterSection", "GetParameterNames");
-
-	Params::MovieSceneParameterSection_GetParameterNames Parms{};
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	if (ParameterNames != nullptr)
-		*ParameterNames = std::move(Parms.ParameterNames);
 }
 
 
@@ -435,30 +87,85 @@ const struct FMovieSceneObjectBindingID UMovieScene3DConstraintSection::GetConst
 }
 
 
-// Function MovieSceneTracks.MovieSceneTransformOrigin.BP_GetTransformOrigin
-// (Event, Protected, HasDefaults, BlueprintCallable, BlueprintEvent, BlueprintPure, Const)
+// Function MovieSceneTracks.MovieSceneAudioSection.SetAttenuationSettings
+// (Final, Native, Public, BlueprintCallable)
 // Parameters:
-// struct FTransform                       ReturnValue                                            (Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+// class USoundAttenuation*                InAttenuationSettings                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-struct FTransform IMovieSceneTransformOrigin::BP_GetTransformOrigin() const
+void UMovieSceneAudioSection::SetAttenuationSettings(class USoundAttenuation* InAttenuationSettings)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("MovieSceneTransformOrigin", "BP_GetTransformOrigin");
+		Func = Class->GetFunction("MovieSceneAudioSection", "SetAttenuationSettings");
 
-	Params::MovieSceneTransformOrigin_BP_GetTransformOrigin Parms{};
+	Params::MovieSceneAudioSection_SetAttenuationSettings Parms{};
 
-	AsUObject()->ProcessEvent(Func, &Parms);
+	Parms.InAttenuationSettings = InAttenuationSettings;
 
-	return Parms.ReturnValue;
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.SetLooping
+// (Final, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bInLooping                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneAudioSection::SetLooping(bool bInLooping)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "SetLooping");
+
+	Params::MovieSceneAudioSection_SetLooping Parms{};
+
+	Parms.bInLooping = bInLooping;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.SetOverrideAttenuation
+// (Final, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bInOverrideAttenuation                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneAudioSection::SetOverrideAttenuation(bool bInOverrideAttenuation)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "SetOverrideAttenuation");
+
+	Params::MovieSceneAudioSection_SetOverrideAttenuation Parms{};
+
+	Parms.bInOverrideAttenuation = bInOverrideAttenuation;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
 }
 
 
 // Function MovieSceneTracks.MovieSceneAudioSection.SetSound
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// class USoundBase*                       InSound                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundBase*                       InSound                                                (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UMovieSceneAudioSection::SetSound(class USoundBase* InSound)
 {
@@ -505,10 +212,110 @@ void UMovieSceneAudioSection::SetStartOffset(const struct FFrameNumber& InStartO
 }
 
 
+// Function MovieSceneTracks.MovieSceneAudioSection.SetSuppressSubtitles
+// (Final, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bInSuppressSubtitles                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneAudioSection::SetSuppressSubtitles(bool bInSuppressSubtitles)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "SetSuppressSubtitles");
+
+	Params::MovieSceneAudioSection_SetSuppressSubtitles Parms{};
+
+	Parms.bInSuppressSubtitles = bInSuppressSubtitles;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.GetAttenuationSettings
+// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// class USoundAttenuation*                ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class USoundAttenuation* UMovieSceneAudioSection::GetAttenuationSettings() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "GetAttenuationSettings");
+
+	Params::MovieSceneAudioSection_GetAttenuationSettings Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.GetLooping
+// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneAudioSection::GetLooping() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "GetLooping");
+
+	Params::MovieSceneAudioSection_GetLooping Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.GetOverrideAttenuation
+// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneAudioSection::GetOverrideAttenuation() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "GetOverrideAttenuation");
+
+	Params::MovieSceneAudioSection_GetOverrideAttenuation Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
 // Function MovieSceneTracks.MovieSceneAudioSection.GetSound
 // (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// class USoundBase*                       ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundBase*                       ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 class USoundBase* UMovieSceneAudioSection::GetSound() const
 {
@@ -543,6 +350,31 @@ struct FFrameNumber UMovieSceneAudioSection::GetStartOffset() const
 		Func = Class->GetFunction("MovieSceneAudioSection", "GetStartOffset");
 
 	Params::MovieSceneAudioSection_GetStartOffset Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAudioSection.GetSuppressSubtitles
+// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneAudioSection::GetSuppressSubtitles() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneAudioSection", "GetSuppressSubtitles");
+
+	Params::MovieSceneAudioSection_GetSuppressSubtitles Parms{};
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -631,7 +463,7 @@ void UMovieSceneCinematicShotSection::SetShotDisplayName(const class FString& In
 
 
 // Function MovieSceneTracks.MovieSceneCinematicShotSection.GetShotDisplayName
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
 // class FString                           ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -643,6 +475,921 @@ class FString UMovieSceneCinematicShotSection::GetShotDisplayName() const
 		Func = Class->GetFunction("MovieSceneCinematicShotSection", "GetShotDisplayName");
 
 	Params::MovieSceneCinematicShotSection_GetShotDisplayName Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneComponentMaterialParameterSection.AddColorParameterKey
+// (Final, RequiredAPI, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
+// Parameters:
+// const struct FMaterialParameterInfo&    InParameterInfo                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FLinearColor&              InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class FString&                    InLayerName                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class FString&                    InAssetName                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneComponentMaterialParameterSection::AddColorParameterKey(const struct FMaterialParameterInfo& InParameterInfo, const struct FFrameNumber& InTime, const struct FLinearColor& InValue, const class FString& InLayerName, const class FString& InAssetName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneComponentMaterialParameterSection", "AddColorParameterKey");
+
+	Params::MovieSceneComponentMaterialParameterSection_AddColorParameterKey Parms{};
+
+	Parms.InParameterInfo = std::move(InParameterInfo);
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = std::move(InValue);
+	Parms.InLayerName = std::move(InLayerName);
+	Parms.InAssetName = std::move(InAssetName);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneComponentMaterialParameterSection.AddScalarParameterKey
+// (Final, RequiredAPI, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
+// Parameters:
+// const struct FMaterialParameterInfo&    InParameterInfo                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class FString&                    InLayerName                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class FString&                    InAssetName                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneComponentMaterialParameterSection::AddScalarParameterKey(const struct FMaterialParameterInfo& InParameterInfo, const struct FFrameNumber& InTime, float InValue, const class FString& InLayerName, const class FString& InAssetName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneComponentMaterialParameterSection", "AddScalarParameterKey");
+
+	Params::MovieSceneComponentMaterialParameterSection_AddScalarParameterKey Parms{};
+
+	Parms.InParameterInfo = std::move(InParameterInfo);
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = InValue;
+	Parms.InLayerName = std::move(InLayerName);
+	Parms.InAssetName = std::move(InAssetName);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneComponentMaterialParameterSection.RemoveColorParameter
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const struct FMaterialParameterInfo&    InParameterInfo                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneComponentMaterialParameterSection::RemoveColorParameter(const struct FMaterialParameterInfo& InParameterInfo)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneComponentMaterialParameterSection", "RemoveColorParameter");
+
+	Params::MovieSceneComponentMaterialParameterSection_RemoveColorParameter Parms{};
+
+	Parms.InParameterInfo = std::move(InParameterInfo);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneComponentMaterialParameterSection.RemoveScalarParameter
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const struct FMaterialParameterInfo&    InParameterInfo                                        (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneComponentMaterialParameterSection::RemoveScalarParameter(const struct FMaterialParameterInfo& InParameterInfo)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneComponentMaterialParameterSection", "RemoveScalarParameter");
+
+	Params::MovieSceneComponentMaterialParameterSection_RemoveScalarParameter Parms{};
+
+	Parms.InParameterInfo = std::move(InParameterInfo);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddBoolParameterKey
+// (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddBoolParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, bool InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddBoolParameterKey");
+
+	Params::MovieSceneParameterSection_AddBoolParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = InValue;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddColorParameterKey
+// (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FLinearColor&              InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddColorParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FLinearColor& InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddColorParameterKey");
+
+	Params::MovieSceneParameterSection_AddColorParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = std::move(InValue);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddScalarParameterKey
+// (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddScalarParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, float InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddScalarParameterKey");
+
+	Params::MovieSceneParameterSection_AddScalarParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = InValue;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddTransformParameterKey
+// (Final, RequiredAPI, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FTransform&                InValue                                                (ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddTransformParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FTransform& InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddTransformParameterKey");
+
+	Params::MovieSceneParameterSection_AddTransformParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = std::move(InValue);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddVector2DParameterKey
+// (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FVector2D&                 InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddVector2DParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FVector2D& InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddVector2DParameterKey");
+
+	Params::MovieSceneParameterSection_AddVector2DParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = std::move(InValue);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.AddVectorParameterKey
+// (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameNumber&              InTime                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FVector&                   InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::AddVectorParameterKey(class FName InParameterName, const struct FFrameNumber& InTime, const struct FVector& InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "AddVectorParameterKey");
+
+	Params::MovieSceneParameterSection_AddVectorParameterKey Parms{};
+
+	Parms.InParameterName = InParameterName;
+	Parms.InTime = std::move(InTime);
+	Parms.InValue = std::move(InValue);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveBoolParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveBoolParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveBoolParameter");
+
+	Params::MovieSceneParameterSection_RemoveBoolParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveColorParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveColorParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveColorParameter");
+
+	Params::MovieSceneParameterSection_RemoveColorParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveScalarParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveScalarParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveScalarParameter");
+
+	Params::MovieSceneParameterSection_RemoveScalarParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveTransformParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveTransformParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveTransformParameter");
+
+	Params::MovieSceneParameterSection_RemoveTransformParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveVector2DParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveVector2DParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveVector2DParameter");
+
+	Params::MovieSceneParameterSection_RemoveVector2DParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.RemoveVectorParameter
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class FName                             InParameterName                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneParameterSection::RemoveVectorParameter(class FName InParameterName)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "RemoveVectorParameter");
+
+	Params::MovieSceneParameterSection_RemoveVectorParameter Parms{};
+
+	Parms.InParameterName = InParameterName;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneParameterSection.GetParameterNames
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// TSet<class FName>*                      ParameterNames                                         (Parm, OutParm, NativeAccessSpecifierPublic)
+
+void UMovieSceneParameterSection::GetParameterNames(TSet<class FName>* ParameterNames) const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneParameterSection", "GetParameterNames");
+
+	Params::MovieSceneParameterSection_GetParameterNames Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	if (ParameterNames != nullptr)
+		*ParameterNames = std::move(Parms.ParameterNames);
+}
+
+
+// Function MovieSceneTracks.MovieSceneCVarSection.SetFromString
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// const class FString&                    InString                                               (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneCVarSection::SetFromString(const class FString& InString)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneCVarSection", "SetFromString");
+
+	Params::MovieSceneCVarSection_SetFromString Parms{};
+
+	Parms.InString = std::move(InString);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneCVarSection.GetString
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// class FString                           ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class FString UMovieSceneCVarSection::GetString() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneCVarSection", "GetString");
+
+	Params::MovieSceneCVarSection_GetString Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetDataLayerAssets
+// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const TArray<class UDataLayerAsset*>&   InDataLayerAssets                                      (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetDataLayerAssets(const TArray<class UDataLayerAsset*>& InDataLayerAssets)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetDataLayerAssets");
+
+	Params::MovieSceneDataLayerSection_SetDataLayerAssets Parms{};
+
+	Parms.InDataLayerAssets = std::move(InDataLayerAssets);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetDataLayers
+// (Final, Native, Private, HasOutParams, BlueprintCallable)
+// Parameters:
+// const TArray<struct FActorDataLayer>&   InDataLayers                                           (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetDataLayers(const TArray<struct FActorDataLayer>& InDataLayers)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetDataLayers");
+
+	Params::MovieSceneDataLayerSection_SetDataLayers Parms{};
+
+	Parms.InDataLayers = std::move(InDataLayers);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetDesiredState
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// EDataLayerRuntimeState                  InDesiredState                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetDesiredState(EDataLayerRuntimeState InDesiredState)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetDesiredState");
+
+	Params::MovieSceneDataLayerSection_SetDesiredState Parms{};
+
+	Parms.InDesiredState = InDesiredState;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetFlushOnActivated
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bFlushOnActivated_0                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetFlushOnActivated(bool bFlushOnActivated_0)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetFlushOnActivated");
+
+	Params::MovieSceneDataLayerSection_SetFlushOnActivated Parms{};
+
+	Parms.bFlushOnActivated_0 = bFlushOnActivated_0;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetFlushOnUnload
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bFlushOnUnload_0                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetFlushOnUnload(bool bFlushOnUnload_0)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetFlushOnUnload");
+
+	Params::MovieSceneDataLayerSection_SetFlushOnUnload Parms{};
+
+	Parms.bFlushOnUnload_0 = bFlushOnUnload_0;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetPerformGCOnUnload
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// bool                                    bPerformGCOnUnload_0                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetPerformGCOnUnload(bool bPerformGCOnUnload_0)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetPerformGCOnUnload");
+
+	Params::MovieSceneDataLayerSection_SetPerformGCOnUnload Parms{};
+
+	Parms.bPerformGCOnUnload_0 = bPerformGCOnUnload_0;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.SetPrerollState
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// EDataLayerRuntimeState                  InPrerollState                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneDataLayerSection::SetPrerollState(EDataLayerRuntimeState InPrerollState)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "SetPrerollState");
+
+	Params::MovieSceneDataLayerSection_SetPrerollState Parms{};
+
+	Parms.InPrerollState = InPrerollState;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetDataLayerAssets
+// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// const TArray<class UDataLayerAsset*>    ReturnValue                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+
+const TArray<class UDataLayerAsset*> UMovieSceneDataLayerSection::GetDataLayerAssets() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetDataLayerAssets");
+
+	Params::MovieSceneDataLayerSection_GetDataLayerAssets Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetDataLayers
+// (Final, Native, Private, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// const TArray<struct FActorDataLayer>    ReturnValue                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+
+const TArray<struct FActorDataLayer> UMovieSceneDataLayerSection::GetDataLayers() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetDataLayers");
+
+	Params::MovieSceneDataLayerSection_GetDataLayers Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetDesiredState
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// EDataLayerRuntimeState                  ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+EDataLayerRuntimeState UMovieSceneDataLayerSection::GetDesiredState() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetDesiredState");
+
+	Params::MovieSceneDataLayerSection_GetDesiredState Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetFlushOnActivated
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneDataLayerSection::GetFlushOnActivated() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetFlushOnActivated");
+
+	Params::MovieSceneDataLayerSection_GetFlushOnActivated Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetFlushOnUnload
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneDataLayerSection::GetFlushOnUnload() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetFlushOnUnload");
+
+	Params::MovieSceneDataLayerSection_GetFlushOnUnload Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetPerformGCOnUnload
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneDataLayerSection::GetPerformGCOnUnload() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetPerformGCOnUnload");
+
+	Params::MovieSceneDataLayerSection_GetPerformGCOnUnload Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.GetPrerollState
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// Parameters:
+// EDataLayerRuntimeState                  ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+EDataLayerRuntimeState UMovieSceneDataLayerSection::GetPrerollState() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "GetPrerollState");
+
+	Params::MovieSceneDataLayerSection_GetPrerollState Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneDataLayerSection.HasPreRoll
+// (Final, Native, Private, Const)
+// Parameters:
+// bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+bool UMovieSceneDataLayerSection::HasPreRoll() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneDataLayerSection", "HasPreRoll");
+
+	Params::MovieSceneDataLayerSection_HasPreRoll Parms{};
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -681,7 +1428,7 @@ void UMovieSceneLevelVisibilitySection::SetLevelNames(const TArray<class FName>&
 
 
 // Function MovieSceneTracks.MovieSceneLevelVisibilitySection.SetVisibility
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // ELevelVisibility                        InVisibility                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -731,7 +1478,7 @@ const TArray<class FName> UMovieSceneLevelVisibilitySection::GetLevelNames() con
 
 
 // Function MovieSceneTracks.MovieSceneLevelVisibilitySection.GetVisibility
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
 // ELevelVisibility                        ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -743,6 +1490,184 @@ ELevelVisibility UMovieSceneLevelVisibilitySection::GetVisibility() const
 		Func = Class->GetFunction("MovieSceneLevelVisibilitySection", "GetVisibility");
 
 	Params::MovieSceneLevelVisibilitySection_GetVisibility Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAsyncAction_SequencePrediction.PredictLocalTransformAtFrame
+// (Final, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// class UMovieSceneSequencePlayer*        Player                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USceneComponent*                  TargetComponent                                        (Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameTime&                FrameTime                                              (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UMovieSceneAsyncAction_SequencePrediction*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class UMovieSceneAsyncAction_SequencePrediction* UMovieSceneAsyncAction_SequencePrediction::PredictLocalTransformAtFrame(class UMovieSceneSequencePlayer* Player, class USceneComponent* TargetComponent, const struct FFrameTime& FrameTime)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("MovieSceneAsyncAction_SequencePrediction", "PredictLocalTransformAtFrame");
+
+	Params::MovieSceneAsyncAction_SequencePrediction_PredictLocalTransformAtFrame Parms{};
+
+	Parms.Player = Player;
+	Parms.TargetComponent = TargetComponent;
+	Parms.FrameTime = std::move(FrameTime);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAsyncAction_SequencePrediction.PredictLocalTransformAtTime
+// (Final, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// class UMovieSceneSequencePlayer*        Player                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USceneComponent*                  TargetComponent                                        (Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   TimeInSeconds                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UMovieSceneAsyncAction_SequencePrediction*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class UMovieSceneAsyncAction_SequencePrediction* UMovieSceneAsyncAction_SequencePrediction::PredictLocalTransformAtTime(class UMovieSceneSequencePlayer* Player, class USceneComponent* TargetComponent, float TimeInSeconds)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("MovieSceneAsyncAction_SequencePrediction", "PredictLocalTransformAtTime");
+
+	Params::MovieSceneAsyncAction_SequencePrediction_PredictLocalTransformAtTime Parms{};
+
+	Parms.Player = Player;
+	Parms.TargetComponent = TargetComponent;
+	Parms.TimeInSeconds = TimeInSeconds;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAsyncAction_SequencePrediction.PredictWorldTransformAtFrame
+// (Final, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// class UMovieSceneSequencePlayer*        Player                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USceneComponent*                  TargetComponent                                        (Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FFrameTime&                FrameTime                                              (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UMovieSceneAsyncAction_SequencePrediction*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class UMovieSceneAsyncAction_SequencePrediction* UMovieSceneAsyncAction_SequencePrediction::PredictWorldTransformAtFrame(class UMovieSceneSequencePlayer* Player, class USceneComponent* TargetComponent, const struct FFrameTime& FrameTime)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("MovieSceneAsyncAction_SequencePrediction", "PredictWorldTransformAtFrame");
+
+	Params::MovieSceneAsyncAction_SequencePrediction_PredictWorldTransformAtFrame Parms{};
+
+	Parms.Player = Player;
+	Parms.TargetComponent = TargetComponent;
+	Parms.FrameTime = std::move(FrameTime);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneAsyncAction_SequencePrediction.PredictWorldTransformAtTime
+// (Final, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// class UMovieSceneSequencePlayer*        Player                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USceneComponent*                  TargetComponent                                        (Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   TimeInSeconds                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UMovieSceneAsyncAction_SequencePrediction*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class UMovieSceneAsyncAction_SequencePrediction* UMovieSceneAsyncAction_SequencePrediction::PredictWorldTransformAtTime(class UMovieSceneSequencePlayer* Player, class USceneComponent* TargetComponent, float TimeInSeconds)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("MovieSceneAsyncAction_SequencePrediction", "PredictWorldTransformAtTime");
+
+	Params::MovieSceneAsyncAction_SequencePrediction_PredictWorldTransformAtTime Parms{};
+
+	Parms.Player = Player;
+	Parms.TargetComponent = TargetComponent;
+	Parms.TimeInSeconds = TimeInSeconds;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MovieSceneTracks.MovieSceneSkeletalAnimationTrack.SetSwapRootBone
+// (Final, RequiredAPI, Native, Public)
+// Parameters:
+// ESwapRootBone                           InValue                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UMovieSceneSkeletalAnimationTrack::SetSwapRootBone(ESwapRootBone InValue)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneSkeletalAnimationTrack", "SetSwapRootBone");
+
+	Params::MovieSceneSkeletalAnimationTrack_SetSwapRootBone Parms{};
+
+	Parms.InValue = InValue;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function MovieSceneTracks.MovieSceneSkeletalAnimationTrack.GetSwapRootBone
+// (Final, RequiredAPI, Native, Public, Const)
+// Parameters:
+// ESwapRootBone                           ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+ESwapRootBone UMovieSceneSkeletalAnimationTrack::GetSwapRootBone() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MovieSceneSkeletalAnimationTrack", "GetSwapRootBone");
+
+	Params::MovieSceneSkeletalAnimationTrack_GetSwapRootBone Parms{};
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;

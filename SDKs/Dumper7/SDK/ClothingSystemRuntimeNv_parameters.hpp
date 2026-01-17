@@ -21,7 +21,6 @@ struct ClothingSimulationInteractorNv_SetAnimDriveDamperStiffness final
 public:
 	float                                         InStiffness;                                       // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ClothingSimulationInteractorNv_SetAnimDriveDamperStiffness;
 
 }
 

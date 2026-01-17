@@ -18,36 +18,16 @@
 namespace SDK
 {
 
-// Class ACLPlugin.AnimCurveCompressionCodec_ACL
-// 0x0000 (0x0028 - 0x0028)
-class UAnimCurveCompressionCodec_ACL final : public UAnimCurveCompressionCodec
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("AnimCurveCompressionCodec_ACL")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"AnimCurveCompressionCodec_ACL")
-	}
-	static class UAnimCurveCompressionCodec_ACL* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UAnimCurveCompressionCodec_ACL>();
-	}
-};
-DUMPER7_ASSERTS_UAnimCurveCompressionCodec_ACL;
-
 // Class ACLPlugin.AnimationCompressionLibraryDatabase
-// 0x0138 (0x0160 - 0x0028)
+// 0x0100 (0x0128 - 0x0028)
 class UAnimationCompressionLibraryDatabase final : public UObject
 {
 public:
 	TArray<uint8>                                 CookedCompressedBytes;                             // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
 	TArray<uint64>                                CookedAnimSequenceMappings;                        // 0x0038(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_48[0x110];                                     // 0x0048(0x0110)(Fixing Size After Last Property [ Dumper-7 ])
-	uint32                                        MaxStreamRequestSizeKB;                            // 0x0158(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_15C[0x4];                                      // 0x015C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_48[0xD8];                                      // 0x0048(0x00D8)(Fixing Size After Last Property [ Dumper-7 ])
+	uint32                                        MaxStreamRequestSizeKB;                            // 0x0120(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static EACLVisualFidelity GetVisualFidelity(class UAnimationCompressionLibraryDatabase* DatabaseAsset);
@@ -67,16 +47,11 @@ public:
 		return GetDefaultObjImpl<UAnimationCompressionLibraryDatabase>();
 	}
 };
-DUMPER7_ASSERTS_UAnimationCompressionLibraryDatabase;
 
 // Class ACLPlugin.AnimBoneCompressionCodec_ACLBase
-// 0x0008 (0x0040 - 0x0038)
+// 0x0000 (0x0038 - 0x0038)
 class UAnimBoneCompressionCodec_ACLBase : public UAnimBoneCompressionCodec
 {
-public:
-	bool                                          bStripBindPose;                                    // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
@@ -91,15 +66,11 @@ public:
 		return GetDefaultObjImpl<UAnimBoneCompressionCodec_ACLBase>();
 	}
 };
-DUMPER7_ASSERTS_UAnimBoneCompressionCodec_ACLBase;
 
 // Class ACLPlugin.AnimBoneCompressionCodec_ACL
-// 0x0008 (0x0048 - 0x0040)
+// 0x0000 (0x0038 - 0x0038)
 class UAnimBoneCompressionCodec_ACL final : public UAnimBoneCompressionCodec_ACLBase
 {
-public:
-	class UAnimBoneCompressionCodec*              SafetyFallbackCodec;                               // 0x0040(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, PersistentInstance, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
 public:
 	static class UClass* StaticClass()
 	{
@@ -114,10 +85,9 @@ public:
 		return GetDefaultObjImpl<UAnimBoneCompressionCodec_ACL>();
 	}
 };
-DUMPER7_ASSERTS_UAnimBoneCompressionCodec_ACL;
 
 // Class ACLPlugin.AnimBoneCompressionCodec_ACLCustom
-// 0x0000 (0x0040 - 0x0040)
+// 0x0000 (0x0038 - 0x0038)
 class UAnimBoneCompressionCodec_ACLCustom final : public UAnimBoneCompressionCodec_ACLBase
 {
 public:
@@ -134,14 +104,13 @@ public:
 		return GetDefaultObjImpl<UAnimBoneCompressionCodec_ACLCustom>();
 	}
 };
-DUMPER7_ASSERTS_UAnimBoneCompressionCodec_ACLCustom;
 
 // Class ACLPlugin.AnimBoneCompressionCodec_ACLDatabase
-// 0x0008 (0x0048 - 0x0040)
+// 0x0008 (0x0040 - 0x0038)
 class UAnimBoneCompressionCodec_ACLDatabase final : public UAnimBoneCompressionCodec_ACLBase
 {
 public:
-	class UAnimationCompressionLibraryDatabase*   DatabaseAsset;                                     // 0x0040(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UAnimationCompressionLibraryDatabase*   DatabaseAsset;                                     // 0x0038(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -157,10 +126,9 @@ public:
 		return GetDefaultObjImpl<UAnimBoneCompressionCodec_ACLDatabase>();
 	}
 };
-DUMPER7_ASSERTS_UAnimBoneCompressionCodec_ACLDatabase;
 
 // Class ACLPlugin.AnimBoneCompressionCodec_ACLSafe
-// 0x0000 (0x0040 - 0x0040)
+// 0x0000 (0x0038 - 0x0038)
 class UAnimBoneCompressionCodec_ACLSafe final : public UAnimBoneCompressionCodec_ACLBase
 {
 public:
@@ -177,7 +145,25 @@ public:
 		return GetDefaultObjImpl<UAnimBoneCompressionCodec_ACLSafe>();
 	}
 };
-DUMPER7_ASSERTS_UAnimBoneCompressionCodec_ACLSafe;
+
+// Class ACLPlugin.AnimCurveCompressionCodec_ACL
+// 0x0000 (0x0028 - 0x0028)
+class UAnimCurveCompressionCodec_ACL final : public UAnimCurveCompressionCodec
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("AnimCurveCompressionCodec_ACL")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"AnimCurveCompressionCodec_ACL")
+	}
+	static class UAnimCurveCompressionCodec_ACL* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UAnimCurveCompressionCodec_ACL>();
+	}
+};
 
 }
 

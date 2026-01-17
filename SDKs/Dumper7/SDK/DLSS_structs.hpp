@@ -14,8 +14,18 @@
 namespace SDK
 {
 
+// Enum DLSS.EDLSSSettingOverride
+// NumValues: 0x0004
+enum class EDLSSSettingOverride : uint8
+{
+	Enabled                                  = 0,
+	Disabled                                 = 1,
+	UseProjectSettings                       = 2,
+	EDLSSSettingOverride_MAX                 = 3,
+};
+
 // Enum DLSS.EDLSSPreset
-// NumValues: 0x0008
+// NumValues: 0x0009
 enum class EDLSSPreset : uint8
 {
 	Default                                  = 0,
@@ -25,17 +35,8 @@ enum class EDLSSPreset : uint8
 	D                                        = 4,
 	E                                        = 5,
 	F                                        = 6,
-	EDLSSPreset_MAX                          = 7,
-};
-
-// Enum DLSS.EDLSSSettingOverride
-// NumValues: 0x0004
-enum class EDLSSSettingOverride : uint8
-{
-	Enabled                                  = 0,
-	Disabled                                 = 1,
-	UseProjectSettings                       = 2,
-	EDLSSSettingOverride_MAX                 = 3,
+	G                                        = 7,
+	EDLSSPreset_MAX                          = 8,
 };
 
 }

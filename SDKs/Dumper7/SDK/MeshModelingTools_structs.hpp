@@ -10,21 +10,36 @@
 
 #include "Basic.hpp"
 
-#include "Engine_structs.hpp"
-#include "CoreUObject_structs.hpp"
-
 
 namespace SDK
 {
 
-// Enum MeshModelingTools.EMakeMeshPolygroupMode
-// NumValues: 0x0004
-enum class EMakeMeshPolygroupMode : uint8
+// Enum MeshModelingTools.EPolyEditExtrudeEdgeDirectionMode
+// NumValues: 0x0003
+enum class EPolyEditExtrudeEdgeDirectionMode : uint32
 {
-	Single                                   = 0,
-	PerFace                                  = 1,
-	PerQuad                                  = 2,
-	EMakeMeshPolygroupMode_MAX               = 3,
+	LocalExtrudeFrames                       = 0,
+	SingleDirection                          = 1,
+	EPolyEditExtrudeEdgeDirectionMode_MAX    = 2,
+};
+
+// Enum MeshModelingTools.EPolyEditExtrudeEdgeDistanceMode
+// NumValues: 0x0003
+enum class EPolyEditExtrudeEdgeDistanceMode : uint32
+{
+	Fixed                                    = 0,
+	Gizmo                                    = 1,
+	EPolyEditExtrudeEdgeDistanceMode_MAX     = 2,
+};
+
+// Enum MeshModelingTools.EMakeMeshPlacementType
+// NumValues: 0x0004
+enum class EMakeMeshPlacementType : uint8
+{
+	GroundPlane                              = 0,
+	OnScene                                  = 1,
+	AtOrigin                                 = 2,
+	EMakeMeshPlacementType_MAX               = 3,
 };
 
 // Enum MeshModelingTools.EMakeMeshPivotLocation
@@ -37,228 +52,52 @@ enum class EMakeMeshPivotLocation : uint8
 	EMakeMeshPivotLocation_MAX               = 3,
 };
 
-// Enum MeshModelingTools.EMakeMeshPlacementType
-// NumValues: 0x0003
-enum class EMakeMeshPlacementType : uint8
-{
-	GroundPlane                              = 0,
-	OnScene                                  = 1,
-	EMakeMeshPlacementType_MAX               = 2,
-};
-
-// Enum MeshModelingTools.EAlignObjectsBoxPoint
-// NumValues: 0x0009
-enum class EAlignObjectsBoxPoint : uint32
-{
-	Center                                   = 0,
-	Bottom                                   = 1,
-	Top                                      = 2,
-	Left                                     = 3,
-	Right                                    = 4,
-	Front                                    = 5,
-	Back                                     = 6,
-	Min                                      = 7,
-	Max                                      = 8,
-};
-
-// Enum MeshModelingTools.EAlignObjectsAlignToOptions
+// Enum MeshModelingTools.EMakeMeshPolygroupMode
 // NumValues: 0x0004
-enum class EAlignObjectsAlignToOptions : uint32
+enum class EMakeMeshPolygroupMode : uint8
 {
-	FirstSelected                            = 0,
-	LastSelected                             = 1,
-	Combined                                 = 2,
-	EAlignObjectsAlignToOptions_MAX          = 3,
+	PerShape                                 = 0,
+	PerFace                                  = 1,
+	PerQuad                                  = 2,
+	EMakeMeshPolygroupMode_MAX               = 3,
 };
 
-// Enum MeshModelingTools.EAlignObjectsAlignTypes
+// Enum MeshModelingTools.EProceduralRectType
 // NumValues: 0x0003
-enum class EAlignObjectsAlignTypes : uint32
+enum class EProceduralRectType : uint32
 {
-	Pivots                                   = 0,
-	BoundingBoxes                            = 1,
-	EAlignObjectsAlignTypes_MAX              = 2,
+	Rectangle                                = 0,
+	RoundedRectangle                         = 1,
+	EProceduralRectType_MAX                  = 2,
 };
 
-// Enum MeshModelingTools.EBakedCurvatureClampMode
-// NumValues: 0x0004
-enum class EBakedCurvatureClampMode : uint32
-{
-	None                                     = 0,
-	Positive                                 = 1,
-	Negative                                 = 2,
-	EBakedCurvatureClampMode_MAX             = 3,
-};
-
-// Enum MeshModelingTools.EBakedCurvatureColorMode
-// NumValues: 0x0004
-enum class EBakedCurvatureColorMode : uint32
-{
-	Grayscale                                = 0,
-	RedBlue                                  = 1,
-	RedGreenBlue                             = 2,
-	EBakedCurvatureColorMode_MAX             = 3,
-};
-
-// Enum MeshModelingTools.EBakedCurvatureTypeMode
-// NumValues: 0x0004
-enum class EBakedCurvatureTypeMode : uint32
-{
-	MeanAverage                              = 0,
-	Max                                      = 1,
-	Min                                      = 2,
-	Gaussian                                 = 3,
-};
-
-// Enum MeshModelingTools.EOcclusionMapPreview
+// Enum MeshModelingTools.EProceduralDiscType
 // NumValues: 0x0003
-enum class EOcclusionMapPreview : uint32
+enum class EProceduralDiscType : uint32
 {
-	AmbientOcclusion                         = 0,
-	BentNormal                               = 1,
-	EOcclusionMapPreview_MAX                 = 2,
+	Disc                                     = 0,
+	PuncturedDisc                            = 1,
+	EProceduralDiscType_MAX                  = 2,
 };
 
-// Enum MeshModelingTools.EOcclusionMapDistribution
+// Enum MeshModelingTools.EProceduralSphereType
 // NumValues: 0x0003
-enum class EOcclusionMapDistribution : uint32
+enum class EProceduralSphereType : uint32
 {
-	Uniform                                  = 0,
-	Cosine                                   = 1,
-	EOcclusionMapDistribution_MAX            = 2,
+	LatLong                                  = 0,
+	Box                                      = 1,
+	EProceduralSphereType_MAX                = 2,
 };
 
-// Enum MeshModelingTools.ENormalMapSpace
-// NumValues: 0x0003
-enum class ENormalMapSpace : uint32
-{
-	Tangent                                  = 0,
-	Object                                   = 1,
-	ENormalMapSpace_MAX                      = 2,
-};
-
-// Enum MeshModelingTools.EBakeTextureResolution
-// NumValues: 0x000B
-enum class EBakeTextureResolution : uint32
-{
-	Resolution16                             = 16,
-	Resolution32                             = 32,
-	Resolution64                             = 64,
-	Resolution128                            = 128,
-	Resolution256                            = 256,
-	Resolution512                            = 512,
-	Resolution1024                           = 1024,
-	Resolution2048                           = 2048,
-	Resolution4096                           = 4096,
-	Resolution8192                           = 8192,
-	EBakeTextureResolution_MAX               = 8193,
-};
-
-// Enum MeshModelingTools.EBakeMapType
-// NumValues: 0x0008
-enum class EBakeMapType : uint32
-{
-	TangentSpaceNormalMap                    = 0,
-	Occlusion                                = 1,
-	Curvature                                = 2,
-	Texture2DImage                           = 3,
-	NormalImage                              = 4,
-	FaceNormalImage                          = 5,
-	PositionImage                            = 6,
-	EBakeMapType_MAX                         = 7,
-};
-
-// Enum MeshModelingTools.EBakeScaleMethod
-// NumValues: 0x0004
-enum class EBakeScaleMethod : uint8
-{
-	BakeFullScale                            = 0,
-	BakeNonuniformScale                      = 1,
-	DoNotBakeScale                           = 2,
-	EBakeScaleMethod_MAX                     = 3,
-};
-
-// Enum MeshModelingTools.ECollisionGeometryMode
+// Enum MeshModelingTools.EProceduralStairsType
 // NumValues: 0x0005
-enum class ECollisionGeometryMode : uint32
-{
-	Default                                  = 0,
-	SimpleAndComplex                         = 1,
-	UseSimpleAsComplex                       = 2,
-	UseComplexAsSimple                       = 3,
-	ECollisionGeometryMode_MAX               = 4,
-};
-
-// Enum MeshModelingTools.ECombineTargetType
-// NumValues: 0x0004
-enum class ECombineTargetType : uint32
-{
-	NewAsset                                 = 0,
-	FirstInputAsset                          = 1,
-	LastInputAsset                           = 2,
-	ECombineTargetType_MAX                   = 3,
-};
-
-// Enum MeshModelingTools.EConvertToPolygonsMode
-// NumValues: 0x0003
-enum class EConvertToPolygonsMode : uint32
-{
-	FaceNormalDeviation                      = 0,
-	FromUVISlands                            = 1,
-	EConvertToPolygonsMode_MAX               = 2,
-};
-
-// Enum MeshModelingTools.EQuickTransformerMode
-// NumValues: 0x0003
-enum class EQuickTransformerMode : uint8
-{
-	AxisTranslation                          = 0,
-	AxisRotation                             = 1,
-	EQuickTransformerMode_MAX                = 2,
-};
-
-// Enum MeshModelingTools.EWeightScheme
-// NumValues: 0x0007
-enum class EWeightScheme : uint32
-{
-	Uniform                                  = 0,
-	Umbrella                                 = 1,
-	Valence                                  = 2,
-	MeanValue                                = 3,
-	Cotangent                                = 4,
-	ClampedCotangent                         = 5,
-	EWeightScheme_MAX                        = 6,
-};
-
-// Enum MeshModelingTools.EGroupTopologyDeformationStrategy
-// NumValues: 0x0003
-enum class EGroupTopologyDeformationStrategy : uint8
+enum class EProceduralStairsType : uint32
 {
 	Linear                                   = 0,
-	Laplacian                                = 1,
-	EGroupTopologyDeformationStrategy_MAX    = 2,
-};
-
-// Enum MeshModelingTools.EDisplaceMeshToolDisplaceType
-// NumValues: 0x0006
-enum class EDisplaceMeshToolDisplaceType : uint8
-{
-	Constant                                 = 0,
-	RandomNoise                              = 1,
-	PerlinNoise                              = 2,
-	DisplacementMap                          = 3,
-	SineWave                                 = 4,
-	EDisplaceMeshToolDisplaceType_MAX        = 5,
-};
-
-// Enum MeshModelingTools.EDrawPolygonOutputMode
-// NumValues: 0x0004
-enum class EDrawPolygonOutputMode : uint8
-{
-	MeshedPolygon                            = 0,
-	ExtrudedConstant                         = 1,
-	ExtrudedInteractive                      = 2,
-	EDrawPolygonOutputMode_MAX               = 3,
+	Floating                                 = 1,
+	Curved                                   = 2,
+	Spiral                                   = 3,
+	EProceduralStairsType_MAX                = 4,
 };
 
 // Enum MeshModelingTools.EDrawPolygonDrawMode
@@ -270,93 +109,142 @@ enum class EDrawPolygonDrawMode : uint8
 	Square                                   = 2,
 	Rectangle                                = 3,
 	RoundedRectangle                         = 4,
-	HoleyCircle                              = 5,
+	Ring                                     = 5,
 	EDrawPolygonDrawMode_MAX                 = 6,
 };
 
-// Enum MeshModelingTools.EDrawPolyPathExtrudeDirection
-// NumValues: 0x0008
-enum class EDrawPolyPathExtrudeDirection : uint32
-{
-	SelectionNormal                          = 0,
-	WorldX                                   = 1,
-	WorldY                                   = 2,
-	WorldZ                                   = 3,
-	LocalX                                   = 4,
-	LocalY                                   = 5,
-	LocalZ                                   = 6,
-	EDrawPolyPathExtrudeDirection_MAX        = 7,
-};
-
-// Enum MeshModelingTools.EDrawPolyPathHeightMode
-// NumValues: 0x0003
-enum class EDrawPolyPathHeightMode : uint32
-{
-	Interactive                              = 0,
-	Constant                                 = 1,
-	EDrawPolyPathHeightMode_MAX              = 2,
-};
-
-// Enum MeshModelingTools.EDrawPolyPathWidthMode
-// NumValues: 0x0003
-enum class EDrawPolyPathWidthMode : uint32
-{
-	Interactive                              = 0,
-	Constant                                 = 1,
-	EDrawPolyPathWidthMode_MAX               = 2,
-};
-
-// Enum MeshModelingTools.EDrawPolyPathOutputMode
+// Enum MeshModelingTools.EDrawPolygonExtrudeMode
 // NumValues: 0x0004
-enum class EDrawPolyPathOutputMode : uint32
+enum class EDrawPolygonExtrudeMode : uint8
 {
-	Ribbon                                   = 0,
-	Extrusion                                = 1,
-	Ramp                                     = 2,
-	EDrawPolyPathOutputMode_MAX              = 3,
+	Flat                                     = 0,
+	Fixed                                    = 1,
+	Interactive                              = 2,
+	EDrawPolygonExtrudeMode_MAX              = 3,
 };
 
-// Enum MeshModelingTools.EDynamicMeshSculptBrushType
-// NumValues: 0x0012
-enum class EDynamicMeshSculptBrushType : uint8
-{
-	Move                                     = 0,
-	PullKelvin                               = 1,
-	PullSharpKelvin                          = 2,
-	Smooth                                   = 3,
-	Offset                                   = 4,
-	SculptView                               = 5,
-	SculptMax                                = 6,
-	Inflate                                  = 7,
-	ScaleKelvin                              = 8,
-	Pinch                                    = 9,
-	TwistKelvin                              = 10,
-	Flatten                                  = 11,
-	Plane                                    = 12,
-	PlaneViewAligned                         = 13,
-	FixedPlane                               = 14,
-	Resample                                 = 15,
-	LastValue                                = 16,
-	EDynamicMeshSculptBrushType_MAX          = 17,
-};
-
-// Enum MeshModelingTools.EEdgeLoopInsertionMode
+// Enum MeshModelingTools.ELocalFrameMode
 // NumValues: 0x0003
-enum class EEdgeLoopInsertionMode : uint32
+enum class ELocalFrameMode : uint32
 {
-	Retriangulate                            = 0,
-	PlaneCut                                 = 1,
-	EEdgeLoopInsertionMode_MAX               = 2,
+	FromObject                               = 0,
+	FromGeometry                             = 1,
+	ELocalFrameMode_MAX                      = 2,
 };
 
-// Enum MeshModelingTools.EEdgeLoopPositioningMode
-// NumValues: 0x0004
-enum class EEdgeLoopPositioningMode : uint32
+// Enum MeshModelingTools.EEditMeshPolygonsToolActions
+// NumValues: 0x0027
+enum class EEditMeshPolygonsToolActions : uint8
 {
-	Even                                     = 0,
-	ProportionOffset                         = 1,
-	DistanceOffset                           = 2,
-	EEdgeLoopPositioningMode_MAX             = 3,
+	NoAction                                 = 0,
+	AcceptCurrent                            = 1,
+	CancelCurrent                            = 2,
+	Extrude                                  = 3,
+	PushPull                                 = 4,
+	Offset                                   = 5,
+	Inset                                    = 6,
+	Outset                                   = 7,
+	BevelFaces                               = 8,
+	InsertEdge                               = 9,
+	InsertEdgeLoop                           = 10,
+	Complete                                 = 11,
+	PlaneCut                                 = 12,
+	Merge                                    = 13,
+	Delete                                   = 14,
+	CutFaces                                 = 15,
+	RecalculateNormals                       = 16,
+	FlipNormals                              = 17,
+	Retriangulate                            = 18,
+	Decompose                                = 19,
+	Disconnect                               = 20,
+	Duplicate                                = 21,
+	CollapseEdge                             = 22,
+	WeldEdges                                = 23,
+	StraightenEdge                           = 24,
+	FillHole                                 = 25,
+	BridgeEdges                              = 26,
+	ExtrudeEdges                             = 27,
+	BevelEdges                               = 28,
+	SimplifyAlongEdges                       = 29,
+	PlanarProjectionUV                       = 30,
+	SimplifyByGroups                         = 31,
+	RegenerateExtraCorners                   = 32,
+	PokeSingleFace                           = 33,
+	SplitSingleEdge                          = 34,
+	FlipSingleEdge                           = 35,
+	CollapseSingleEdge                       = 36,
+	BevelAuto                                = 37,
+	EEditMeshPolygonsToolActions_MAX         = 38,
+};
+
+// Enum MeshModelingTools.EEditMeshPolygonsToolSelectionMode
+// NumValues: 0x0007
+enum class EEditMeshPolygonsToolSelectionMode : uint8
+{
+	Faces                                    = 0,
+	Edges                                    = 1,
+	Vertices                                 = 2,
+	Loops                                    = 3,
+	Rings                                    = 4,
+	FacesEdgesVertices                       = 5,
+	EEditMeshPolygonsToolSelectionMode_MAX   = 6,
+};
+
+// Enum MeshModelingTools.ESetMeshMaterialMode
+// NumValues: 0x0004
+enum class ESetMeshMaterialMode : uint8
+{
+	Original                                 = 0,
+	Checkerboard                             = 1,
+	Override                                 = 2,
+	ESetMeshMaterialMode_MAX                 = 3,
+};
+
+// Enum MeshModelingTools.EMeshEditingMaterialModes
+// NumValues: 0x000A
+enum class EMeshEditingMaterialModes : uint32
+{
+	ExistingMaterial                         = 0,
+	Diffuse                                  = 1,
+	Grey                                     = 2,
+	Soft                                     = 3,
+	Transparent                              = 4,
+	TangentNormal                            = 5,
+	VertexColor                              = 6,
+	CustomImage                              = 7,
+	Custom                                   = 8,
+	EMeshEditingMaterialModes_MAX            = 9,
+};
+
+// Enum MeshModelingTools.ERevolvePropertiesCapFillMode
+// NumValues: 0x0005
+enum class ERevolvePropertiesCapFillMode : uint8
+{
+	None                                     = 0,
+	CenterFan                                = 1,
+	Delaunay                                 = 2,
+	EarClipping                              = 3,
+	ERevolvePropertiesCapFillMode_MAX        = 4,
+};
+
+// Enum MeshModelingTools.ERevolvePropertiesPolygroupMode
+// NumValues: 0x0005
+enum class ERevolvePropertiesPolygroupMode : uint8
+{
+	PerShape                                 = 0,
+	PerFace                                  = 1,
+	PerRevolveStep                           = 2,
+	PerPathSegment                           = 3,
+	ERevolvePropertiesPolygroupMode_MAX      = 4,
+};
+
+// Enum MeshModelingTools.ERevolvePropertiesQuadSplit
+// NumValues: 0x0003
+enum class ERevolvePropertiesQuadSplit : uint8
+{
+	Uniform                                  = 0,
+	Compact                                  = 1,
+	ERevolvePropertiesQuadSplit_MAX          = 2,
 };
 
 // Enum MeshModelingTools.EPolyEditCutPlaneOrientation
@@ -382,69 +270,44 @@ enum class EPolyEditExtrudeDirection : uint32
 	EPolyEditExtrudeDirection_MAX            = 7,
 };
 
-// Enum MeshModelingTools.EEditMeshPolygonsToolActions
-// NumValues: 0x0018
-enum class EEditMeshPolygonsToolActions : uint8
-{
-	NoAction                                 = 0,
-	PlaneCut                                 = 1,
-	Extrude                                  = 2,
-	Offset                                   = 3,
-	Inset                                    = 4,
-	Outset                                   = 5,
-	Merge                                    = 6,
-	Delete                                   = 7,
-	CutFaces                                 = 8,
-	RecalculateNormals                       = 9,
-	FlipNormals                              = 10,
-	Retriangulate                            = 11,
-	Decompose                                = 12,
-	Disconnect                               = 13,
-	CollapseEdge                             = 14,
-	WeldEdges                                = 15,
-	StraightenEdge                           = 16,
-	FillHole                                 = 17,
-	PlanarProjectionUV                       = 18,
-	PokeSingleFace                           = 19,
-	SplitSingleEdge                          = 20,
-	FlipSingleEdge                           = 21,
-	CollapseSingleEdge                       = 22,
-	EEditMeshPolygonsToolActions_MAX         = 23,
-};
-
-// Enum MeshModelingTools.ELocalFrameMode
+// Enum MeshModelingTools.EPolyEditExtrudeDistanceMode
 // NumValues: 0x0003
-enum class ELocalFrameMode : uint32
+enum class EPolyEditExtrudeDistanceMode : uint32
 {
-	FromObject                               = 0,
-	FromGeometry                             = 1,
-	ELocalFrameMode_MAX                      = 2,
+	ClickInViewport                          = 0,
+	Fixed                                    = 1,
+	EPolyEditExtrudeDistanceMode_MAX         = 2,
 };
 
-// Enum MeshModelingTools.EEditPivotToolActions
-// NumValues: 0x0009
-enum class EEditPivotToolActions : uint8
+// Enum MeshModelingTools.EPolyEditExtrudeModeOptions
+// NumValues: 0x0004
+enum class EPolyEditExtrudeModeOptions : uint32
 {
-	NoAction                                 = 0,
-	Center                                   = 1,
-	Bottom                                   = 2,
-	Top                                      = 3,
-	Left                                     = 4,
-	Right                                    = 5,
-	Front                                    = 6,
-	Back                                     = 7,
-	EEditPivotToolActions_MAX                = 8,
+	SingleDirection                          = 3,
+	SelectedTriangleNormals                  = 0,
+	SelectedTriangleNormalsEven              = 1,
+	EPolyEditExtrudeModeOptions_MAX          = 4,
 };
 
-// Enum MeshModelingTools.EEditPivotSnapDragRotationMode
+// Enum MeshModelingTools.EPolyEditOffsetModeOptions
+// NumValues: 0x0004
+enum class EPolyEditOffsetModeOptions : uint32
+{
+	VertexNormals                            = 2,
+	SelectedTriangleNormals                  = 0,
+	SelectedTriangleNormalsEven              = 1,
+	EPolyEditOffsetModeOptions_MAX           = 3,
+};
+
+// Enum MeshModelingTools.EPolyEditPushPullModeOptions
 // NumValues: 0x0005
-enum class EEditPivotSnapDragRotationMode : uint8
+enum class EPolyEditPushPullModeOptions : uint32
 {
-	Ignore                                   = 0,
-	Align                                    = 1,
-	AlignFlipped                             = 2,
-	LastValue                                = 3,
-	EEditPivotSnapDragRotationMode_MAX       = 4,
+	SelectedTriangleNormals                  = 0,
+	SelectedTriangleNormalsEven              = 1,
+	SingleDirection                          = 3,
+	VertexNormals                            = 2,
+	EPolyEditPushPullModeOptions_MAX         = 4,
 };
 
 // Enum MeshModelingTools.EGroupEdgeInsertionMode
@@ -456,448 +319,46 @@ enum class EGroupEdgeInsertionMode : uint32
 	EGroupEdgeInsertionMode_MAX              = 2,
 };
 
-// Enum MeshModelingTools.EHoleFillToolActions
+// Enum MeshModelingTools.EEdgeLoopPositioningMode
 // NumValues: 0x0004
-enum class EHoleFillToolActions : uint8
+enum class EEdgeLoopPositioningMode : uint32
+{
+	Even                                     = 0,
+	ProportionOffset                         = 1,
+	DistanceOffset                           = 2,
+	EEdgeLoopPositioningMode_MAX             = 3,
+};
+
+// Enum MeshModelingTools.EEdgeLoopInsertionMode
+// NumValues: 0x0003
+enum class EEdgeLoopInsertionMode : uint32
+{
+	Retriangulate                            = 0,
+	PlaneCut                                 = 1,
+	EEdgeLoopInsertionMode_MAX               = 2,
+};
+
+// Enum MeshModelingTools.EUVProjectionToolActions
+// NumValues: 0x0005
+enum class EUVProjectionToolActions : uint8
 {
 	NoAction                                 = 0,
-	SelectAll                                = 1,
-	ClearSelection                           = 2,
-	EHoleFillToolActions_MAX                 = 3,
+	AutoFit                                  = 1,
+	AutoFitAlign                             = 2,
+	Reset                                    = 3,
+	EUVProjectionToolActions_MAX             = 4,
 };
 
-// Enum MeshModelingTools.EMeshAttributePaintToolActions
-// NumValues: 0x0002
-enum class EMeshAttributePaintToolActions : uint8
-{
-	NoAction                                 = 0,
-	EMeshAttributePaintToolActions_MAX       = 1,
-};
-
-// Enum MeshModelingTools.EPlaneBrushSideMode
-// NumValues: 0x0004
-enum class EPlaneBrushSideMode : uint8
-{
-	BothSides                                = 0,
-	PushDown                                 = 1,
-	PullTowards                              = 2,
-	EPlaneBrushSideMode_MAX                  = 3,
-};
-
-// Enum MeshModelingTools.EMeshEditingMaterialModes
-// NumValues: 0x0007
-enum class EMeshEditingMaterialModes : uint32
-{
-	ExistingMaterial                         = 0,
-	Diffuse                                  = 1,
-	Grey                                     = 2,
-	Soft                                     = 3,
-	TangentNormal                            = 4,
-	Custom                                   = 5,
-	EMeshEditingMaterialModes_MAX            = 6,
-};
-
-// Enum MeshModelingTools.ESetMeshMaterialMode
-// NumValues: 0x0004
-enum class ESetMeshMaterialMode : uint8
-{
-	KeepOriginal                             = 0,
-	Checkerboard                             = 1,
-	Override                                 = 2,
-	ESetMeshMaterialMode_MAX                 = 3,
-};
-
-// Enum MeshModelingTools.EMeshSculptFalloffType
-// NumValues: 0x000A
-enum class EMeshSculptFalloffType : uint8
-{
-	Smooth                                   = 0,
-	Linear                                   = 1,
-	Inverse                                  = 2,
-	Round                                    = 3,
-	BoxSmooth                                = 4,
-	BoxLinear                                = 5,
-	BoxInverse                               = 6,
-	BoxRound                                 = 7,
-	LastValue                                = 8,
-	EMeshSculptFalloffType_MAX               = 9,
-};
-
-// Enum MeshModelingTools.EMeshFacesColorMode
+// Enum MeshModelingTools.EUVProjectionToolInitializationMode
 // NumValues: 0x0005
-enum class EMeshFacesColorMode : uint32
+enum class EUVProjectionToolInitializationMode : uint32
 {
-	None                                     = 0,
-	ByGroup                                  = 1,
-	ByMaterialID                             = 2,
-	ByUVIsland                               = 3,
-	EMeshFacesColorMode_MAX                  = 4,
+	Default                                  = 0,
+	UsePrevious                              = 1,
+	AutoFit                                  = 2,
+	AutoFitAlign                             = 3,
+	EUVProjectionToolInitializationMode_MAX  = 4,
 };
-
-// Enum MeshModelingTools.EMeshSelectionToolPrimaryMode
-// NumValues: 0x000A
-enum class EMeshSelectionToolPrimaryMode : uint32
-{
-	Brush                                    = 0,
-	VolumetricBrush                          = 1,
-	AngleFiltered                            = 2,
-	Visible                                  = 3,
-	AllConnected                             = 4,
-	AllInGroup                               = 5,
-	ByMaterial                               = 6,
-	ByUVIsland                               = 7,
-	AllWithinAngle                           = 8,
-	EMeshSelectionToolPrimaryMode_MAX        = 9,
-};
-
-// Enum MeshModelingTools.EMeshSelectionToolActions
-// NumValues: 0x0012
-enum class EMeshSelectionToolActions : uint8
-{
-	NoAction                                 = 0,
-	SelectAll                                = 1,
-	ClearSelection                           = 2,
-	InvertSelection                          = 3,
-	GrowSelection                            = 4,
-	ShrinkSelection                          = 5,
-	ExpandToConnected                        = 6,
-	SelectLargestComponentByTriCount         = 7,
-	SelectLargestComponentByArea             = 8,
-	OptimizeSelection                        = 9,
-	DeleteSelected                           = 10,
-	DisconnectSelected                       = 11,
-	SeparateSelected                         = 12,
-	FlipSelected                             = 13,
-	CreateGroup                              = 14,
-	CycleSelectionMode                       = 15,
-	CycleViewMode                            = 16,
-	EMeshSelectionToolActions_MAX            = 17,
-};
-
-// Enum MeshModelingTools.ENonlinearOperationType
-// NumValues: 0x0004
-enum class ENonlinearOperationType : uint8
-{
-	Bend                                     = 0,
-	Flare                                    = 1,
-	Twist                                    = 2,
-	ENonlinearOperationType_MAX              = 3,
-};
-
-// Enum MeshModelingTools.EMeshVertexSculptBrushType
-// NumValues: 0x0012
-enum class EMeshVertexSculptBrushType : uint8
-{
-	Move                                     = 0,
-	PullKelvin                               = 1,
-	PullSharpKelvin                          = 2,
-	Smooth                                   = 3,
-	SmoothFill                               = 4,
-	Offset                                   = 5,
-	SculptView                               = 6,
-	SculptMax                                = 7,
-	Inflate                                  = 8,
-	ScaleKelvin                              = 9,
-	Pinch                                    = 10,
-	TwistKelvin                              = 11,
-	Flatten                                  = 12,
-	Plane                                    = 13,
-	PlaneViewAligned                         = 14,
-	FixedPlane                               = 15,
-	LastValue                                = 16,
-	EMeshVertexSculptBrushType_MAX           = 17,
-};
-
-// Enum MeshModelingTools.EMirrorToolAction
-// NumValues: 0x0009
-enum class EMirrorToolAction : uint8
-{
-	NoAction                                 = 0,
-	ShiftToCenter                            = 1,
-	Left                                     = 2,
-	Right                                    = 3,
-	Up                                       = 4,
-	Down                                     = 5,
-	Forward                                  = 6,
-	Backward                                 = 7,
-	EMirrorToolAction_MAX                    = 8,
-};
-
-// Enum MeshModelingTools.EMirrorCtrlClickBehavior
-// NumValues: 0x0003
-enum class EMirrorCtrlClickBehavior : uint8
-{
-	Reposition                               = 0,
-	RepositionAndReorient                    = 1,
-	EMirrorCtrlClickBehavior_MAX             = 2,
-};
-
-// Enum MeshModelingTools.EMirrorOperationMode
-// NumValues: 0x0003
-enum class EMirrorOperationMode : uint8
-{
-	MirrorAndAppend                          = 0,
-	MirrorExisting                           = 1,
-	EMirrorOperationMode_MAX                 = 2,
-};
-
-// Enum MeshModelingTools.EMirrorSaveMode
-// NumValues: 0x0003
-enum class EMirrorSaveMode : uint8
-{
-	UpdateAssets                             = 0,
-	CreateNewAssets                          = 1,
-	EMirrorSaveMode_MAX                      = 2,
-};
-
-// Enum MeshModelingTools.EOffsetMeshToolOffsetType
-// NumValues: 0x0003
-enum class EOffsetMeshToolOffsetType : uint8
-{
-	Iterative                                = 0,
-	Implicit                                 = 1,
-	EOffsetMeshToolOffsetType_MAX            = 2,
-};
-
-// Enum MeshModelingTools.EMaterialBoundaryConstraint
-// NumValues: 0x0005
-enum class EMaterialBoundaryConstraint : uint8
-{
-	Fixed                                    = 7,
-	Refine                                   = 5,
-	Free                                     = 1,
-	Ignore                                   = 0,
-	EMaterialBoundaryConstraint_MAX          = 8,
-};
-
-// Enum MeshModelingTools.EGroupBoundaryConstraint
-// NumValues: 0x0005
-enum class EGroupBoundaryConstraint : uint8
-{
-	Fixed                                    = 7,
-	Refine                                   = 5,
-	Free                                     = 1,
-	Ignore                                   = 0,
-	EGroupBoundaryConstraint_MAX             = 8,
-};
-
-// Enum MeshModelingTools.EMeshBoundaryConstraint
-// NumValues: 0x0004
-enum class EMeshBoundaryConstraint : uint8
-{
-	Fixed                                    = 7,
-	Refine                                   = 5,
-	Free                                     = 1,
-	EMeshBoundaryConstraint_MAX              = 8,
-};
-
-// Enum MeshModelingTools.EOcclusionCalculationUIMode
-// NumValues: 0x0003
-enum class EOcclusionCalculationUIMode : uint8
-{
-	GeneralizedWindingNumber                 = 0,
-	RaycastOcclusionSamples                  = 1,
-	EOcclusionCalculationUIMode_MAX          = 2,
-};
-
-// Enum MeshModelingTools.EOcclusionTriangleSamplingUIMode
-// NumValues: 0x0003
-enum class EOcclusionTriangleSamplingUIMode : uint8
-{
-	Vertices                                 = 0,
-	VerticesAndCentroids                     = 1,
-	EOcclusionTriangleSamplingUIMode_MAX     = 2,
-};
-
-// Enum MeshModelingTools.ERevolvePropertiesQuadSplit
-// NumValues: 0x0003
-enum class ERevolvePropertiesQuadSplit : uint8
-{
-	Uniform                                  = 0,
-	ShortestDiagonal                         = 1,
-	ERevolvePropertiesQuadSplit_MAX          = 2,
-};
-
-// Enum MeshModelingTools.ERevolvePropertiesPolygroupMode
-// NumValues: 0x0005
-enum class ERevolvePropertiesPolygroupMode : uint8
-{
-	Single                                   = 0,
-	PerFace                                  = 1,
-	PerStep                                  = 2,
-	AccordingToProfileCurve                  = 3,
-	ERevolvePropertiesPolygroupMode_MAX      = 4,
-};
-
-// Enum MeshModelingTools.ERevolvePropertiesCapFillMode
-// NumValues: 0x0005
-enum class ERevolvePropertiesCapFillMode : uint8
-{
-	None                                     = 0,
-	Delaunay                                 = 1,
-	EarClipping                              = 2,
-	CenterFan                                = 3,
-	ERevolvePropertiesCapFillMode_MAX        = 4,
-};
-
-// Enum MeshModelingTools.EProjectedHullAxis
-// NumValues: 0x0006
-enum class EProjectedHullAxis : uint32
-{
-	X                                        = 0,
-	Y                                        = 1,
-	Z                                        = 2,
-	SmallestBoxDimension                     = 3,
-	SmallestVolume                           = 4,
-	EProjectedHullAxis_MAX                   = 5,
-};
-
-// Enum MeshModelingTools.ECollisionGeometryType
-// NumValues: 0x000A
-enum class ECollisionGeometryType : uint32
-{
-	KeepExisting                             = 0,
-	AlignedBoxes                             = 1,
-	OrientedBoxes                            = 2,
-	MinimalSpheres                           = 3,
-	Capsules                                 = 4,
-	ConvexHulls                              = 5,
-	SweptHulls                               = 6,
-	MinVolume                                = 10,
-	None                                     = 11,
-	ECollisionGeometryType_MAX               = 12,
-};
-
-// Enum MeshModelingTools.ESetCollisionGeometryInputMode
-// NumValues: 0x0005
-enum class ESetCollisionGeometryInputMode : uint32
-{
-	CombineAll                               = 0,
-	PerInputObject                           = 1,
-	PerMeshComponent                         = 2,
-	PerMeshGroup                             = 3,
-	ESetCollisionGeometryInputMode_MAX       = 4,
-};
-
-// Enum MeshModelingTools.ESmoothMeshToolSmoothType
-// NumValues: 0x0004
-enum class ESmoothMeshToolSmoothType : uint8
-{
-	Iterative                                = 0,
-	Implicit                                 = 1,
-	Diffusion                                = 2,
-	ESmoothMeshToolSmoothType_MAX            = 3,
-};
-
-// Enum MeshModelingTools.ETransformMeshesSnapDragRotationMode
-// NumValues: 0x0005
-enum class ETransformMeshesSnapDragRotationMode : uint8
-{
-	Ignore                                   = 0,
-	Align                                    = 1,
-	AlignFlipped                             = 2,
-	LastValue                                = 3,
-	ETransformMeshesSnapDragRotationMode_MAX = 4,
-};
-
-// Enum MeshModelingTools.ETransformMeshesSnapDragSource
-// NumValues: 0x0004
-enum class ETransformMeshesSnapDragSource : uint8
-{
-	ClickPoint                               = 0,
-	Pivot                                    = 1,
-	LastValue                                = 2,
-	ETransformMeshesSnapDragSource_MAX       = 3,
-};
-
-// Enum MeshModelingTools.ETransformMeshesTransformMode
-// NumValues: 0x0005
-enum class ETransformMeshesTransformMode : uint8
-{
-	SharedGizmo                              = 0,
-	SharedGizmoLocal                         = 1,
-	PerObjectGizmo                           = 2,
-	LastValue                                = 3,
-	ETransformMeshesTransformMode_MAX        = 4,
-};
-
-// ScriptStruct MeshModelingTools.PhysicsConvexData
-// 0x0038 (0x0038 - 0x0000)
-struct FPhysicsConvexData final
-{
-public:
-	int32                                         NumVertices;                                       // 0x0000(0x0004)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         NumFaces;                                          // 0x0004(0x0004)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FKShapeElem                            Element;                                           // 0x0008(0x0030)(Edit, EditConst, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FPhysicsConvexData;
-
-// ScriptStruct MeshModelingTools.PhysicsCapsuleData
-// 0x0070 (0x0070 - 0x0000)
-struct FPhysicsCapsuleData final
-{
-public:
-	float                                         Radius;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Length;                                            // 0x0004(0x0004)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             Transform;                                         // 0x0010(0x0030)(Edit, EditConst, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FKShapeElem                            Element;                                           // 0x0040(0x0030)(Edit, EditConst, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FPhysicsCapsuleData;
-
-// ScriptStruct MeshModelingTools.PhysicsBoxData
-// 0x0070 (0x0070 - 0x0000)
-struct FPhysicsBoxData final
-{
-public:
-	struct FVector                                Dimensions;                                        // 0x0000(0x000C)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             Transform;                                         // 0x0010(0x0030)(Edit, EditConst, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FKShapeElem                            Element;                                           // 0x0040(0x0030)(Edit, EditConst, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FPhysicsBoxData;
-
-// ScriptStruct MeshModelingTools.PhysicsSphereData
-// 0x0070 (0x0070 - 0x0000)
-struct FPhysicsSphereData final
-{
-public:
-	float                                         Radius;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4[0xC];                                        // 0x0004(0x000C)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             Transform;                                         // 0x0010(0x0030)(Edit, EditConst, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FKShapeElem                            Element;                                           // 0x0040(0x0030)(Edit, EditConst, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FPhysicsSphereData;
-
-// ScriptStruct MeshModelingTools.PerlinLayerProperties
-// 0x0008 (0x0008 - 0x0000)
-struct FPerlinLayerProperties final
-{
-public:
-	float                                         Frequency;                                         // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Intensity;                                         // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FPerlinLayerProperties;
-
-// ScriptStruct MeshModelingTools.EditPivotTarget
-// 0x0010 (0x0010 - 0x0000)
-struct FEditPivotTarget final
-{
-public:
-	class UTransformProxy*                        TransformProxy;                                    // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UTransformGizmo*                        TransformGizmo;                                    // 0x0008(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FEditPivotTarget;
-
-// ScriptStruct MeshModelingTools.TransformMeshesTarget
-// 0x0010 (0x0010 - 0x0000)
-struct FTransformMeshesTarget final
-{
-public:
-	class UTransformProxy*                        TransformProxy;                                    // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UTransformGizmo*                        TransformGizmo;                                    // 0x0008(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTransformMeshesTarget;
 
 }
 

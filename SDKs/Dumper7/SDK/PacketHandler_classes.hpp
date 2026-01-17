@@ -34,7 +34,6 @@ public:
 		return GetDefaultObjImpl<UHandlerComponentFactory>();
 	}
 };
-DUMPER7_ASSERTS_UHandlerComponentFactory;
 
 // Class PacketHandler.PacketHandlerProfileConfig
 // 0x0010 (0x0038 - 0x0028)
@@ -57,7 +56,6 @@ public:
 		return GetDefaultObjImpl<UPacketHandlerProfileConfig>();
 	}
 };
-DUMPER7_ASSERTS_UPacketHandlerProfileConfig;
 
 }
 

@@ -10,31 +10,20 @@
 
 #include "Basic.hpp"
 
+#include "CoreUObject_structs.hpp"
 #include "GeometryCache_structs.hpp"
 
 
 namespace SDK::Params
 {
 
-// Function GeometryCache.GeometryCacheTrack_FlipbookAnimation.AddMeshSample
-// 0x00B8 (0x00B8 - 0x0000)
-struct GeometryCacheTrack_FlipbookAnimation_AddMeshSample final
-{
-public:
-	struct FGeometryCacheMeshData                 MeshData;                                          // 0x0000(0x00B0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	float                                         SampleTime;                                        // 0x00B0(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B4[0x4];                                       // 0x00B4(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GeometryCacheTrack_FlipbookAnimation_AddMeshSample;
-
 // Function GeometryCache.GeometryCacheActor.GetGeometryCacheComponent
 // 0x0008 (0x0008 - 0x0000)
 struct GeometryCacheActor_GetGeometryCacheComponent final
 {
 public:
-	class UGeometryCacheComponent*                ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGeometryCacheComponent*                ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheActor_GetGeometryCacheComponent;
 
 // Function GeometryCache.GeometryCacheComponent.SetExtrapolateFrames
 // 0x0001 (0x0001 - 0x0000)
@@ -43,18 +32,16 @@ struct GeometryCacheComponent_SetExtrapolateFrames final
 public:
 	bool                                          bNewExtrapolating;                                 // 0x0000(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetExtrapolateFrames;
 
 // Function GeometryCache.GeometryCacheComponent.SetGeometryCache
 // 0x0010 (0x0010 - 0x0000)
 struct GeometryCacheComponent_SetGeometryCache final
 {
 public:
-	class UGeometryCache*                         NewGeomCache;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGeometryCache*                         NewGeomCache;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetGeometryCache;
 
 // Function GeometryCache.GeometryCacheComponent.SetLooping
 // 0x0001 (0x0001 - 0x0000)
@@ -63,7 +50,6 @@ struct GeometryCacheComponent_SetLooping final
 public:
 	bool                                          bNewLooping;                                       // 0x0000(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetLooping;
 
 // Function GeometryCache.GeometryCacheComponent.SetMotionVectorScale
 // 0x0004 (0x0004 - 0x0000)
@@ -72,7 +58,14 @@ struct GeometryCacheComponent_SetMotionVectorScale final
 public:
 	float                                         NewMotionVectorScale;                              // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetMotionVectorScale;
+
+// Function GeometryCache.GeometryCacheComponent.SetOverrideWireframeColor
+// 0x0001 (0x0001 - 0x0000)
+struct GeometryCacheComponent_SetOverrideWireframeColor final
+{
+public:
+	bool                                          bOverride;                                         // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
 
 // Function GeometryCache.GeometryCacheComponent.SetPlaybackSpeed
 // 0x0004 (0x0004 - 0x0000)
@@ -81,7 +74,6 @@ struct GeometryCacheComponent_SetPlaybackSpeed final
 public:
 	float                                         NewPlaybackSpeed;                                  // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetPlaybackSpeed;
 
 // Function GeometryCache.GeometryCacheComponent.SetStartTimeOffset
 // 0x0004 (0x0004 - 0x0000)
@@ -90,7 +82,14 @@ struct GeometryCacheComponent_SetStartTimeOffset final
 public:
 	float                                         NewStartTimeOffset;                                // 0x0000(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_SetStartTimeOffset;
+
+// Function GeometryCache.GeometryCacheComponent.SetWireframeOverrideColor
+// 0x0010 (0x0010 - 0x0000)
+struct GeometryCacheComponent_SetWireframeOverrideColor final
+{
+public:
+	struct FLinearColor                           Color;                                             // 0x0000(0x0010)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
 
 // Function GeometryCache.GeometryCacheComponent.TickAtThisTime
 // 0x0008 (0x0008 - 0x0000)
@@ -103,7 +102,6 @@ public:
 	bool                                          bInIsLooping;                                      // 0x0006(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_7[0x1];                                        // 0x0007(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_TickAtThisTime;
 
 // Function GeometryCache.GeometryCacheComponent.GetAnimationTime
 // 0x0004 (0x0004 - 0x0000)
@@ -112,7 +110,6 @@ struct GeometryCacheComponent_GetAnimationTime final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetAnimationTime;
 
 // Function GeometryCache.GeometryCacheComponent.GetDuration
 // 0x0004 (0x0004 - 0x0000)
@@ -121,7 +118,6 @@ struct GeometryCacheComponent_GetDuration final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetDuration;
 
 // Function GeometryCache.GeometryCacheComponent.GetMotionVectorScale
 // 0x0004 (0x0004 - 0x0000)
@@ -130,7 +126,6 @@ struct GeometryCacheComponent_GetMotionVectorScale final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetMotionVectorScale;
 
 // Function GeometryCache.GeometryCacheComponent.GetNumberOfFrames
 // 0x0004 (0x0004 - 0x0000)
@@ -139,7 +134,14 @@ struct GeometryCacheComponent_GetNumberOfFrames final
 public:
 	int32                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetNumberOfFrames;
+
+// Function GeometryCache.GeometryCacheComponent.GetOverrideWireframeColor
+// 0x0001 (0x0001 - 0x0000)
+struct GeometryCacheComponent_GetOverrideWireframeColor final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
 
 // Function GeometryCache.GeometryCacheComponent.GetPlaybackDirection
 // 0x0004 (0x0004 - 0x0000)
@@ -148,7 +150,6 @@ struct GeometryCacheComponent_GetPlaybackDirection final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetPlaybackDirection;
 
 // Function GeometryCache.GeometryCacheComponent.GetPlaybackSpeed
 // 0x0004 (0x0004 - 0x0000)
@@ -157,7 +158,6 @@ struct GeometryCacheComponent_GetPlaybackSpeed final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetPlaybackSpeed;
 
 // Function GeometryCache.GeometryCacheComponent.GetStartTimeOffset
 // 0x0004 (0x0004 - 0x0000)
@@ -166,7 +166,14 @@ struct GeometryCacheComponent_GetStartTimeOffset final
 public:
 	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_GetStartTimeOffset;
+
+// Function GeometryCache.GeometryCacheComponent.GetWireframeOverrideColor
+// 0x0010 (0x0010 - 0x0000)
+struct GeometryCacheComponent_GetWireframeOverrideColor final
+{
+public:
+	struct FLinearColor                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
 
 // Function GeometryCache.GeometryCacheComponent.IsExtrapolatingFrames
 // 0x0001 (0x0001 - 0x0000)
@@ -175,7 +182,6 @@ struct GeometryCacheComponent_IsExtrapolatingFrames final
 public:
 	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_IsExtrapolatingFrames;
 
 // Function GeometryCache.GeometryCacheComponent.IsLooping
 // 0x0001 (0x0001 - 0x0000)
@@ -184,7 +190,6 @@ struct GeometryCacheComponent_IsLooping final
 public:
 	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_IsLooping;
 
 // Function GeometryCache.GeometryCacheComponent.IsPlaying
 // 0x0001 (0x0001 - 0x0000)
@@ -193,7 +198,6 @@ struct GeometryCacheComponent_IsPlaying final
 public:
 	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_IsPlaying;
 
 // Function GeometryCache.GeometryCacheComponent.IsPlayingReversed
 // 0x0001 (0x0001 - 0x0000)
@@ -202,25 +206,32 @@ struct GeometryCacheComponent_IsPlayingReversed final
 public:
 	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheComponent_IsPlayingReversed;
+
+// Function GeometryCache.GeometryCacheTrack_FlipbookAnimation.AddMeshSample
+// 0x00D0 (0x00D0 - 0x0000)
+struct GeometryCacheTrack_FlipbookAnimation_AddMeshSample final
+{
+public:
+	struct FGeometryCacheMeshData                 MeshData;                                          // 0x0000(0x00C8)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	float                                         SampleTime;                                        // 0x00C8(0x0004)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_CC[0x4];                                       // 0x00CC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
 
 // Function GeometryCache.GeometryCacheTrack_TransformAnimation.SetMesh
-// 0x00B0 (0x00B0 - 0x0000)
+// 0x00C8 (0x00C8 - 0x0000)
 struct GeometryCacheTrack_TransformAnimation_SetMesh final
 {
 public:
-	struct FGeometryCacheMeshData                 NewMeshData;                                       // 0x0000(0x00B0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGeometryCacheMeshData                 NewMeshData;                                       // 0x0000(0x00C8)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheTrack_TransformAnimation_SetMesh;
 
 // Function GeometryCache.GeometryCacheTrack_TransformGroupAnimation.SetMesh
-// 0x00B0 (0x00B0 - 0x0000)
+// 0x00C8 (0x00C8 - 0x0000)
 struct GeometryCacheTrack_TransformGroupAnimation_SetMesh final
 {
 public:
-	struct FGeometryCacheMeshData                 NewMeshData;                                       // 0x0000(0x00B0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGeometryCacheMeshData                 NewMeshData;                                       // 0x0000(0x00C8)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GeometryCacheTrack_TransformGroupAnimation_SetMesh;
 
 }
 

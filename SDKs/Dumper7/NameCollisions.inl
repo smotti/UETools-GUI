@@ -9,7 +9,119 @@
 // FORWARD DECLARATIONS
 
 
-namespace BP_Action_Guard_Break_0 { class UBP_Action_Guard_Break_C; }
+namespace ABP_Player_Gunhead_Pistol_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
 
-namespace BP_Action_Guard_Break { class UBP_Action_Guard_Break_C; }
+namespace ABP_Player_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
 
+namespace ABP_Vehicle_Machinegun { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace GE_ServoSurgeon_1_CD_0 { class UGE_ServoSurgeon_1_CD_C; }
+
+namespace GameplayAbilities { struct FServerAbilityRPCBatch; }
+
+namespace ABP_Player_Female_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_PostProcess { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Player_Female_Pistol_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Player_ShotGun_AnimationLaye { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Player_Gunhead_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Cyborg_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Player_Female_Shotgun_Female_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace GE_ServoSurgeon_1_CD { class UGE_ServoSurgeon_1_CD_C; }
+
+namespace ABP_Shaman_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Radar_Drone { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_WPN_PRT01_RCV { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace RigBones3_Skeleton_AnimBlueprint { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Player_Gunhead_Shotgun_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace WB_FrameBuilder_0 { class UWB_FrameBuilder_C; }
+
+namespace ABP_Shaman_Pistol_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace BP_EasyFog_0 { class ABP_EasyFog_C; }
+
+namespace WB_FrameBuilder { class UWB_FrameBuilder_C; }
+
+namespace ABP_AI_Brawler_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Brawler_Main { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Cyborg_Main { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Chaos_Merkava_NEW { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Chaos_T90_NEW { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_AI_Europa_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Bagman_Rifle_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Bagman_ShotGun_AnimationLaye { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Shaman_ShotGun_AnimationLaye { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace BP_EasyFog { class ABP_EasyFog_C; }
+
+namespace ABP_Player_Pistol_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+namespace ABP_Bagman_Pistol_AnimationLayer { struct FAnimBlueprintGeneratedConstantData; }
+
+
+namespace ABP_Shepherd
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_OrgaMech
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_Player_Base
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_AI_Stalker
+{
+	struct FAnimBlueprintGeneratedMutableData;
+	struct FAnimBlueprintGeneratedConstantData;
+}
+
+namespace ABP_AI_Europa_Main_V3
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_AI_Europa_Base_V3
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_AI_Cyborg_Base
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace ABP_Player_Main
+{
+	struct FAnimBlueprintGeneratedConstantData;
+	struct FAnimBlueprintGeneratedMutableData;
+}

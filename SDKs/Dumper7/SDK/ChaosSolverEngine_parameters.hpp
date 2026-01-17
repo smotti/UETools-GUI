@@ -18,14 +18,13 @@ namespace SDK::Params
 {
 
 // Function ChaosSolverEngine.ChaosSolverEngineBlueprintLibrary.ConvertPhysicsCollisionToHitResult
-// 0x00F8 (0x00F8 - 0x0000)
+// 0x01B8 (0x01B8 - 0x0000)
 struct ChaosSolverEngineBlueprintLibrary_ConvertPhysicsCollisionToHitResult final
 {
 public:
-	struct FChaosPhysicsCollisionInfo             PhysicsCollision;                                  // 0x0000(0x0070)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	struct FHitResult                             ReturnValue;                                       // 0x0070(0x0088)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FChaosPhysicsCollisionInfo             PhysicsCollision;                                  // 0x0000(0x00C0)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FHitResult                             ReturnValue;                                       // 0x00C0(0x00F8)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ChaosSolverEngineBlueprintLibrary_ConvertPhysicsCollisionToHitResult;
 
 // Function ChaosSolverEngine.ChaosSolverActor.SetSolverActive
 // 0x0001 (0x0001 - 0x0000)
@@ -34,7 +33,6 @@ struct ChaosSolverActor_SetSolverActive final
 public:
 	bool                                          bActive;                                           // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ChaosSolverActor_SetSolverActive;
 
 }
 

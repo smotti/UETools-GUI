@@ -15,12 +15,14 @@ namespace SDK
 {
 
 // Enum GameplayTasks.ETaskResourceOverlapPolicy
-// NumValues: 0x0003
+// NumValues: 0x0005
 enum class ETaskResourceOverlapPolicy : uint8
 {
 	StartOnTop                               = 0,
 	StartAtEnd                               = 1,
-	ETaskResourceOverlapPolicy_MAX           = 2,
+	RequestCancelAndStartOnTop               = 2,
+	RequestCancelAndStartAtEnd               = 3,
+	ETaskResourceOverlapPolicy_MAX           = 4,
 };
 
 // Enum GameplayTasks.EGameplayTaskState
@@ -54,7 +56,6 @@ struct alignas(0x02) FGameplayResourceSet final
 public:
 	uint8                                         Pad_0[0x2];                                        // 0x0000(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGameplayResourceSet;
 
 }
 

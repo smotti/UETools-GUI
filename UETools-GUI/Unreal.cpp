@@ -500,7 +500,22 @@ bool Unreal::CheatManager::SoftSummon(const SDK::FString& actorPath)
 
 
 
+SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex)
+{
+	SDK::UWorld* world = World::Get();
+	if (!world) return nullptr;
 
+	SDK::UGameInstance* gameInstance = world->OwningGameInstance;
+	if (!gameInstance) return nullptr;
+
+	if (gameInstance->LocalPlayers.Num() == 0) return nullptr;
+
+	SDK::ULocalPlayer* localPlayer = gameInstance->LocalPlayers[playerIndex];
+	if (!localPlayer) return nullptr;
+
+	return localPlayer->PlayerController;
+}
+/* Needs to be replaced to work with The Forever Winter
 SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex)
 {
 	SDK::UWorld* world = World::Get();
@@ -513,6 +528,7 @@ SDK::APlayerController* Unreal::PlayerController::Get(const int32_t& playerIndex
 
 	return PlayerController;
 }
+*/
 
 
 SDK::FVector Unreal::PlayerController::GetLocation(SDK::APlayerController* playerControllerReference)
@@ -1732,7 +1748,7 @@ Unreal::Class::Hierarchy Unreal::Class::GetClassHierarchy(SDK::UObject* objectRe
 	outHierarchy.derivedClass = actorClass;
 	while (actorClass)
 	{
-		if (SDK::UStruct* superStruct = actorClass->SuperStruct)
+		if (SDK::UStruct* superStruct = actorClass->Super)
 		{
 			actorClass = static_cast<SDK::UClass*>(superStruct);
 			outHierarchy.superClasses.push_back(actorClass);

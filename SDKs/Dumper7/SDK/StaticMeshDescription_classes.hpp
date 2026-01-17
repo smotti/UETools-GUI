@@ -17,7 +17,7 @@ namespace SDK
 {
 
 // Class StaticMeshDescription.StaticMeshDescription
-// 0x0000 (0x0390 - 0x0390)
+// 0x0000 (0x02F0 - 0x02F0)
 class UStaticMeshDescription final : public UMeshDescriptionBase
 {
 public:
@@ -41,7 +41,6 @@ public:
 		return GetDefaultObjImpl<UStaticMeshDescription>();
 	}
 };
-DUMPER7_ASSERTS_UStaticMeshDescription;
 
 }
 

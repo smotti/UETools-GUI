@@ -18,11 +18,11 @@ namespace SDK
 {
 
 // Class GeometryCacheTracks.MovieSceneGeometryCacheSection
-// 0x0040 (0x0128 - 0x00E8)
+// 0x0048 (0x0138 - 0x00F0)
 class UMovieSceneGeometryCacheSection final : public UMovieSceneSection
 {
 public:
-	struct FMovieSceneGeometryCacheParams         Params_0;                                          // 0x00E8(0x0040)(Edit, NativeAccessSpecifierPublic)
+	struct FMovieSceneGeometryCacheParams         Params_0;                                          // 0x00F0(0x0048)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -38,15 +38,14 @@ public:
 		return GetDefaultObjImpl<UMovieSceneGeometryCacheSection>();
 	}
 };
-DUMPER7_ASSERTS_UMovieSceneGeometryCacheSection;
 
 // Class GeometryCacheTracks.MovieSceneGeometryCacheTrack
-// 0x0018 (0x00A8 - 0x0090)
+// 0x0018 (0x00B0 - 0x0098)
 class UMovieSceneGeometryCacheTrack final : public UMovieSceneNameableTrack
 {
 public:
-	uint8                                         Pad_90[0x8];                                       // 0x0090(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UMovieSceneSection*>             AnimationSections;                                 // 0x0098(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_98[0x8];                                       // 0x0098(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UMovieSceneSection*>             AnimationSections;                                 // 0x00A0(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
@@ -62,7 +61,6 @@ public:
 		return GetDefaultObjImpl<UMovieSceneGeometryCacheTrack>();
 	}
 };
-DUMPER7_ASSERTS_UMovieSceneGeometryCacheTrack;
 
 }
 

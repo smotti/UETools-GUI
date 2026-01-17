@@ -34,7 +34,6 @@ public:
 		return GetDefaultObjImpl<UNiagaraScriptBase>();
 	}
 };
-DUMPER7_ASSERTS_UNiagaraScriptBase;
 
 }
 

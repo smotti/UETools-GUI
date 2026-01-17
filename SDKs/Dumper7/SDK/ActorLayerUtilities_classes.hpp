@@ -39,7 +39,6 @@ public:
 		return GetDefaultObjImpl<ULayersBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_ULayersBlueprintLibrary;
 
 }
 

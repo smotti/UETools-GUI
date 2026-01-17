@@ -52,28 +52,27 @@ public:
 		return GetDefaultObjImpl<UConsoleSettings>();
 	}
 };
-DUMPER7_ASSERTS_UConsoleSettings;
 
 // Class EngineSettings.GameMapsSettings
-// 0x00C8 (0x00F0 - 0x0028)
+// 0x00F8 (0x0120 - 0x0028)
 class UGameMapsSettings final : public UObject
 {
 public:
 	class FString                                 LocalMapOptions;                                   // 0x0028(0x0010)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSoftObjectPath                        TransitionMap;                                     // 0x0038(0x0018)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseSplitscreen;                                   // 0x0050(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ETwoPlayerSplitScreenType                     TwoPlayerSplitscreenLayout;                        // 0x0051(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EThreePlayerSplitScreenType                   ThreePlayerSplitscreenLayout;                      // 0x0052(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EFourPlayerSplitScreenType                    FourPlayerSplitscreenLayout;                       // 0x0053(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOffsetPlayerGamepadIds;                           // 0x0054(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_55[0x3];                                       // 0x0055(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FSoftClassPath                         GameInstanceClass;                                 // 0x0058(0x0018)(Edit, ZeroConstructor, Config, NoClear, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSoftObjectPath                        GameDefaultMap;                                    // 0x0070(0x0018)(Edit, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FSoftObjectPath                        ServerDefaultMap;                                  // 0x0088(0x0018)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FSoftClassPath                         GlobalDefaultGameMode;                             // 0x00A0(0x0018)(Edit, ZeroConstructor, Config, NoClear, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FSoftClassPath                         GlobalDefaultServerGameMode;                       // 0x00B8(0x0018)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<struct FGameModeName>                  GameModeMapPrefixes;                               // 0x00D0(0x0010)(Edit, ZeroConstructor, Config, AdvancedDisplay, NativeAccessSpecifierPrivate)
-	TArray<struct FGameModeName>                  GameModeClassAliases;                              // 0x00E0(0x0010)(Edit, ZeroConstructor, Config, AdvancedDisplay, NativeAccessSpecifierPrivate)
+	struct FSoftObjectPath                        TransitionMap;                                     // 0x0038(0x0020)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseSplitscreen;                                   // 0x0058(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ETwoPlayerSplitScreenType                     TwoPlayerSplitscreenLayout;                        // 0x0059(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EThreePlayerSplitScreenType                   ThreePlayerSplitscreenLayout;                      // 0x005A(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EFourPlayerSplitScreenType                    FourPlayerSplitscreenLayout;                       // 0x005B(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOffsetPlayerGamepadIds;                           // 0x005C(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5D[0x3];                                       // 0x005D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FSoftClassPath                         GameInstanceClass;                                 // 0x0060(0x0020)(Edit, ZeroConstructor, Config, NoClear, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSoftObjectPath                        GameDefaultMap;                                    // 0x0080(0x0020)(Edit, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FSoftObjectPath                        ServerDefaultMap;                                  // 0x00A0(0x0020)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FSoftClassPath                         GlobalDefaultGameMode;                             // 0x00C0(0x0020)(Edit, ZeroConstructor, Config, NoClear, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FSoftClassPath                         GlobalDefaultServerGameMode;                       // 0x00E0(0x0020)(Edit, ZeroConstructor, Config, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<struct FGameModeName>                  GameModeMapPrefixes;                               // 0x0100(0x0010)(Edit, ZeroConstructor, Config, AdvancedDisplay, NativeAccessSpecifierPrivate)
+	TArray<struct FGameModeName>                  GameModeClassAliases;                              // 0x0110(0x0010)(Edit, ZeroConstructor, Config, AdvancedDisplay, NativeAccessSpecifierPrivate)
 
 public:
 	static class UGameMapsSettings* GetGameMapsSettings();
@@ -96,7 +95,6 @@ public:
 		return GetDefaultObjImpl<UGameMapsSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGameMapsSettings;
 
 // Class EngineSettings.GameNetworkManagerSettings
 // 0x0030 (0x0058 - 0x0028)
@@ -131,7 +129,6 @@ public:
 		return GetDefaultObjImpl<UGameNetworkManagerSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGameNetworkManagerSettings;
 
 // Class EngineSettings.GameSessionSettings
 // 0x0010 (0x0038 - 0x0028)
@@ -157,7 +154,6 @@ public:
 		return GetDefaultObjImpl<UGameSessionSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGameSessionSettings;
 
 // Class EngineSettings.GeneralEngineSettings
 // 0x0000 (0x0028 - 0x0028)
@@ -177,10 +173,9 @@ public:
 		return GetDefaultObjImpl<UGeneralEngineSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGeneralEngineSettings;
 
 // Class EngineSettings.GeneralProjectSettings
-// 0x00E8 (0x0110 - 0x0028)
+// 0x00E0 (0x0108 - 0x0028)
 class UGeneralProjectSettings final : public UObject
 {
 public:
@@ -195,16 +190,18 @@ public:
 	class FString                                 ProjectName;                                       // 0x00A8(0x0010)(Edit, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FString                                 ProjectVersion;                                    // 0x00B8(0x0010)(Edit, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FString                                 SupportContact;                                    // 0x00C8(0x0010)(Edit, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FText                                   ProjectDisplayedTitle;                             // 0x00D8(0x0018)(Edit, Config, NativeAccessSpecifierPublic)
-	class FText                                   ProjectDebugTitleInfo;                             // 0x00F0(0x0018)(Edit, Config, NativeAccessSpecifierPublic)
-	bool                                          bShouldWindowPreserveAspectRatio;                  // 0x0108(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseBorderlessWindow;                              // 0x0109(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStartInVR;                                        // 0x010A(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAllowWindowResize;                                // 0x010B(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAllowClose;                                       // 0x010C(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAllowMaximize;                                    // 0x010D(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAllowMinimize;                                    // 0x010E(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_10F[0x1];                                      // 0x010F(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FText                                   ProjectDisplayedTitle;                             // 0x00D8(0x0010)(Edit, Config, NativeAccessSpecifierPublic)
+	class FText                                   ProjectDebugTitleInfo;                             // 0x00E8(0x0010)(Edit, Config, NativeAccessSpecifierPublic)
+	bool                                          bShouldWindowPreserveAspectRatio;                  // 0x00F8(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseBorderlessWindow;                              // 0x00F9(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStartInVR;                                        // 0x00FA(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAllowWindowResize;                                // 0x00FB(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAllowClose;                                       // 0x00FC(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAllowMaximize;                                    // 0x00FD(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAllowMinimize;                                    // 0x00FE(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_FF[0x1];                                       // 0x00FF(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         EyeOffsetForFakeStereoRenderingDevice;             // 0x0100(0x0004)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         FOVForFakeStereoRenderingDevice;                   // 0x0104(0x0004)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -220,7 +217,6 @@ public:
 		return GetDefaultObjImpl<UGeneralProjectSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGeneralProjectSettings;
 
 // Class EngineSettings.HudSettings
 // 0x0018 (0x0040 - 0x0028)
@@ -245,7 +241,6 @@ public:
 		return GetDefaultObjImpl<UHudSettings>();
 	}
 };
-DUMPER7_ASSERTS_UHudSettings;
 
 }
 

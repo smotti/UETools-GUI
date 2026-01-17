@@ -23,9 +23,9 @@
 // |  FEATURES SECTION  |
 // ======================
 
-/*
-	#define UE5
 
+	#define UE5
+/*
 	When targeting Unreal Engine 5 based titles, it's recommended to uncomment that define;
 	In many cases that action alone would be enough to adapt entirity of solution for newer engine.
 */
@@ -37,9 +37,9 @@
 	it's disabled by default in order to avoid a potential set of compilation errors.
 */
 
-/*
-	#define SOFT_PATH
 
+	#define SOFT_PATH
+/*
 	Enables everything related to soft path (e.g. Actor Summon & Widget Construct).
 */
 
@@ -55,20 +55,20 @@
 	Enables everything related to collision visualization (e.g. Draw Collision).
 */
 
-/*
-	#define ACTOR_KIND
 
+	#define ACTOR_KIND
+/*
 	Enables everything related to Actor Kind subsystem (e.g. Point Light Settings, Spot Light Settings, Pawn Actions...).
 */
 
-/*
-	#define LEVEL_SEQUENCE
 
+	#define LEVEL_SEQUENCE
+/*
 	Enables everything related to Level Sequences.
 */
 
-/*
-	#define FREE_CAMERA
 
+	#define FREE_CAMERA
+/*
 	Enables everything related to Free Camera.
 */

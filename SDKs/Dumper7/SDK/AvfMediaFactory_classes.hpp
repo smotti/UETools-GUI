@@ -38,7 +38,6 @@ public:
 		return GetDefaultObjImpl<UAvfMediaSettings>();
 	}
 };
-DUMPER7_ASSERTS_UAvfMediaSettings;
 
 }
 

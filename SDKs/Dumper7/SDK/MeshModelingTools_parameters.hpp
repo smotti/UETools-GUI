@@ -14,23 +14,21 @@
 namespace SDK::Params
 {
 
-// Function MeshModelingTools.BakeMeshAttributeMapsToolProperties.GetUVLayerNamesFunc
+// Function MeshModelingTools.ExistingMeshMaterialProperties.GetUVChannelNamesFunc
 // 0x0010 (0x0010 - 0x0000)
-struct BakeMeshAttributeMapsToolProperties_GetUVLayerNamesFunc final
+struct ExistingMeshMaterialProperties_GetUVChannelNamesFunc final
 {
 public:
-	TArray<class FString>                         ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+	TArray<class FString>                         ReturnValue;                                       // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_BakeMeshAttributeMapsToolProperties_GetUVLayerNamesFunc;
 
-// Function MeshModelingTools.DisplaceMeshCommonProperties.GetWeightMapsFunc
+// Function MeshModelingTools.MeshUVChannelProperties.GetUVChannelNamesFunc
 // 0x0010 (0x0010 - 0x0000)
-struct DisplaceMeshCommonProperties_GetWeightMapsFunc final
+struct MeshUVChannelProperties_GetUVChannelNamesFunc final
 {
 public:
-	TArray<class FString>                         ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+	TArray<class FString>                         ReturnValue;                                       // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_DisplaceMeshCommonProperties_GetWeightMapsFunc;
 
 }
 

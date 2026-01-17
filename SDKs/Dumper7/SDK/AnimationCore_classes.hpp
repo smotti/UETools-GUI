@@ -37,7 +37,6 @@ public:
 		return GetDefaultObjImpl<UAnimationDataSourceRegistry>();
 	}
 };
-DUMPER7_ASSERTS_UAnimationDataSourceRegistry;
 
 }
 

@@ -17,62 +17,10 @@
 namespace SDK
 {
 
-// Function ResonanceAudio.ResonanceAudioSpatializationSourceSettings.SetSoundSourceDirectivity
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// float                                   InPattern                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// float                                   InSharpness                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UResonanceAudioSpatializationSourceSettings::SetSoundSourceDirectivity(float InPattern, float InSharpness)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("ResonanceAudioSpatializationSourceSettings", "SetSoundSourceDirectivity");
-
-	Params::ResonanceAudioSpatializationSourceSettings_SetSoundSourceDirectivity Parms{};
-
-	Parms.InPattern = InPattern;
-	Parms.InSharpness = InSharpness;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function ResonanceAudio.ResonanceAudioSpatializationSourceSettings.SetSoundSourceSpread
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// float                                   InSpread                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void UResonanceAudioSpatializationSourceSettings::SetSoundSourceSpread(float InSpread)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("ResonanceAudioSpatializationSourceSettings", "SetSoundSourceSpread");
-
-	Params::ResonanceAudioSpatializationSourceSettings_SetSoundSourceSpread Parms{};
-
-	Parms.InSpread = InSpread;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
 // Function ResonanceAudio.ResonanceAudioBlueprintFunctionLibrary.GetGlobalReverbPreset
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// class UResonanceAudioReverbPluginPreset*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UResonanceAudioReverbPluginPreset*ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 class UResonanceAudioReverbPluginPreset* UResonanceAudioBlueprintFunctionLibrary::GetGlobalReverbPreset()
 {
@@ -97,7 +45,7 @@ class UResonanceAudioReverbPluginPreset* UResonanceAudioBlueprintFunctionLibrary
 // Function ResonanceAudio.ResonanceAudioBlueprintFunctionLibrary.SetGlobalReverbPreset
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// class UResonanceAudioReverbPluginPreset*InPreset                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UResonanceAudioReverbPluginPreset*InPreset                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UResonanceAudioBlueprintFunctionLibrary::SetGlobalReverbPreset(class UResonanceAudioReverbPluginPreset* InPreset)
 {
@@ -322,7 +270,7 @@ void UResonanceAudioReverbPluginPreset::SetRoomPosition(const struct FVector& In
 // Function ResonanceAudio.ResonanceAudioReverbPluginPreset.SetRoomRotation
 // (Final, Native, Public, HasOutParams, HasDefaults, BlueprintCallable)
 // Parameters:
-// const struct FQuat&                     InRotation                                             (ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+// const struct FQuat&                     InRotation                                             (ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UResonanceAudioReverbPluginPreset::SetRoomRotation(const struct FQuat& InRotation)
 {
@@ -334,6 +282,58 @@ void UResonanceAudioReverbPluginPreset::SetRoomRotation(const struct FQuat& InRo
 	Params::ResonanceAudioReverbPluginPreset_SetRoomRotation Parms{};
 
 	Parms.InRotation = std::move(InRotation);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function ResonanceAudio.ResonanceAudioSpatializationSourceSettings.SetSoundSourceDirectivity
+// (Final, Native, Public, BlueprintCallable)
+// Parameters:
+// float                                   InPattern                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   InSharpness                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UResonanceAudioSpatializationSourceSettings::SetSoundSourceDirectivity(float InPattern, float InSharpness)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("ResonanceAudioSpatializationSourceSettings", "SetSoundSourceDirectivity");
+
+	Params::ResonanceAudioSpatializationSourceSettings_SetSoundSourceDirectivity Parms{};
+
+	Parms.InPattern = InPattern;
+	Parms.InSharpness = InSharpness;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function ResonanceAudio.ResonanceAudioSpatializationSourceSettings.SetSoundSourceSpread
+// (Final, Native, Public, BlueprintCallable)
+// Parameters:
+// float                                   InSpread                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UResonanceAudioSpatializationSourceSettings::SetSoundSourceSpread(float InSpread)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("ResonanceAudioSpatializationSourceSettings", "SetSoundSourceSpread");
+
+	Params::ResonanceAudioSpatializationSourceSettings_SetSoundSourceSpread Parms{};
+
+	Parms.InSpread = InSpread;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;

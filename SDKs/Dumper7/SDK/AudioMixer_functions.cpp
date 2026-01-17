@@ -17,11 +17,105 @@
 namespace SDK
 {
 
-// Function AudioMixer.AudioMixerBlueprintLibrary.AddMasterSubmixEffect
-// (Final, Native, Static, Public, BlueprintCallable)
+// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.ResetKey
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+
+void USubmixEffectDynamicsProcessorPreset::ResetKey()
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "ResetKey");
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, nullptr);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetAudioBus
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USubmixEffectDynamicsProcessorPreset::SetAudioBus(class UAudioBus* AudioBus)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetAudioBus");
+
+	Params::SubmixEffectDynamicsProcessorPreset_SetAudioBus Parms{};
+
+	Parms.AudioBus = AudioBus;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetExternalSubmix
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class USoundSubmix*                     Submix                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USubmixEffectDynamicsProcessorPreset::SetExternalSubmix(class USoundSubmix* Submix)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetExternalSubmix");
+
+	Params::SubmixEffectDynamicsProcessorPreset_SetExternalSubmix Parms{};
+
+	Parms.Submix = Submix;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetSettings
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const struct FSubmixEffectDynamicsProcessorSettings&Settings_0                                             (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+
+void USubmixEffectDynamicsProcessorPreset::SetSettings(const struct FSubmixEffectDynamicsProcessorSettings& Settings_0)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetSettings");
+
+	Params::SubmixEffectDynamicsProcessorPreset_SetSettings Parms{};
+
+	Parms.Settings_0 = std::move(Settings_0);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.AudioMixerBlueprintLibrary.AddMasterSubmixEffect
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::AddMasterSubmixEffect(const class UObject* WorldContextObject, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -45,10 +139,10 @@ void UAudioMixerBlueprintLibrary::AddMasterSubmixEffect(const class UObject* Wor
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.AddSourceEffectToPresetChain
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FSourceEffectChainEntry&   Entry                                                  (Parm, NoDestructor, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::AddSourceEffectToPresetChain(const class UObject* WorldContextObject, class USoundEffectSourcePresetChain* PresetChain, const struct FSourceEffectChainEntry& Entry)
@@ -74,11 +168,11 @@ void UAudioMixerBlueprintLibrary::AddSourceEffectToPresetChain(const class UObje
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.AddSubmixEffect
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 int32 UAudioMixerBlueprintLibrary::AddSubmixEffect(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, class USoundEffectSubmixPreset* SubmixEffectPreset)
@@ -106,9 +200,9 @@ int32 UAudioMixerBlueprintLibrary::AddSubmixEffect(const class UObject* WorldCon
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ClearMasterSubmixEffects
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ClearMasterSubmixEffects(const class UObject* WorldContextObject)
 {
@@ -131,10 +225,10 @@ void UAudioMixerBlueprintLibrary::ClearMasterSubmixEffects(const class UObject* 
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ClearSubmixEffectChainOverride
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   FadeTimeSec                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ClearSubmixEffectChainOverride(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, float FadeTimeSec)
@@ -160,10 +254,10 @@ void UAudioMixerBlueprintLibrary::ClearSubmixEffectChainOverride(const class UOb
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ClearSubmixEffects
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ClearSubmixEffects(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix)
 {
@@ -186,13 +280,95 @@ void UAudioMixerBlueprintLibrary::ClearSubmixEffects(const class UObject* WorldC
 }
 
 
-// Function AudioMixer.AudioMixerBlueprintLibrary.GetMagnitudeForFrequencies
-// (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
+// Function AudioMixer.AudioMixerBlueprintLibrary.Conv_AudioOutputDeviceInfoToString
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable, BlueprintPure)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FAudioOutputDeviceInfo&    Info                                                   (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+// class FString                           ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class FString UAudioMixerBlueprintLibrary::Conv_AudioOutputDeviceInfoToString(const struct FAudioOutputDeviceInfo& Info)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "Conv_AudioOutputDeviceInfoToString");
+
+	Params::AudioMixerBlueprintLibrary_Conv_AudioOutputDeviceInfoToString Parms{};
+
+	Parms.Info = std::move(Info);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function AudioMixer.AudioMixerBlueprintLibrary.GetAvailableAudioOutputDevices
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>&OnObtainDevicesEvent                                   (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UAudioMixerBlueprintLibrary::GetAvailableAudioOutputDevices(const class UObject* WorldContextObject, const TDelegate<void(const TArray<struct FAudioOutputDeviceInfo>& AvailableDevices)>& OnObtainDevicesEvent)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "GetAvailableAudioOutputDevices");
+
+	Params::AudioMixerBlueprintLibrary_GetAvailableAudioOutputDevices Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.OnObtainDevicesEvent = OnObtainDevicesEvent;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.AudioMixerBlueprintLibrary.GetCurrentAudioOutputDeviceName
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(const class FString& CurrentDevice)>&OnObtainCurrentDeviceEvent                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UAudioMixerBlueprintLibrary::GetCurrentAudioOutputDeviceName(const class UObject* WorldContextObject, const TDelegate<void(const class FString& CurrentDevice)>& OnObtainCurrentDeviceEvent)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "GetCurrentAudioOutputDeviceName");
+
+	Params::AudioMixerBlueprintLibrary_GetCurrentAudioOutputDeviceName Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.OnObtainCurrentDeviceEvent = OnObtainCurrentDeviceEvent;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.AudioMixerBlueprintLibrary.GetMagnitudeForFrequencies
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<float>&                    Frequencies                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // TArray<float>*                          Magnitudes                                             (Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::GetMagnitudeForFrequencies(const class UObject* WorldContextObject, const TArray<float>& Frequencies, TArray<float>* Magnitudes, class USoundSubmix* SubmixToAnalyze)
 {
@@ -220,10 +396,10 @@ void UAudioMixerBlueprintLibrary::GetMagnitudeForFrequencies(const class UObject
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.GetNumberOfEntriesInSourceEffectChain
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 int32 UAudioMixerBlueprintLibrary::GetNumberOfEntriesInSourceEffectChain(const class UObject* WorldContextObject, class USoundEffectSourcePresetChain* PresetChain)
@@ -250,12 +426,12 @@ int32 UAudioMixerBlueprintLibrary::GetNumberOfEntriesInSourceEffectChain(const c
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.GetPhaseForFrequencies
-// (Final, Native, Static, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<float>&                    Frequencies                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 // TArray<float>*                          Phases                                                 (Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::GetPhaseForFrequencies(const class UObject* WorldContextObject, const TArray<float>& Frequencies, TArray<float>* Phases, class USoundSubmix* SubmixToAnalyze)
 {
@@ -283,10 +459,10 @@ void UAudioMixerBlueprintLibrary::GetPhaseForFrequencies(const class UObject* Wo
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.IsAudioBusActive
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 bool UAudioMixerBlueprintLibrary::IsAudioBusActive(const class UObject* WorldContextObject, class UAudioBus* AudioBus)
@@ -313,7 +489,7 @@ bool UAudioMixerBlueprintLibrary::IsAudioBusActive(const class UObject* WorldCon
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.MakeFullSpectrumSpectralAnalysisBandSettings
-// (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
 // int32                                   InNumBands                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   InMinimumFrequency                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -349,7 +525,7 @@ TArray<struct FSoundSubmixSpectralAnalysisBandSettings> UAudioMixerBlueprintLibr
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.MakeMusicalSpectralAnalysisBandSettings
-// (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
 // int32                                   InNumSemitones                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EMusicalNoteName                        InStartingMusicalNote                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -385,7 +561,7 @@ TArray<struct FSoundSubmixSpectralAnalysisBandSettings> UAudioMixerBlueprintLibr
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.MakePresetSpectralAnalysisBandSettings
-// (Final, Native, Static, Public, BlueprintCallable, BlueprintPure)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable, BlueprintPure)
 // Parameters:
 // EAudioSpectrumBandPresetType            InBandPresetType                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   InNumBands                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -419,10 +595,10 @@ TArray<struct FSoundSubmixSpectralAnalysisBandSettings> UAudioMixerBlueprintLibr
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.PauseRecordingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToPause                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToPause                                          (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::PauseRecordingOutput(const class UObject* WorldContextObject, class USoundSubmix* SubmixToPause)
 {
@@ -446,9 +622,9 @@ void UAudioMixerBlueprintLibrary::PauseRecordingOutput(const class UObject* Worl
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.PrimeSoundCueForPlayback
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// class USoundCue*                        SoundCue                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundCue*                        SoundCue                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::PrimeSoundCueForPlayback(class USoundCue* SoundCue)
 {
@@ -471,10 +647,10 @@ void UAudioMixerBlueprintLibrary::PrimeSoundCueForPlayback(class USoundCue* Soun
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.PrimeSoundForPlayback
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// class USoundWave*                       SoundWave                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)>OnLoadCompletion                                       (ConstParm, Parm, ZeroConstructor, NoDestructor, NativeAccessSpecifierPublic)
+// class USoundWave*                       SoundWave                                              (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)>OnLoadCompletion                                       (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::PrimeSoundForPlayback(class USoundWave* SoundWave, const TDelegate<void(const class USoundWave* LoadedSoundWave, const bool WasCancelled)> OnLoadCompletion)
 {
@@ -497,11 +673,40 @@ void UAudioMixerBlueprintLibrary::PrimeSoundForPlayback(class USoundWave* SoundW
 }
 
 
-// Function AudioMixer.AudioMixerBlueprintLibrary.RemoveMasterSubmixEffect
-// (Final, Native, Static, Public, BlueprintCallable)
+// Function AudioMixer.AudioMixerBlueprintLibrary.RegisterAudioBusToSubmix
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UAudioMixerBlueprintLibrary::RegisterAudioBusToSubmix(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, class UAudioBus* AudioBus)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "RegisterAudioBusToSubmix");
+
+	Params::AudioMixerBlueprintLibrary_RegisterAudioBusToSubmix Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.SoundSubmix = SoundSubmix;
+	Parms.AudioBus = AudioBus;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.AudioMixerBlueprintLibrary.RemoveMasterSubmixEffect
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveMasterSubmixEffect(const class UObject* WorldContextObject, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -525,10 +730,10 @@ void UAudioMixerBlueprintLibrary::RemoveMasterSubmixEffect(const class UObject* 
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.RemoveSourceEffectFromPresetChain
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   EntryIndex                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveSourceEffectFromPresetChain(const class UObject* WorldContextObject, class USoundEffectSourcePresetChain* PresetChain, int32 EntryIndex)
@@ -554,11 +759,11 @@ void UAudioMixerBlueprintLibrary::RemoveSourceEffectFromPresetChain(const class 
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.RemoveSubmixEffect
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveSubmixEffect(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -583,10 +788,10 @@ void UAudioMixerBlueprintLibrary::RemoveSubmixEffect(const class UObject* WorldC
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.RemoveSubmixEffectAtIndex
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   SubmixChainIndex                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveSubmixEffectAtIndex(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, int32 SubmixChainIndex)
@@ -612,11 +817,11 @@ void UAudioMixerBlueprintLibrary::RemoveSubmixEffectAtIndex(const class UObject*
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.RemoveSubmixEffectPreset
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveSubmixEffectPreset(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -641,10 +846,10 @@ void UAudioMixerBlueprintLibrary::RemoveSubmixEffectPreset(const class UObject* 
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.RemoveSubmixEffectPresetAtIndex
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   SubmixChainIndex                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::RemoveSubmixEffectPresetAtIndex(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, int32 SubmixChainIndex)
@@ -670,12 +875,12 @@ void UAudioMixerBlueprintLibrary::RemoveSubmixEffectPresetAtIndex(const class UO
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ReplaceSoundEffectSubmix
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     InSoundSubmix                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     InSoundSubmix                                          (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   SubmixChainIndex                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ReplaceSoundEffectSubmix(const class UObject* WorldContextObject, class USoundSubmix* InSoundSubmix, int32 SubmixChainIndex, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -701,12 +906,12 @@ void UAudioMixerBlueprintLibrary::ReplaceSoundEffectSubmix(const class UObject* 
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ReplaceSubmixEffect
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     InSoundSubmix                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     InSoundSubmix                                          (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   SubmixChainIndex                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSubmixPreset*         SubmixEffectPreset                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ReplaceSubmixEffect(const class UObject* WorldContextObject, class USoundSubmix* InSoundSubmix, int32 SubmixChainIndex, class USoundEffectSubmixPreset* SubmixEffectPreset)
 {
@@ -732,10 +937,10 @@ void UAudioMixerBlueprintLibrary::ReplaceSubmixEffect(const class UObject* World
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.ResumeRecordingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToPause                                          (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToPause                                          (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::ResumeRecordingOutput(const class UObject* WorldContextObject, class USoundSubmix* SubmixToPause)
 {
@@ -759,10 +964,10 @@ void UAudioMixerBlueprintLibrary::ResumeRecordingOutput(const class UObject* Wor
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.SetBypassSourceEffectChainEntry
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundEffectSourcePresetChain*    PresetChain                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // int32                                   EntryIndex                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bBypassed                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -790,10 +995,10 @@ void UAudioMixerBlueprintLibrary::SetBypassSourceEffectChainEntry(const class UO
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.SetSubmixEffectChainOverride
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const TArray<class USoundEffectSubmixPreset*>&SubmixEffectPresetChain                                (Parm, ZeroConstructor, NativeAccessSpecifierPublic)
 // float                                   FadeTimeSec                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -821,10 +1026,10 @@ void UAudioMixerBlueprintLibrary::SetSubmixEffectChainOverride(const class UObje
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StartAnalyzingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToAnalyze                                        (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EFFTSize                                FFTSize                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EFFTPeakInterpolationMethod             InterpolationMethod                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EFFTWindowType                          WindowType                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -858,10 +1063,10 @@ void UAudioMixerBlueprintLibrary::StartAnalyzingOutput(const class UObject* Worl
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StartAudioBus
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::StartAudioBus(const class UObject* WorldContextObject, class UAudioBus* AudioBus)
 {
@@ -885,11 +1090,11 @@ void UAudioMixerBlueprintLibrary::StartAudioBus(const class UObject* WorldContex
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StartRecordingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ExpectedDuration                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToRecord                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToRecord                                         (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::StartRecordingOutput(const class UObject* WorldContextObject, float ExpectedDuration, class USoundSubmix* SubmixToRecord)
 {
@@ -914,10 +1119,10 @@ void UAudioMixerBlueprintLibrary::StartRecordingOutput(const class UObject* Worl
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StopAnalyzingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToStopAnalyzing                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToStopAnalyzing                                  (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::StopAnalyzingOutput(const class UObject* WorldContextObject, class USoundSubmix* SubmixToStopAnalyzing)
 {
@@ -941,10 +1146,10 @@ void UAudioMixerBlueprintLibrary::StopAnalyzingOutput(const class UObject* World
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StopAudioBus
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UAudioMixerBlueprintLibrary::StopAudioBus(const class UObject* WorldContextObject, class UAudioBus* AudioBus)
 {
@@ -968,15 +1173,15 @@ void UAudioMixerBlueprintLibrary::StopAudioBus(const class UObject* WorldContext
 
 
 // Function AudioMixer.AudioMixerBlueprintLibrary.StopRecordingOutput
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EAudioRecordingExportType               ExportType                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FString&                    Name_0                                                 (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FString&                    Path                                                   (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundSubmix*                     SubmixToRecord                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundWave*                       ExistingSoundWaveToOverwrite                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class USoundWave*                       ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SubmixToRecord                                         (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundWave*                       ExistingSoundWaveToOverwrite                           (Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundWave*                       ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 class USoundWave* UAudioMixerBlueprintLibrary::StopRecordingOutput(const class UObject* WorldContextObject, EAudioRecordingExportType ExportType, const class FString& Name_0, const class FString& Path, class USoundSubmix* SubmixToRecord, class USoundWave* ExistingSoundWaveToOverwrite)
 {
@@ -1005,8 +1210,37 @@ class USoundWave* UAudioMixerBlueprintLibrary::StopRecordingOutput(const class U
 }
 
 
+// Function AudioMixer.AudioMixerBlueprintLibrary.SwapAudioOutputDevice
+// (Final, RequiredAPI, Native, Static, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class FString&                    NewDeviceId                                            (Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>&OnCompletedDeviceSwap                                  (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UAudioMixerBlueprintLibrary::SwapAudioOutputDevice(const class UObject* WorldContextObject, const class FString& NewDeviceId, const TDelegate<void(const struct FSwapAudioOutputResult& SwapResult)>& OnCompletedDeviceSwap)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "SwapAudioOutputDevice");
+
+	Params::AudioMixerBlueprintLibrary_SwapAudioOutputDevice Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.NewDeviceId = std::move(NewDeviceId);
+	Parms.OnCompletedDeviceSwap = OnCompletedDeviceSwap;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
 // Function AudioMixer.AudioMixerBlueprintLibrary.TrimAudioCache
-// (Final, Native, Static, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
 // Parameters:
 // float                                   InMegabytesToFree                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1033,8 +1267,119 @@ float UAudioMixerBlueprintLibrary::TrimAudioCache(float InMegabytesToFree)
 }
 
 
+// Function AudioMixer.AudioMixerBlueprintLibrary.UnregisterAudioBusFromSubmix
+// (Final, RequiredAPI, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSubmix*                     SoundSubmix                                            (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UAudioMixerBlueprintLibrary::UnregisterAudioBusFromSubmix(const class UObject* WorldContextObject, class USoundSubmix* SoundSubmix, class UAudioBus* AudioBus)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("AudioMixerBlueprintLibrary", "UnregisterAudioBusFromSubmix");
+
+	Params::AudioMixerBlueprintLibrary_UnregisterAudioBusFromSubmix Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.SoundSubmix = SoundSubmix;
+	Parms.AudioBus = AudioBus;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.GetModulators
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure)
+// Parameters:
+// const EModulationDestination            Destination                                            (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// TSet<class USoundModulatorBase*>        ReturnValue                                            (Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
+
+TSet<class USoundModulatorBase*> USynthComponent::GetModulators(const EModulationDestination Destination)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "GetModulators");
+
+	Params::SynthComponent_GetModulators Parms{};
+
+	Parms.Destination = Destination;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function AudioMixer.SynthComponent.SetAudioBusSendPostEffect
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   AudioBusSendLevel                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::SetAudioBusSendPostEffect(class UAudioBus* AudioBus, float AudioBusSendLevel)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "SetAudioBusSendPostEffect");
+
+	Params::SynthComponent_SetAudioBusSendPostEffect Parms{};
+
+	Parms.AudioBus = AudioBus;
+	Parms.AudioBusSendLevel = AudioBusSendLevel;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.SetAudioBusSendPreEffect
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   AudioBusSendLevel                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::SetAudioBusSendPreEffect(class UAudioBus* AudioBus, float AudioBusSendLevel)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "SetAudioBusSendPreEffect");
+
+	Params::SynthComponent_SetAudioBusSendPreEffect Parms{};
+
+	Parms.AudioBus = AudioBus;
+	Parms.AudioBusSendLevel = AudioBusSendLevel;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
 // Function AudioMixer.SynthComponent.SetLowPassFilterEnabled
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // bool                                    InLowPassFilterEnabled                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1059,7 +1404,7 @@ void USynthComponent::SetLowPassFilterEnabled(bool InLowPassFilterEnabled)
 
 
 // Function AudioMixer.SynthComponent.SetLowPassFilterFrequency
-// (Native, Public, BlueprintCallable)
+// (RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // float                                   InLowPassFilterFrequency                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1083,8 +1428,37 @@ void USynthComponent::SetLowPassFilterFrequency(float InLowPassFilterFrequency)
 }
 
 
+// Function AudioMixer.SynthComponent.SetModulationRouting
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const TSet<class USoundModulatorBase*>& Modulators                                             (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+// const EModulationDestination            Destination                                            (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const EModulationRouting                RoutingMethod                                          (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::SetModulationRouting(const TSet<class USoundModulatorBase*>& Modulators, const EModulationDestination Destination, const EModulationRouting RoutingMethod)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "SetModulationRouting");
+
+	Params::SynthComponent_SetModulationRouting Parms{};
+
+	Parms.Modulators = std::move(Modulators);
+	Parms.Destination = Destination;
+	Parms.RoutingMethod = RoutingMethod;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
 // Function AudioMixer.SynthComponent.SetOutputToBusOnly
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // bool                                    bInOutputToBusOnly                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1108,10 +1482,64 @@ void USynthComponent::SetOutputToBusOnly(bool bInOutputToBusOnly)
 }
 
 
-// Function AudioMixer.SynthComponent.SetSubmixSend
-// (Final, Native, Public, BlueprintCallable)
+// Function AudioMixer.SynthComponent.SetSourceBusSendPostEffect
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// class USoundSubmixBase*                 Submix                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class USoundSourceBus*                  SoundSourceBus                                         (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   SourceBusSendLevel                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::SetSourceBusSendPostEffect(class USoundSourceBus* SoundSourceBus, float SourceBusSendLevel)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "SetSourceBusSendPostEffect");
+
+	Params::SynthComponent_SetSourceBusSendPostEffect Parms{};
+
+	Parms.SoundSourceBus = SoundSourceBus;
+	Parms.SourceBusSendLevel = SourceBusSendLevel;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.SetSourceBusSendPreEffect
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class USoundSourceBus*                  SoundSourceBus                                         (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   SourceBusSendLevel                                     (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::SetSourceBusSendPreEffect(class USoundSourceBus* SoundSourceBus, float SourceBusSendLevel)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "SetSourceBusSendPreEffect");
+
+	Params::SynthComponent_SetSourceBusSendPreEffect Parms{};
+
+	Parms.SoundSourceBus = SoundSourceBus;
+	Parms.SourceBusSendLevel = SourceBusSendLevel;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.SetSubmixSend
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// class USoundSubmixBase*                 Submix                                                 (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   SendLevel                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void USynthComponent::SetSubmixSend(class USoundSubmixBase* Submix, float SendLevel)
@@ -1136,7 +1564,7 @@ void USynthComponent::SetSubmixSend(class USoundSubmixBase* Submix, float SendLe
 
 
 // Function AudioMixer.SynthComponent.SetVolumeMultiplier
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // float                                   VolumeMultiplier                                       (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1161,7 +1589,7 @@ void USynthComponent::SetVolumeMultiplier(float VolumeMultiplier)
 
 
 // Function AudioMixer.SynthComponent.Start
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 
 void USynthComponent::Start()
 {
@@ -1180,7 +1608,7 @@ void USynthComponent::Start()
 
 
 // Function AudioMixer.SynthComponent.Stop
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 
 void USynthComponent::Stop()
 {
@@ -1198,8 +1626,97 @@ void USynthComponent::Stop()
 }
 
 
+// Function AudioMixer.SynthComponent.AdjustVolume
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, Const)
+// Parameters:
+// float                                   AdjustVolumeDuration                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   AdjustVolumeLevel                                      (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const EAudioFaderCurve                  FadeCurve                                              (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::AdjustVolume(float AdjustVolumeDuration, float AdjustVolumeLevel, const EAudioFaderCurve FadeCurve) const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "AdjustVolume");
+
+	Params::SynthComponent_AdjustVolume Parms{};
+
+	Parms.AdjustVolumeDuration = AdjustVolumeDuration;
+	Parms.AdjustVolumeLevel = AdjustVolumeLevel;
+	Parms.FadeCurve = FadeCurve;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.FadeIn
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, Const)
+// Parameters:
+// float                                   FadeInDuration                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   FadeVolumeLevel                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   StartTime                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const EAudioFaderCurve                  FadeCurve                                              (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::FadeIn(float FadeInDuration, float FadeVolumeLevel, float StartTime, const EAudioFaderCurve FadeCurve) const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "FadeIn");
+
+	Params::SynthComponent_FadeIn Parms{};
+
+	Parms.FadeInDuration = FadeInDuration;
+	Parms.FadeVolumeLevel = FadeVolumeLevel;
+	Parms.StartTime = StartTime;
+	Parms.FadeCurve = FadeCurve;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.SynthComponent.FadeOut
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, Const)
+// Parameters:
+// float                                   FadeOutDuration                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   FadeVolumeLevel                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const EAudioFaderCurve                  FadeCurve                                              (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void USynthComponent::FadeOut(float FadeOutDuration, float FadeVolumeLevel, const EAudioFaderCurve FadeCurve) const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SynthComponent", "FadeOut");
+
+	Params::SynthComponent_FadeOut Parms{};
+
+	Parms.FadeOutDuration = FadeOutDuration;
+	Parms.FadeVolumeLevel = FadeVolumeLevel;
+	Parms.FadeCurve = FadeCurve;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
 // Function AudioMixer.SynthComponent.IsPlaying
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1223,8 +1740,33 @@ bool USynthComponent::IsPlaying() const
 }
 
 
+// Function AudioMixer.SubmixEffectSubmixEQPreset.SetSettings
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const struct FSubmixEffectSubmixEQSettings&InSettings                                             (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+
+void USubmixEffectSubmixEQPreset::SetSettings(const struct FSubmixEffectSubmixEQSettings& InSettings)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("SubmixEffectSubmixEQPreset", "SetSettings");
+
+	Params::SubmixEffectSubmixEQPreset_SetSettings Parms{};
+
+	Parms.InSettings = std::move(InSettings);
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
 // Function AudioMixer.SubmixEffectReverbPreset.SetSettings
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FSubmixEffectReverbSettings&InSettings                                             (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 
@@ -1249,9 +1791,9 @@ void USubmixEffectReverbPreset::SetSettings(const struct FSubmixEffectReverbSett
 
 
 // Function AudioMixer.SubmixEffectReverbPreset.SetSettingsWithReverbEffect
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UReverbEffect*              InReverbEffect                                         (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UReverbEffect*              InReverbEffect                                         (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const float                             WetLevel                                               (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const float                             DryLevel                                               (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -1277,10 +1819,42 @@ void USubmixEffectReverbPreset::SetSettingsWithReverbEffect(const class UReverbE
 }
 
 
-// Function AudioMixer.QuartzClockHandle.GetCurrentTimestamp
-// (Final, Native, Public, BlueprintCallable)
+// Function AudioMixer.QuartzClockHandle.GetBeatProgressPercent
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// EQuartzCommandQuantization              QuantizationBoundary                                   (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   PhaseOffset                                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   MsOffset                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+float UQuartzClockHandle::GetBeatProgressPercent(EQuartzCommandQuantization QuantizationBoundary, float PhaseOffset, float MsOffset)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("QuartzClockHandle", "GetBeatProgressPercent");
+
+	Params::QuartzClockHandle_GetBeatProgressPercent Parms{};
+
+	Parms.QuantizationBoundary = QuantizationBoundary;
+	Parms.PhaseOffset = PhaseOffset;
+	Parms.MsOffset = MsOffset;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function AudioMixer.QuartzClockHandle.GetCurrentTimestamp
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // struct FQuartzTransportTimeStamp        ReturnValue                                            (Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
 
 struct FQuartzTransportTimeStamp UQuartzClockHandle::GetCurrentTimestamp(const class UObject* WorldContextObject)
@@ -1306,9 +1880,9 @@ struct FQuartzTransportTimeStamp UQuartzClockHandle::GetCurrentTimestamp(const c
 
 
 // Function AudioMixer.QuartzClockHandle.GetDurationOfQuantizationTypeInSeconds
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const EQuartzCommandQuantization&       QuantizationType                                       (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   Multiplier                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -1338,9 +1912,9 @@ float UQuartzClockHandle::GetDurationOfQuantizationTypeInSeconds(const class UOb
 
 
 // Function AudioMixer.QuartzClockHandle.GetEstimatedRunTime
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetEstimatedRunTime(const class UObject* WorldContextObject)
@@ -1366,9 +1940,9 @@ float UQuartzClockHandle::GetEstimatedRunTime(const class UObject* WorldContextO
 
 
 // Function AudioMixer.QuartzClockHandle.IsClockRunning
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 bool UQuartzClockHandle::IsClockRunning(const class UObject* WorldContextObject)
@@ -1393,11 +1967,42 @@ bool UQuartzClockHandle::IsClockRunning(const class UObject* WorldContextObject)
 }
 
 
-// Function AudioMixer.QuartzClockHandle.PauseClock
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// Function AudioMixer.QuartzClockHandle.NotifyOnQuantizationBoundary
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// float                                   InMsOffset                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UQuartzClockHandle::NotifyOnQuantizationBoundary(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InMsOffset)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("QuartzClockHandle", "NotifyOnQuantizationBoundary");
+
+	Params::QuartzClockHandle_NotifyOnQuantizationBoundary Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.InQuantizationBoundary = std::move(InQuantizationBoundary);
+	Parms.InDelegate = InDelegate;
+	Parms.InMsOffset = InMsOffset;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function AudioMixer.QuartzClockHandle.PauseClock
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
+// Parameters:
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::PauseClock(const class UObject* WorldContextObject, class UQuartzClockHandle** ClockHandle)
 {
@@ -1423,10 +2028,10 @@ void UQuartzClockHandle::PauseClock(const class UObject* WorldContextObject, cla
 
 
 // Function AudioMixer.QuartzClockHandle.ResetTransport
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::ResetTransport(const class UObject* WorldContextObject, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
 {
@@ -1450,12 +2055,12 @@ void UQuartzClockHandle::ResetTransport(const class UObject* WorldContextObject,
 
 
 // Function AudioMixer.QuartzClockHandle.ResetTransportQuantized
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::ResetTransportQuantized(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, class UQuartzClockHandle** ClockHandle)
 {
@@ -1483,10 +2088,10 @@ void UQuartzClockHandle::ResetTransportQuantized(const class UObject* WorldConte
 
 
 // Function AudioMixer.QuartzClockHandle.ResumeClock
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::ResumeClock(const class UObject* WorldContextObject, class UQuartzClockHandle** ClockHandle)
 {
@@ -1512,12 +2117,12 @@ void UQuartzClockHandle::ResumeClock(const class UObject* WorldContextObject, cl
 
 
 // Function AudioMixer.QuartzClockHandle.SetBeatsPerMinute
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   BeatsPerMinute                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SetBeatsPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float BeatsPerMinute)
@@ -1547,12 +2152,12 @@ void UQuartzClockHandle::SetBeatsPerMinute(const class UObject* WorldContextObje
 
 
 // Function AudioMixer.QuartzClockHandle.SetMillisecondsPerTick
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   MillisecondsPerTick                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SetMillisecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float MillisecondsPerTick)
@@ -1582,12 +2187,12 @@ void UQuartzClockHandle::SetMillisecondsPerTick(const class UObject* WorldContex
 
 
 // Function AudioMixer.QuartzClockHandle.SetSecondsPerTick
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   SecondsPerTick                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SetSecondsPerTick(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float SecondsPerTick)
@@ -1617,12 +2222,12 @@ void UQuartzClockHandle::SetSecondsPerTick(const class UObject* WorldContextObje
 
 
 // Function AudioMixer.QuartzClockHandle.SetThirtySecondNotesPerMinute
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ThirtySecondsNotesPerMinute                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SetThirtySecondNotesPerMinute(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float ThirtySecondsNotesPerMinute)
@@ -1652,12 +2257,12 @@ void UQuartzClockHandle::SetThirtySecondNotesPerMinute(const class UObject* Worl
 
 
 // Function AudioMixer.QuartzClockHandle.SetTicksPerSecond
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&QuantizationBoundary                                   (ConstParm, Parm, OutParm, ReferenceParm, AdvancedDisplay, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&Delegate                                               (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   TicksPerSecond                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SetTicksPerSecond(const class UObject* WorldContextObject, const struct FQuartzQuantizationBoundary& QuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& Delegate, class UQuartzClockHandle** ClockHandle, float TicksPerSecond)
@@ -1687,10 +2292,10 @@ void UQuartzClockHandle::SetTicksPerSecond(const class UObject* WorldContextObje
 
 
 // Function AudioMixer.QuartzClockHandle.StartClock
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::StartClock(const class UObject* WorldContextObject, class UQuartzClockHandle** ClockHandle)
 {
@@ -1716,12 +2321,12 @@ void UQuartzClockHandle::StartClock(const class UObject* WorldContextObject, cla
 
 
 // Function AudioMixer.QuartzClockHandle.StartOtherClock
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             OtherClockName                                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NoDestructor, NativeAccessSpecifierPublic)
-// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+// const struct FQuartzQuantizationBoundary&InQuantizationBoundary                                 (Parm, NativeAccessSpecifierPublic)
+// const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>&InDelegate                                             (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::StartOtherClock(const class UObject* WorldContextObject, class FName OtherClockName, const struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate)
 {
@@ -1747,11 +2352,11 @@ void UQuartzClockHandle::StartOtherClock(const class UObject* WorldContextObject
 
 
 // Function AudioMixer.QuartzClockHandle.StopClock
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    CancelPendingEvents                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::StopClock(const class UObject* WorldContextObject, bool CancelPendingEvents, class UQuartzClockHandle** ClockHandle)
 {
@@ -1778,11 +2383,11 @@ void UQuartzClockHandle::StopClock(const class UObject* WorldContextObject, bool
 
 
 // Function AudioMixer.QuartzClockHandle.SubscribeToAllQuantizationEvents
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SubscribeToAllQuantizationEvents(const class UObject* WorldContextObject, const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
 {
@@ -1809,12 +2414,12 @@ void UQuartzClockHandle::SubscribeToAllQuantizationEvents(const class UObject* W
 
 
 // Function AudioMixer.QuartzClockHandle.SubscribeToQuantizationEvent
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EQuartzCommandQuantization              InQuantizationBoundary                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>&OnQuantizationEvent                                    (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::SubscribeToQuantizationEvent(const class UObject* WorldContextObject, EQuartzCommandQuantization InQuantizationBoundary, const TDelegate<void(class FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction)>& OnQuantizationEvent, class UQuartzClockHandle** ClockHandle)
 {
@@ -1842,10 +2447,10 @@ void UQuartzClockHandle::SubscribeToQuantizationEvent(const class UObject* World
 
 
 // Function AudioMixer.QuartzClockHandle.UnsubscribeFromAllTimeDivisions
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::UnsubscribeFromAllTimeDivisions(const class UObject* WorldContextObject, class UQuartzClockHandle** ClockHandle)
 {
@@ -1871,11 +2476,11 @@ void UQuartzClockHandle::UnsubscribeFromAllTimeDivisions(const class UObject* Wo
 
 
 // Function AudioMixer.QuartzClockHandle.UnsubscribeFromTimeDivision
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // EQuartzCommandQuantization              InQuantizationBoundary                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle**              ClockHandle                                            (Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzClockHandle::UnsubscribeFromTimeDivision(const class UObject* WorldContextObject, EQuartzCommandQuantization InQuantizationBoundary, class UQuartzClockHandle** ClockHandle)
 {
@@ -1902,9 +2507,9 @@ void UQuartzClockHandle::UnsubscribeFromTimeDivision(const class UObject* WorldC
 
 
 // Function AudioMixer.QuartzClockHandle.GetBeatsPerMinute
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetBeatsPerMinute(const class UObject* WorldContextObject) const
@@ -1930,9 +2535,9 @@ float UQuartzClockHandle::GetBeatsPerMinute(const class UObject* WorldContextObj
 
 
 // Function AudioMixer.QuartzClockHandle.GetMillisecondsPerTick
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetMillisecondsPerTick(const class UObject* WorldContextObject) const
@@ -1958,9 +2563,9 @@ float UQuartzClockHandle::GetMillisecondsPerTick(const class UObject* WorldConte
 
 
 // Function AudioMixer.QuartzClockHandle.GetSecondsPerTick
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetSecondsPerTick(const class UObject* WorldContextObject) const
@@ -1986,9 +2591,9 @@ float UQuartzClockHandle::GetSecondsPerTick(const class UObject* WorldContextObj
 
 
 // Function AudioMixer.QuartzClockHandle.GetThirtySecondNotesPerMinute
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetThirtySecondNotesPerMinute(const class UObject* WorldContextObject) const
@@ -2014,9 +2619,9 @@ float UQuartzClockHandle::GetThirtySecondNotesPerMinute(const class UObject* Wor
 
 
 // Function AudioMixer.QuartzClockHandle.GetTicksPerSecond
-// (Final, Native, Public, BlueprintCallable, BlueprintPure, Const)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable, BlueprintPure, Const)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzClockHandle::GetTicksPerSecond(const class UObject* WorldContextObject) const
@@ -2041,134 +2646,15 @@ float UQuartzClockHandle::GetTicksPerSecond(const class UObject* WorldContextObj
 }
 
 
-// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.ResetKey
-// (Final, Native, Public, BlueprintCallable)
-
-void USubmixEffectDynamicsProcessorPreset::ResetKey()
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "ResetKey");
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, nullptr);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetAudioBus
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class UAudioBus*                        AudioBus                                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void USubmixEffectDynamicsProcessorPreset::SetAudioBus(class UAudioBus* AudioBus)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetAudioBus");
-
-	Params::SubmixEffectDynamicsProcessorPreset_SetAudioBus Parms{};
-
-	Parms.AudioBus = AudioBus;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetExternalSubmix
-// (Final, Native, Public, BlueprintCallable)
-// Parameters:
-// class USoundSubmix*                     Submix                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-void USubmixEffectDynamicsProcessorPreset::SetExternalSubmix(class USoundSubmix* Submix)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetExternalSubmix");
-
-	Params::SubmixEffectDynamicsProcessorPreset_SetExternalSubmix Parms{};
-
-	Parms.Submix = Submix;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function AudioMixer.SubmixEffectDynamicsProcessorPreset.SetSettings
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
-// Parameters:
-// const struct FSubmixEffectDynamicsProcessorSettings&Settings_0                                             (ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-
-void USubmixEffectDynamicsProcessorPreset::SetSettings(const struct FSubmixEffectDynamicsProcessorSettings& Settings_0)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("SubmixEffectDynamicsProcessorPreset", "SetSettings");
-
-	Params::SubmixEffectDynamicsProcessorPreset_SetSettings Parms{};
-
-	Parms.Settings_0 = std::move(Settings_0);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function AudioMixer.SubmixEffectSubmixEQPreset.SetSettings
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
-// Parameters:
-// const struct FSubmixEffectSubmixEQSettings&InSettings                                             (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-
-void USubmixEffectSubmixEQPreset::SetSettings(const struct FSubmixEffectSubmixEQSettings& InSettings)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("SubmixEffectSubmixEQPreset", "SetSettings");
-
-	Params::SubmixEffectSubmixEQPreset_SetSettings Parms{};
-
-	Parms.InSettings = std::move(InSettings);
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
 // Function AudioMixer.QuartzSubsystem.CreateNewClock
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const struct FQuartzClockSettings&      InSettings                                             (Parm, NativeAccessSpecifierPublic)
 // bool                                    bOverrideSettingsIfClockExists                         (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bUseAudioEngineClockManager                            (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle*               ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle*               ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 class UQuartzClockHandle* UQuartzSubsystem::CreateNewClock(const class UObject* WorldContextObject, class FName ClockName, const struct FQuartzClockSettings& InSettings, bool bOverrideSettingsIfClockExists, bool bUseAudioEngineClockManager)
 {
@@ -2197,10 +2683,10 @@ class UQuartzClockHandle* UQuartzSubsystem::CreateNewClock(const class UObject* 
 
 
 // Function AudioMixer.QuartzSubsystem.DeleteClockByHandle
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle*&              InClockHandle                                          (Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle*&              InClockHandle                                          (Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzSubsystem::DeleteClockByHandle(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle)
 {
@@ -2226,9 +2712,9 @@ void UQuartzSubsystem::DeleteClockByHandle(const class UObject* WorldContextObje
 
 
 // Function AudioMixer.QuartzSubsystem.DeleteClockByName
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 void UQuartzSubsystem::DeleteClockByName(const class UObject* WorldContextObject, class FName ClockName)
@@ -2253,9 +2739,9 @@ void UQuartzSubsystem::DeleteClockByName(const class UObject* WorldContextObject
 
 
 // Function AudioMixer.QuartzSubsystem.DoesClockExist
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2283,7 +2769,7 @@ bool UQuartzSubsystem::DoesClockExist(const class UObject* WorldContextObject, c
 
 
 // Function AudioMixer.QuartzSubsystem.GetAudioRenderThreadToGameThreadAverageLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2308,7 +2794,7 @@ float UQuartzSubsystem::GetAudioRenderThreadToGameThreadAverageLatency()
 
 
 // Function AudioMixer.QuartzSubsystem.GetAudioRenderThreadToGameThreadMaxLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2333,7 +2819,7 @@ float UQuartzSubsystem::GetAudioRenderThreadToGameThreadMaxLatency()
 
 
 // Function AudioMixer.QuartzSubsystem.GetAudioRenderThreadToGameThreadMinLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2358,9 +2844,9 @@ float UQuartzSubsystem::GetAudioRenderThreadToGameThreadMinLatency()
 
 
 // Function AudioMixer.QuartzSubsystem.GetCurrentClockTimestamp
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FName&                      InClockName                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // struct FQuartzTransportTimeStamp        ReturnValue                                            (Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
 
@@ -2388,9 +2874,9 @@ struct FQuartzTransportTimeStamp UQuartzSubsystem::GetCurrentClockTimestamp(cons
 
 
 // Function AudioMixer.QuartzSubsystem.GetDurationOfQuantizationTypeInSeconds
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const EQuartzCommandQuantization&       QuantizationType                                       (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   Multiplier                                             (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2422,9 +2908,9 @@ float UQuartzSubsystem::GetDurationOfQuantizationTypeInSeconds(const class UObje
 
 
 // Function AudioMixer.QuartzSubsystem.GetEstimatedClockRunTime
-// (Final, Native, Public, HasOutParams, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // const class FName&                      InClockName                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2452,9 +2938,9 @@ float UQuartzSubsystem::GetEstimatedClockRunTime(const class UObject* WorldConte
 
 
 // Function AudioMixer.QuartzSubsystem.GetGameThreadToAudioRenderThreadAverageLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetGameThreadToAudioRenderThreadAverageLatency(const class UObject* WorldContextObject)
@@ -2480,9 +2966,9 @@ float UQuartzSubsystem::GetGameThreadToAudioRenderThreadAverageLatency(const cla
 
 
 // Function AudioMixer.QuartzSubsystem.GetGameThreadToAudioRenderThreadMaxLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetGameThreadToAudioRenderThreadMaxLatency(const class UObject* WorldContextObject)
@@ -2508,9 +2994,9 @@ float UQuartzSubsystem::GetGameThreadToAudioRenderThreadMaxLatency(const class U
 
 
 // Function AudioMixer.QuartzSubsystem.GetGameThreadToAudioRenderThreadMinLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetGameThreadToAudioRenderThreadMinLatency(const class UObject* WorldContextObject)
@@ -2536,11 +3022,11 @@ float UQuartzSubsystem::GetGameThreadToAudioRenderThreadMinLatency(const class U
 
 
 // Function AudioMixer.QuartzSubsystem.GetHandleForClock
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UQuartzClockHandle*               ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UQuartzClockHandle*               ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 class UQuartzClockHandle* UQuartzSubsystem::GetHandleForClock(const class UObject* WorldContextObject, class FName ClockName)
 {
@@ -2566,9 +3052,9 @@ class UQuartzClockHandle* UQuartzSubsystem::GetHandleForClock(const class UObjec
 
 
 // Function AudioMixer.QuartzSubsystem.GetRoundTripAverageLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetRoundTripAverageLatency(const class UObject* WorldContextObject)
@@ -2594,9 +3080,9 @@ float UQuartzSubsystem::GetRoundTripAverageLatency(const class UObject* WorldCon
 
 
 // Function AudioMixer.QuartzSubsystem.GetRoundTripMaxLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetRoundTripMaxLatency(const class UObject* WorldContextObject)
@@ -2622,9 +3108,9 @@ float UQuartzSubsystem::GetRoundTripMaxLatency(const class UObject* WorldContext
 
 
 // Function AudioMixer.QuartzSubsystem.GetRoundTripMinLatency
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // float                                   ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 float UQuartzSubsystem::GetRoundTripMinLatency(const class UObject* WorldContextObject)
@@ -2650,9 +3136,9 @@ float UQuartzSubsystem::GetRoundTripMinLatency(const class UObject* WorldContext
 
 
 // Function AudioMixer.QuartzSubsystem.IsClockRunning
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// const class UObject*                    WorldContextObject                                     (ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             ClockName                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2680,7 +3166,7 @@ bool UQuartzSubsystem::IsClockRunning(const class UObject* WorldContextObject, c
 
 
 // Function AudioMixer.QuartzSubsystem.IsQuartzEnabled
-// (Final, Native, Public, BlueprintCallable)
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
@@ -2701,6 +3187,31 @@ bool UQuartzSubsystem::IsQuartzEnabled()
 	Func->FunctionFlags = Flgs;
 
 	return Parms.ReturnValue;
+}
+
+
+// Function AudioMixer.QuartzSubsystem.SetQuartzSubsystemTickableWhenPaused
+// (Final, RequiredAPI, Native, Public, BlueprintCallable)
+// Parameters:
+// const bool                              bInTickableWhenPaused                                  (ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+void UQuartzSubsystem::SetQuartzSubsystemTickableWhenPaused(const bool bInTickableWhenPaused)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("QuartzSubsystem", "SetQuartzSubsystemTickableWhenPaused");
+
+	Params::QuartzSubsystem_SetQuartzSubsystemTickableWhenPaused Parms{};
+
+	Parms.bInTickableWhenPaused = bInTickableWhenPaused;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
 }
 
 }

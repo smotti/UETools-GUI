@@ -10,11 +10,35 @@
 
 #include "Basic.hpp"
 
+#include "CoreUObject_structs.hpp"
 #include "CoreUObject_classes.hpp"
+#include "SlateCore_structs.hpp"
 
 
 namespace SDK
 {
+
+// Class SlateCore.SlateWidgetStyleAsset
+// 0x0008 (0x0030 - 0x0028)
+class USlateWidgetStyleAsset final : public UObject
+{
+public:
+	class USlateWidgetStyleContainerBase*         CustomStyle;                                       // 0x0028(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, PersistentInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("SlateWidgetStyleAsset")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"SlateWidgetStyleAsset")
+	}
+	static class USlateWidgetStyleAsset* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<USlateWidgetStyleAsset>();
+	}
+};
 
 // Class SlateCore.FontBulkData
 // 0x0050 (0x0078 - 0x0028)
@@ -37,7 +61,6 @@ public:
 		return GetDefaultObjImpl<UFontBulkData>();
 	}
 };
-DUMPER7_ASSERTS_UFontBulkData;
 
 // Class SlateCore.FontFaceInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -66,7 +89,6 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IFontFaceInterface;
 
 // Class SlateCore.FontProviderInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -95,7 +117,6 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IFontProviderInterface;
 
 // Class SlateCore.SlateTypes
 // 0x0000 (0x0028 - 0x0028)
@@ -115,30 +136,6 @@ public:
 		return GetDefaultObjImpl<USlateTypes>();
 	}
 };
-DUMPER7_ASSERTS_USlateTypes;
-
-// Class SlateCore.SlateWidgetStyleAsset
-// 0x0008 (0x0030 - 0x0028)
-class USlateWidgetStyleAsset final : public UObject
-{
-public:
-	class USlateWidgetStyleContainerBase*         CustomStyle;                                       // 0x0028(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, IsPlainOldData, NoDestructor, PersistentInstance, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("SlateWidgetStyleAsset")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"SlateWidgetStyleAsset")
-	}
-	static class USlateWidgetStyleAsset* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<USlateWidgetStyleAsset>();
-	}
-};
-DUMPER7_ASSERTS_USlateWidgetStyleAsset;
 
 // Class SlateCore.SlateWidgetStyleContainerBase
 // 0x0008 (0x0030 - 0x0028)
@@ -161,7 +158,6 @@ public:
 		return GetDefaultObjImpl<USlateWidgetStyleContainerBase>();
 	}
 };
-DUMPER7_ASSERTS_USlateWidgetStyleContainerBase;
 
 // Class SlateCore.SlateWidgetStyleContainerInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -190,7 +186,29 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_ISlateWidgetStyleContainerInterface;
+
+// Class SlateCore.SlateThemeManager
+// 0x07B0 (0x07D8 - 0x0028)
+class USlateThemeManager final : public UObject
+{
+public:
+	struct FGuid                                  CurrentThemeId;                                    // 0x0028(0x0010)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FStyleColorList                        ActiveColors;                                      // 0x0038(0x07A0)(Edit, Transient, NativeAccessSpecifierPublic)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("SlateThemeManager")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"SlateThemeManager")
+	}
+	static class USlateThemeManager* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<USlateThemeManager>();
+	}
+};
 
 }
 

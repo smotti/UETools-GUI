@@ -40,7 +40,6 @@ public:
 		return GetDefaultObjImpl<UMoviePlayerSettings>();
 	}
 };
-DUMPER7_ASSERTS_UMoviePlayerSettings;
 
 }
 

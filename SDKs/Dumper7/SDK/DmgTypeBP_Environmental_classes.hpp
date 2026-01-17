@@ -34,7 +34,6 @@ public:
 		return GetDefaultObjImpl<UDmgTypeBP_Environmental_C>();
 	}
 };
-DUMPER7_ASSERTS_UDmgTypeBP_Environmental_C;
 
 }
 

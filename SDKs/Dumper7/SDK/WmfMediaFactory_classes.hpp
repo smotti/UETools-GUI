@@ -41,7 +41,6 @@ public:
 		return GetDefaultObjImpl<UWmfMediaSettings>();
 	}
 };
-DUMPER7_ASSERTS_UWmfMediaSettings;
 
 }
 

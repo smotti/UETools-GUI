@@ -16,16 +16,34 @@
 namespace SDK
 {
 
-// Enum ResonanceAudio.EResonanceRenderMode
-// NumValues: 0x0006
-enum class EResonanceRenderMode : uint8
+// Enum ResonanceAudio.ERaQualityMode
+// NumValues: 0x0005
+enum class ERaQualityMode : uint8
 {
-	StereoPanning                            = 0,
-	BinauralLowQuality                       = 1,
-	BinauralMediumQuality                    = 2,
-	BinauralHighQuality                      = 3,
-	RoomEffectsOnly                          = 4,
-	EResonanceRenderMode_MAX                 = 5,
+	STEREO_PANNING                           = 0,
+	BINAURAL_LOW                             = 1,
+	BINAURAL_MEDIUM                          = 2,
+	BINAURAL_HIGH                            = 3,
+	ERaQualityMode_MAX                       = 4,
+};
+
+// Enum ResonanceAudio.ERaSpatializationMethod
+// NumValues: 0x0003
+enum class ERaSpatializationMethod : uint8
+{
+	STEREO_PANNING                           = 0,
+	HRTF                                     = 1,
+	ERaSpatializationMethod_MAX              = 2,
+};
+
+// Enum ResonanceAudio.ERaDistanceRolloffModel
+// NumValues: 0x0004
+enum class ERaDistanceRolloffModel : uint8
+{
+	LOGARITHMIC                              = 0,
+	LINEAR                                   = 1,
+	NONE                                     = 2,
+	ERaDistanceRolloffModel_MAX              = 3,
 };
 
 // Enum ResonanceAudio.ERaMaterialName
@@ -59,61 +77,41 @@ enum class ERaMaterialName : uint8
 	ERaMaterialName_MAX                      = 24,
 };
 
-// Enum ResonanceAudio.ERaDistanceRolloffModel
-// NumValues: 0x0004
-enum class ERaDistanceRolloffModel : uint8
+// Enum ResonanceAudio.EResonanceRenderMode
+// NumValues: 0x0006
+enum class EResonanceRenderMode : uint8
 {
-	LOGARITHMIC                              = 0,
-	LINEAR                                   = 1,
-	NONE                                     = 2,
-	ERaDistanceRolloffModel_MAX              = 3,
-};
-
-// Enum ResonanceAudio.ERaSpatializationMethod
-// NumValues: 0x0003
-enum class ERaSpatializationMethod : uint8
-{
-	STEREO_PANNING                           = 0,
-	HRTF                                     = 1,
-	ERaSpatializationMethod_MAX              = 2,
-};
-
-// Enum ResonanceAudio.ERaQualityMode
-// NumValues: 0x0005
-enum class ERaQualityMode : uint8
-{
-	STEREO_PANNING                           = 0,
-	BINAURAL_LOW                             = 1,
-	BINAURAL_MEDIUM                          = 2,
-	BINAURAL_HIGH                            = 3,
-	ERaQualityMode_MAX                       = 4,
+	StereoPanning                            = 0,
+	BinauralLowQuality                       = 1,
+	BinauralMediumQuality                    = 2,
+	BinauralHighQuality                      = 3,
+	RoomEffectsOnly                          = 4,
+	EResonanceRenderMode_MAX                 = 5,
 };
 
 // ScriptStruct ResonanceAudio.ResonanceAudioReverbPluginSettings
-// 0x0050 (0x0050 - 0x0000)
+// 0x0070 (0x0070 - 0x0000)
 struct FResonanceAudioReverbPluginSettings final
 {
 public:
 	bool                                          bEnableRoomEffects;                                // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bGetTransformFromAudioVolume;                      // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2[0x2];                                        // 0x0002(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                RoomPosition;                                      // 0x0004(0x000C)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FQuat                                  RoomRotation;                                      // 0x0010(0x0010)(Edit, BlueprintVisible, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                RoomDimensions;                                    // 0x0020(0x000C)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               LeftWallMaterial;                                  // 0x002C(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               RightWallMaterial;                                 // 0x002D(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               FloorMaterial;                                     // 0x002E(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               CeilingMaterial;                                   // 0x002F(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               FrontWallMaterial;                                 // 0x0030(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ERaMaterialName                               BackWallMaterial;                                  // 0x0031(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_32[0x2];                                       // 0x0032(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ReflectionScalar;                                  // 0x0034(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReverbGain;                                        // 0x0038(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReverbTimeModifier;                                // 0x003C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReverbBrightness;                                  // 0x0040(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_44[0xC];                                       // 0x0044(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_2[0x6];                                        // 0x0002(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                RoomPosition;                                      // 0x0008(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FQuat                                  RoomRotation;                                      // 0x0020(0x0020)(Edit, BlueprintVisible, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                RoomDimensions;                                    // 0x0040(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               LeftWallMaterial;                                  // 0x0058(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               RightWallMaterial;                                 // 0x0059(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               FloorMaterial;                                     // 0x005A(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               CeilingMaterial;                                   // 0x005B(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               FrontWallMaterial;                                 // 0x005C(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ERaMaterialName                               BackWallMaterial;                                  // 0x005D(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5E[0x2];                                       // 0x005E(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ReflectionScalar;                                  // 0x0060(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReverbGain;                                        // 0x0064(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReverbTimeModifier;                                // 0x0068(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReverbBrightness;                                  // 0x006C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FResonanceAudioReverbPluginSettings;
 
 }
 

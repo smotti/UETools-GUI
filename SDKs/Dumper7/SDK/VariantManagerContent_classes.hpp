@@ -10,10 +10,10 @@
 
 #include "Basic.hpp"
 
+#include "VariantManagerContent_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "CoreUObject_classes.hpp"
 #include "Engine_classes.hpp"
-#include "VariantManagerContent_structs.hpp"
 
 
 namespace SDK
@@ -24,8 +24,8 @@ namespace SDK
 class ULevelVariantSets final : public UObject
 {
 public:
-	class UClass*                                 DirectorClass;                                     // 0x0028(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class UVariantSet*>                    VariantSets;                                       // 0x0030(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	TSubclassOf<class UObject>                    DirectorClass;                                     // 0x0028(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class UVariantSet*>                    VariantSets;                                       // 0x0030(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_40[0x50];                                      // 0x0040(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
@@ -47,15 +47,14 @@ public:
 		return GetDefaultObjImpl<ULevelVariantSets>();
 	}
 };
-DUMPER7_ASSERTS_ULevelVariantSets;
 
 // Class VariantManagerContent.LevelVariantSetsActor
-// 0x0068 (0x0288 - 0x0220)
+// 0x0070 (0x0300 - 0x0290)
 class ALevelVariantSetsActor final : public AActor
 {
 public:
-	struct FSoftObjectPath                        LevelVariantSets;                                  // 0x0220(0x0018)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<class UClass*, class ULevelVariantSetsFunctionDirector*> DirectorInstances;                 // 0x0238(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	struct FSoftObjectPath                        LevelVariantSets;                                  // 0x0290(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<TSubclassOf<class UObject>, class ULevelVariantSetsFunctionDirector*> DirectorInstances;    // 0x02B0(0x0050)(Transient, UObjectWrapper, NativeAccessSpecifierPrivate)
 
 public:
 	class ULevelVariantSets* GetLevelVariantSets(bool bLoad);
@@ -77,7 +76,6 @@ public:
 		return GetDefaultObjImpl<ALevelVariantSetsActor>();
 	}
 };
-DUMPER7_ASSERTS_ALevelVariantSetsActor;
 
 // Class VariantManagerContent.LevelVariantSetsFunctionDirector
 // 0x0018 (0x0040 - 0x0028)
@@ -100,10 +98,9 @@ public:
 		return GetDefaultObjImpl<ULevelVariantSetsFunctionDirector>();
 	}
 };
-DUMPER7_ASSERTS_ULevelVariantSetsFunctionDirector;
 
 // Class VariantManagerContent.PropertyValue
-// 0x0190 (0x01B8 - 0x0028)
+// 0x0188 (0x01B0 - 0x0028)
 class UPropertyValue : public UObject
 {
 public:
@@ -116,11 +113,11 @@ public:
 	TMap<class FString, class FString>            PropertySetterParameterDefaults;                   // 0x00D0(0x0050)(Protected, NativeAccessSpecifierProtected)
 	bool                                          bHasRecordedData;                                  // 0x0120(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_121[0x7];                                      // 0x0121(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UClass*                                 LeafPropertyClass;                                 // 0x0128(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	TSubclassOf<class UObject>                    LeafPropertyClass;                                 // 0x0128(0x0008)(ZeroConstructor, Deprecated, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_130[0x8];                                      // 0x0130(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
 	TArray<uint8>                                 ValueBytes;                                        // 0x0138(0x0010)(ZeroConstructor, Protected, NativeAccessSpecifierProtected)
 	EPropertyValueCategory                        PropCategory;                                      // 0x0148(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_149[0x6F];                                     // 0x0149(0x006F)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_149[0x67];                                     // 0x0149(0x0067)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	class FString GetFullDisplayString() const;
@@ -141,10 +138,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValue>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValue;
 
 // Class VariantManagerContent.PropertyValueTransform
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueTransform final : public UPropertyValue
 {
 public:
@@ -161,10 +157,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValueTransform>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueTransform;
 
 // Class VariantManagerContent.PropertyValueVisibility
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueVisibility final : public UPropertyValue
 {
 public:
@@ -181,10 +176,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValueVisibility>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueVisibility;
 
 // Class VariantManagerContent.PropertyValueColor
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueColor final : public UPropertyValue
 {
 public:
@@ -201,10 +195,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValueColor>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueColor;
 
 // Class VariantManagerContent.PropertyValueMaterial
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueMaterial final : public UPropertyValue
 {
 public:
@@ -221,10 +214,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValueMaterial>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueMaterial;
 
 // Class VariantManagerContent.PropertyValueOption
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueOption final : public UPropertyValue
 {
 public:
@@ -241,10 +233,9 @@ public:
 		return GetDefaultObjImpl<UPropertyValueOption>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueOption;
 
 // Class VariantManagerContent.PropertyValueSoftObject
-// 0x0000 (0x01B8 - 0x01B8)
+// 0x0000 (0x01B0 - 0x01B0)
 class UPropertyValueSoftObject final : public UPropertyValue
 {
 public:
@@ -261,17 +252,16 @@ public:
 		return GetDefaultObjImpl<UPropertyValueSoftObject>();
 	}
 };
-DUMPER7_ASSERTS_UPropertyValueSoftObject;
 
 // Class VariantManagerContent.SwitchActor
-// 0x0028 (0x0248 - 0x0220)
+// 0x0028 (0x02B8 - 0x0290)
 class ASwitchActor final : public AActor
 {
 public:
-	uint8                                         Pad_220[0x18];                                     // 0x0220(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class USceneComponent*                        SceneComponent;                                    // 0x0238(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	int32                                         LastSelectedOption;                                // 0x0240(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_244[0x4];                                      // 0x0244(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_290[0x18];                                     // 0x0290(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class USceneComponent*                        SceneComponent;                                    // 0x02A8(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	int32                                         LastSelectedOption;                                // 0x02B0(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_2B4[0x4];                                      // 0x02B4(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	void SelectOption(int32 OptionIndex);
@@ -293,18 +283,17 @@ public:
 		return GetDefaultObjImpl<ASwitchActor>();
 	}
 };
-DUMPER7_ASSERTS_ASwitchActor;
 
 // Class VariantManagerContent.Variant
-// 0x0058 (0x0080 - 0x0028)
+// 0x0048 (0x0070 - 0x0028)
 class UVariant final : public UObject
 {
 public:
 	TArray<struct FVariantDependency>             Dependencies;                                      // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	class FText                                   DisplayText;                                       // 0x0038(0x0018)(Deprecated, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_50[0x18];                                      // 0x0050(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UVariantObjectBinding*>          ObjectBindings;                                    // 0x0068(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	class UTexture2D*                             Thumbnail;                                         // 0x0078(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FText                                   DisplayText;                                       // 0x0038(0x0010)(Deprecated, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_48[0x10];                                      // 0x0048(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UVariantObjectBinding*>          ObjectBindings;                                    // 0x0058(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate)
+	class UTexture2D*                             Thumbnail;                                         // 0x0068(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
 	int32 AddDependency(struct FVariantDependency* Dependency);
@@ -341,7 +330,6 @@ public:
 		return GetDefaultObjImpl<UVariant>();
 	}
 };
-DUMPER7_ASSERTS_UVariant;
 
 // Class VariantManagerContent.VariantObjectBinding
 // 0x0068 (0x0090 - 0x0028)
@@ -349,10 +337,9 @@ class UVariantObjectBinding final : public UObject
 {
 public:
 	class FString                                 CachedActorLabel;                                  // 0x0028(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FSoftObjectPath                        ObjectPtr;                                         // 0x0038(0x0018)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TLazyObjectPtr<class UObject>                 LazyObjectPtr;                                     // 0x0050(0x001C)(IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_6C[0x4];                                       // 0x006C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UPropertyValue*>                 CapturedProperties;                                // 0x0070(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	struct FSoftObjectPath                        ObjectPtr;                                         // 0x0038(0x0020)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TLazyObjectPtr<class UObject>                 LazyObjectPtr;                                     // 0x0058(0x0018)(IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class UPropertyValue*>                 CapturedProperties;                                // 0x0070(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
 	TArray<struct FFunctionCaller>                FunctionCallers;                                   // 0x0080(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
 
 public:
@@ -369,19 +356,18 @@ public:
 		return GetDefaultObjImpl<UVariantObjectBinding>();
 	}
 };
-DUMPER7_ASSERTS_UVariantObjectBinding;
 
 // Class VariantManagerContent.VariantSet
-// 0x0050 (0x0078 - 0x0028)
+// 0x0040 (0x0068 - 0x0028)
 class UVariantSet final : public UObject
 {
 public:
-	class FText                                   DisplayText;                                       // 0x0028(0x0018)(Deprecated, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_40[0x18];                                      // 0x0040(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bExpanded;                                         // 0x0058(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_59[0x7];                                       // 0x0059(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UVariant*>                       Variants;                                          // 0x0060(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	class UTexture2D*                             Thumbnail;                                         // 0x0070(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FText                                   DisplayText;                                       // 0x0028(0x0010)(Deprecated, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_38[0x10];                                      // 0x0038(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bExpanded;                                         // 0x0048(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UVariant*>                       Variants;                                          // 0x0050(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	class UTexture2D*                             Thumbnail;                                         // 0x0060(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
 	class ULevelVariantSets* GetParent();
@@ -411,7 +397,6 @@ public:
 		return GetDefaultObjImpl<UVariantSet>();
 	}
 };
-DUMPER7_ASSERTS_UVariantSet;
 
 }
 

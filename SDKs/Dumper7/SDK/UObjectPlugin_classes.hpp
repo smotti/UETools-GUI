@@ -38,7 +38,6 @@ public:
 		return GetDefaultObjImpl<UMyPluginObject>();
 	}
 };
-DUMPER7_ASSERTS_UMyPluginObject;
 
 }
 

@@ -34,7 +34,6 @@ public:
 		return GetDefaultObjImpl<UInputCoreTypes>();
 	}
 };
-DUMPER7_ASSERTS_UInputCoreTypes;
 
 }
 

@@ -23,7 +23,7 @@ enum class ESoundwaveSampleRateSettings : uint8
 	Medium                                   = 2,
 	Low                                      = 3,
 	Min                                      = 4,
-	MatchDevice                              = 5,
+	MatchDevice_DEPRECATED                   = 5,
 };
 
 // ScriptStruct AudioPlatformConfiguration.PlatformRuntimeAudioCompressionOverrides
@@ -37,7 +37,6 @@ public:
 	int32                                         MaxNumRandomBranches;                              // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	int32                                         SoundCueQualityIndex;                              // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FPlatformRuntimeAudioCompressionOverrides;
 
 }
 

@@ -44,7 +44,6 @@ public:
 		return GetDefaultObjImpl<UAudioCapture>();
 	}
 };
-DUMPER7_ASSERTS_UAudioCapture;
 
 // Class AudioCapture.AudioCaptureFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -67,15 +66,37 @@ public:
 		return GetDefaultObjImpl<UAudioCaptureFunctionLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UAudioCaptureFunctionLibrary;
+
+// Class AudioCapture.AudioCaptureBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UAudioCaptureBlueprintLibrary final : public UBlueprintFunctionLibrary
+{
+public:
+	static class FString Conv_AudioInputDeviceInfoToString(const struct FAudioInputDeviceInfo& Info);
+	static void GetAvailableAudioInputDevices(const class UObject* WorldContextObject, const TDelegate<void(const TArray<struct FAudioInputDeviceInfo>& AvailableDevices)>& OnObtainDevicesEvent);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("AudioCaptureBlueprintLibrary")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"AudioCaptureBlueprintLibrary")
+	}
+	static class UAudioCaptureBlueprintLibrary* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UAudioCaptureBlueprintLibrary>();
+	}
+};
 
 // Class AudioCapture.AudioCaptureComponent
-// 0x00C0 (0x0780 - 0x06C0)
+// 0x00C0 (0x0950 - 0x0890)
 class UAudioCaptureComponent final : public USynthComponent
 {
 public:
-	int32                                         JitterLatencyFrames;                               // 0x06C0(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_6C4[0xBC];                                     // 0x06C4(0x00BC)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	int32                                         JitterLatencyFrames;                               // 0x0890(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_894[0xBC];                                     // 0x0894(0x00BC)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
@@ -91,7 +112,6 @@ public:
 		return GetDefaultObjImpl<UAudioCaptureComponent>();
 	}
 };
-DUMPER7_ASSERTS_UAudioCaptureComponent;
 
 }
 

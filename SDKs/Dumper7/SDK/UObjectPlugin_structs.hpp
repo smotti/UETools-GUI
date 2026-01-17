@@ -21,7 +21,6 @@ struct FMyPluginStruct final
 public:
 	class FString                                 TestString;                                        // 0x0000(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FMyPluginStruct;
 
 }
 

@@ -38,7 +38,54 @@ public:
 		return GetDefaultObjImpl<UNetAnalyticsAggregatorConfig>();
 	}
 };
-DUMPER7_ASSERTS_UNetAnalyticsAggregatorConfig;
+
+// Class NetCore.StatePerObjectConfig
+// 0x0040 (0x0068 - 0x0028)
+class UStatePerObjectConfig : public UObject
+{
+public:
+	uint8                                         Pad_28[0x28];                                      // 0x0028(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 PerObjectConfigSection;                            // 0x0050(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bEnabled;                                          // 0x0060(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_61[0x7];                                       // 0x0061(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("StatePerObjectConfig")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"StatePerObjectConfig")
+	}
+	static class UStatePerObjectConfig* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UStatePerObjectConfig>();
+	}
+};
+
+// Class NetCore.EscalationManagerConfig
+// 0x0020 (0x0088 - 0x0068)
+class UEscalationManagerConfig : public UStatePerObjectConfig
+{
+public:
+	TArray<class FString>                         EscalationSeverity;                                // 0x0068(0x0010)(ZeroConstructor, Config, NativeAccessSpecifierPublic)
+	uint8                                         Pad_78[0x10];                                      // 0x0078(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("EscalationManagerConfig")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"EscalationManagerConfig")
+	}
+	static class UEscalationManagerConfig* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UEscalationManagerConfig>();
+	}
+};
 
 }
 

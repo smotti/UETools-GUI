@@ -37,33 +37,6 @@ public:
 		return GetDefaultObjImpl<UClothConfigCommon>();
 	}
 };
-DUMPER7_ASSERTS_UClothConfigCommon;
-
-// Class ClothingSystemRuntimeCommon.ClothLODDataCommon_Legacy
-// 0x0160 (0x0188 - 0x0028)
-class UClothLODDataCommon_Legacy final : public UObject
-{
-public:
-	class UClothPhysicalMeshDataBase_Legacy*      PhysicalMeshData;                                  // 0x0028(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FClothPhysicalMeshData                 ClothPhysicalMeshData;                             // 0x0030(0x00F8)(NativeAccessSpecifierPublic)
-	struct FClothCollisionData                    CollisionData;                                     // 0x0128(0x0040)(NativeAccessSpecifierPublic)
-	uint8                                         Pad_168[0x20];                                     // 0x0168(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ClothLODDataCommon_Legacy")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ClothLODDataCommon_Legacy")
-	}
-	static class UClothLODDataCommon_Legacy* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UClothLODDataCommon_Legacy>();
-	}
-};
-DUMPER7_ASSERTS_UClothLODDataCommon_Legacy;
 
 // Class ClothingSystemRuntimeCommon.ClothSharedConfigCommon
 // 0x0000 (0x0028 - 0x0028)
@@ -83,7 +56,6 @@ public:
 		return GetDefaultObjImpl<UClothSharedConfigCommon>();
 	}
 };
-DUMPER7_ASSERTS_UClothSharedConfigCommon;
 
 // Class ClothingSystemRuntimeCommon.ClothingAssetCustomData
 // 0x0000 (0x0028 - 0x0028)
@@ -103,22 +75,21 @@ public:
 		return GetDefaultObjImpl<UClothingAssetCustomData>();
 	}
 };
-DUMPER7_ASSERTS_UClothingAssetCustomData;
 
 // Class ClothingSystemRuntimeCommon.ClothingAssetCommon
 // 0x00A8 (0x00F0 - 0x0048)
 class UClothingAssetCommon final : public UClothingAssetBase
 {
 public:
-	class UPhysicsAsset*                          PhysicsAsset;                                      // 0x0048(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<class FName, class UClothConfigBase*>    ClothConfigs;                                      // 0x0050(0x0050)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, EditFixedSize, EditConst, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	class UPhysicsAsset*                          PhysicsAsset;                                      // 0x0048(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<class FName, class UClothConfigBase*>    ClothConfigs;                                      // 0x0050(0x0050)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, EditFixedSize, EditConst, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPublic)
 	TArray<struct FClothLODDataCommon>            LODData;                                           // 0x00A0(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<int32>                                 LodMap;                                            // 0x00B0(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<class FName>                           UsedBoneNames;                                     // 0x00C0(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	TArray<int32>                                 UsedBoneIndices;                                   // 0x00D0(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 	int32                                         ReferenceBoneIndex;                                // 0x00E0(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_E4[0x4];                                       // 0x00E4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class UClothingAssetCustomData*               CustomData;                                        // 0x00E8(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UClothingAssetCustomData*               CustomData;                                        // 0x00E8(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
@@ -134,7 +105,31 @@ public:
 		return GetDefaultObjImpl<UClothingAssetCommon>();
 	}
 };
-DUMPER7_ASSERTS_UClothingAssetCommon;
+
+// Class ClothingSystemRuntimeCommon.ClothLODDataCommon_Legacy
+// 0x0190 (0x01B8 - 0x0028)
+class UClothLODDataCommon_Legacy final : public UObject
+{
+public:
+	class UClothPhysicalMeshDataBase_Legacy*      PhysicalMeshData;                                  // 0x0028(0x0008)(ZeroConstructor, Deprecated, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FClothPhysicalMeshData                 ClothPhysicalMeshData;                             // 0x0030(0x0128)(NativeAccessSpecifierPublic)
+	struct FClothCollisionData                    CollisionData;                                     // 0x0158(0x0040)(NativeAccessSpecifierPublic)
+	uint8                                         Pad_198[0x20];                                     // 0x0198(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ClothLODDataCommon_Legacy")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ClothLODDataCommon_Legacy")
+	}
+	static class UClothLODDataCommon_Legacy* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UClothLODDataCommon_Legacy>();
+	}
+};
 
 }
 

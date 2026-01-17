@@ -14,20 +14,6 @@
 namespace SDK
 {
 
-// Enum DLSSBlueprint.UDLSSMode
-// NumValues: 0x0008
-enum class EUDLSSMode : uint8
-{
-	Off                                      = 0,
-	Auto                                     = 1,
-	UltraQuality                             = 2,
-	Quality                                  = 3,
-	Balanced                                 = 4,
-	Performance                              = 5,
-	UltraPerformance                         = 6,
-	UDLSSMode_MAX                            = 7,
-};
-
 // Enum DLSSBlueprint.UDLSSSupport
 // NumValues: 0x0008
 enum class EUDLSSSupport : uint8
@@ -40,6 +26,21 @@ enum class EUDLSSSupport : uint8
 	NotSupportedByPlatformAtBuildTime        = 5,
 	NotSupportedIncompatibleAPICaptureToolActive = 6,
 	UDLSSSupport_MAX                         = 7,
+};
+
+// Enum DLSSBlueprint.UDLSSMode
+// NumValues: 0x0009
+enum class EUDLSSMode : uint8
+{
+	Off                                      = 0,
+	Auto                                     = 1,
+	DLAA                                     = 2,
+	UltraQuality                             = 3,
+	Quality                                  = 4,
+	Balanced                                 = 5,
+	Performance                              = 6,
+	UltraPerformance                         = 7,
+	UDLSSMode_MAX                            = 8,
 };
 
 }
